@@ -1,0 +1,9 @@
+.nav {
+    display: flex;
+    flex-direction: row;
+    background-color: blue;
+    flex-grow: 1;
+    height: 60px;
+    justify-content: space-around;
+    align-items: center;
+}
