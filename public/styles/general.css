@@ -8,6 +8,8 @@ html, body {
     margin: 0;
     padding: 0;
     flex-direction: column;
+    background-color: #1A1A1A;
+    color: #F0F0F0;
 }
 
 .main {
@@ -15,4 +17,26 @@ html, body {
     height: calc(100% - 120px);
     align-items: center;
     justify-content: space-evenly;
+}
+
+.center-main {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    justify-content: space-evenly;
+    flex: 1;
+}
+
+.pokeball-img {
+    height: 400px;
+    width: 400px;
+    border-radius: 50%;
+    box-shadow: none;
+    transition: box-shadow 0.2s ease;
+}
+
+.pokeball-img:hover {
+    cursor: pointer;
+    box-shadow: 0px 0px 10px #F0F0F0;
+
 }
