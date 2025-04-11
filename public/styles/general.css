@@ -1,34 +1,34 @@
 @font-face {
     font-family: 'PokemonText';
-    src: url(/public/assets/fonts/Georgia.ttf);
+    src: url(assets/fonts/Georgia.ttf);
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PokemonText';
-    src: url(/public/assets/fonts/GeorgiaBold.ttf);
+    src: url(assets/fonts/GeorgiaBold.ttf);
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PokemonText';
-    src: url(/public/assets/fonts/GeorgiaItalic.ttf);
+    src: url(assets/fonts/GeorgiaItalic.ttf);
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'PokemonText';
-    src: url(/public/assets/fonts/GeorgiaBoldItalic.ttf);
+    src: url(assets/fonts/GeorgiaBoldItalic.ttf);
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'PokemonTitle';
-    src: url(/public/assets/fonts/Pokemon\Solid.ttf);
+    src: url(assets/fonts/Pokemon\Solid.ttf);
     font-weight: normal;
     font-style: normal;
 }
