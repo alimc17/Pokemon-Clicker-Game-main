@@ -41,6 +41,7 @@
 html, body {
     width: 100vw;
     height: 100vh;
+    font-family: 'PokemonText', serif;
     margin: 0;
     padding: 0;
     flex-direction: column;
@@ -48,6 +49,10 @@ html, body {
     color: #F0F0F0;
     display: flex;
     z-index: 0;
+}
+
+h1 {
+    font-family: 'PokemonTitle', serif;
 }
 
 .bg-video {
