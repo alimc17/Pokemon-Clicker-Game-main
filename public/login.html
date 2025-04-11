@@ -14,62 +14,73 @@
             <h1>Title</h1>
         </div>
         <div class="right-nav">
-            <button onclick="document.location='index.html'">Home</button>
-            <button onclick="document.location='signup.html'">Signup</button>
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="signup.html" class="nav-button">Signup</a>
         </div>
     </div>
+
     <div class="main">
-        <form class = "login-form">
+        <form class="login-form">
             <div class="email">
-                <p>Email</p>
-                <input class="text-box login-email" type="email" placeholder="email" required>
+                <label for="login-email">Email</label>
+                <input id="login-email" 
+                       class="text-box" 
+                       type="email" 
+                       placeholder="email@example.com" 
+                       required>
             </div>
             <div class="password">
-                <p>Password</p>
-                <input class="text-box login-password" type="password" placeholder="password" required>
+                <label for="login-password">Password</label>
+                <input id="login-password" 
+                       class="text-box" 
+                       type="password" 
+                       placeholder="••••••••" 
+                       required>
             </div>
             <div class="login-button">
-                <button type="submit">
-                    Login
-                </button>   
+                <button type="submit">Login</button>
+                <div id="login-error" class="error-message"></div>
             </div>
-            <div id="login-error" class="error-message"></div>
         </form>
-
-        <script src="../firebaseConfig.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-        <script>
-            firebase.initializeApp(firebaseConfig);
-            const auth = firebase.auth();
-        
-            document.querySelector('.login-form').addEventListener('submit', (e) => {
-                e.preventDefault();
-                const button = document.querySelector('button[type="submit"]');
-                button.disabled = true;
-        
-                const email = document.querySelector('.login-email').value;
-                const password = document.querySelector('.login-password').value;
-                
-                auth.signInWithEmailAndPassword(email, password)
-                    .then((userCredential) => {
-                        const user = userCredential.user;
-                        if (user.emailVerified) {
-                            window.location.href = "dashboard.html";
-                        } else {
-                            document.getElementById('login-error').textContent = "Please verify your email first";
-                            auth.signOut();
-                        }
-                    })
-                    .catch((error) => {
-                        document.getElementById('login-error').textContent = error.message;
-                    })
-                    .finally(() => {
-                        button.disabled = false;
-                    });
-            });
-        </script>
     </div>
+
+    <!-- Correct script order -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="../firebaseConfig.js"></script>
+
+    <script>
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        document.querySelector('.login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const button = document.querySelector('button[type="submit"]');
+            button.disabled = true;
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    if (user.emailVerified) {
+                        window.location.href = "dashboard.html";
+                    } else {
+                        document.getElementById('login-error').textContent = "Please verify your email first";
+                        auth.signOut();
+                    }
+                })
+                .catch((error) => {
+                    document.getElementById('login-error').textContent = error.message;
+                })
+                .finally(() => {
+                    button.disabled = false;
+                });
+        });
+    </script>
+
     <div class="footer">
         Footer
     </div>

@@ -43,11 +43,14 @@
         </form>
     </div>
 
-    <script src="../firebaseConfig.js"></script>
+    <!-- Correct script order -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="../firebaseConfig.js"></script>
+    
     <script>
-        firebase.initializeApp(firebaseConfig);
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
         document.querySelector('.signup-form').addEventListener('submit', (e) => {
