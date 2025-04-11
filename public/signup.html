@@ -7,35 +7,74 @@
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/nav.css">
     <link rel="stylesheet" href="styles/footer.css">
-
-
 </head>
 <body>
     <div class="nav">
         <div class="left-nav">
             <h1>Title</h1>
         </div>
-        <div>
-            <button onclick="document.location='index.html'">Home</button>
-            <button onclick="document.location='login.html'">Login</button>
-        </div class=right-nav>
+        <div class="right-nav">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="login.html" class="nav-button">Login</a>
+        </div>
     </div>
-    <div class="main">
-        <div class="email">
-            <p>Email</p>
-            <input class="text-box" type="text" placeholder="n@teamplasma.com">
-        </div>
-        <div class="password">
-            <p>Password</p>
-            <input class="text-box" type="text" placeholder="⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅">
-        </div>
-        <div class="login-button">
-            <button>
-                SignUp
-            </button>
-        </div>
 
+    <div class="main">
+        <form class="signup-form">
+            <div class="email">
+                <label>Email</label>
+                <input class="text-box signup-email" 
+                       type="email" 
+                       placeholder="email@example.com" 
+                       required>
+            </div>
+            <div class="password">
+                <label>Password</label>
+                <input class="text-box signup-password" 
+                       type="password" 
+                       placeholder="••••••••" 
+                       minlength="6" 
+                       required>
+            </div>
+            <div class="login-button">
+                <button type="submit">SignUp</button>
+                <div id="signup-error" class="error"></div>
+            </div>
+        </form>
     </div>
+
+    <script src="../firebaseConfig.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script>
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        document.querySelector('.signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const button = document.querySelector('button[type="submit"]');
+            button.disabled = true;
+
+            const email = document.querySelector('.signup-email').value;
+            const password = document.querySelector('.signup-password').value;
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    return userCredential.user.sendEmailVerification();
+                })
+                .then(() => {
+                    alert('Verification email sent! Please check your inbox.');
+                    window.location.href = "login.html";
+                })
+                .catch((error) => {
+                    document.getElementById('signup-error').textContent = error.message;
+                })
+                .finally(() => {
+                    button.disabled = false;
+                });
+        });
+    </script>
+
     <div class="footer">
         Footer
     </div>
