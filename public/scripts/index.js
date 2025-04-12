@@ -1,7 +1,8 @@
-let pTotal = document.querySelector('.p-total');
+let pTotal = 0;
 
 function incrementP() {
-    pTotal.innerHTML++;
+    pTotal++;
+    document.querySelector('.p-total').textContent = pTotal;
 
-    updateGameProgress(pTotal.innerHTML);
+    updateGameProgress({pTotal: pTotal});
 }
