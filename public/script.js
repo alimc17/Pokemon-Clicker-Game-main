@@ -8,6 +8,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // THEN wait for auth state
     auth.onAuthStateChanged(user => {
         updateNav(user);
+        
+        // Load progress based on auth state
+        if (user) {
+            // Load authenticated user's progress
+            loadGameProgress(user.uid);
+        } else {
+            // Load guest progress from localStorage
+            const guestProgress = localStorage.getItem('guestProgress');
+            if (guestProgress) {
+                window.pTotal = parseInt(guestProgress);
+                document.querySelector('.p-total').textContent = window.pTotal;
+            }
+        }
     });
 });
 
@@ -20,7 +33,7 @@ function updateNav(user) {
         return;
     }
 
-    // Clear previous welcome message but keep title
+    // Clear previous content but keep title
     while (leftNav.children.length > 1) {
         leftNav.removeChild(leftNav.lastChild);
     }
@@ -31,14 +44,18 @@ function updateNav(user) {
         welcomeMsg.textContent = `Welcome, ${user.email}`;
         leftNav.appendChild(welcomeMsg);
 
+        // Create logout button with progress preservation
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
         logoutBtn.onclick = () => {
+            // Save guest progress before logout
+            if (!localStorage.getItem('guestProgress')) {
+                localStorage.setItem('guestProgress', window.pTotal.toString());
+            }
             auth.signOut().then(() => location.reload());
         };
         rightNav.appendChild(logoutBtn);
 
-        loadGameProgress(user.uid);
     } else {
         const loginBtn = document.createElement('button');
         loginBtn.textContent = 'Login';
@@ -56,10 +73,10 @@ function loadGameProgress(uid) {
     db.collection("users").doc(uid).get()
         .then(doc => {
             if (doc.exists) {
-                console.log("Loaded progress:", doc.data());
-                // Load progress into game state here
-            } else {
-                console.log("No progress found.");
+                const data = doc.data();
+                window.pTotal = data.pTotal || 0;
+                document.querySelector('.p-total').textContent = window.pTotal;
+                console.log("Loaded progress:", data);
             }
         })
         .catch(error => {
