@@ -1,10 +1,14 @@
-// Initialize pTotal with guest progress or default to 0
-window.pTotal = localStorage.getItem('guestProgress') 
-              ? parseInt(localStorage.getItem('guestProgress')) 
-              : 0;
+// Initialize with default 0 FIRST
+window.pTotal = 0;
 
-// Initialize UI
-document.querySelector('.p-total').textContent = window.pTotal;
+// Then check auth state BEFORE loading from localStorage
+document.addEventListener("DOMContentLoaded", () => {
+    const user = firebase.auth().currentUser; // Check auth state synchronously
+    if (!user) {
+        window.pTotal = parseInt(localStorage.getItem('guestProgress')) || 0;
+    }
+    document.querySelector('.p-total').textContent = window.pTotal;
+});
 
 function incrementP() {
     window.pTotal++;
@@ -12,7 +16,8 @@ function incrementP() {
     
     const user = firebase.auth().currentUser;
     if (user) {
-        updateGameProgress({ pTotal: window.pTotal });
+        // Use a nested object to prevent field collisions
+        updateGameProgress({ gameData: { pTotal: window.pTotal } });
     } else {
         localStorage.setItem('guestProgress', window.pTotal.toString());
     }

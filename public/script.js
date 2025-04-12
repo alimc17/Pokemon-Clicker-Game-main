@@ -9,16 +9,16 @@ document.addEventListener("DOMContentLoaded", () => {
     auth.onAuthStateChanged(user => {
         updateNav(user);
         
-        // Load progress based on auth state
         if (user) {
-            // Load authenticated user's progress
             loadGameProgress(user.uid);
         } else {
-            // Load guest progress from localStorage
-            const guestProgress = localStorage.getItem('guestProgress');
-            if (guestProgress) {
-                window.pTotal = parseInt(guestProgress);
-                document.querySelector('.p-total').textContent = window.pTotal;
+            // ONLY load guest data if no user exists
+            if (!firebase.auth().currentUser) {
+                const guestProgress = localStorage.getItem('guestProgress');
+                if (guestProgress) {
+                    window.pTotal = parseInt(guestProgress);
+                    document.querySelector('.p-total').textContent = window.pTotal;
+                }
             }
         }
     });
