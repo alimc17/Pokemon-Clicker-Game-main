@@ -1,18 +1,19 @@
-let pTotal = localStorage.getItem('guestProgress')
-             ? parseInt(localStorage.getItem('guestProgress'))
-             : 0;
+// Initialize pTotal with guest progress or default to 0
+window.pTotal = localStorage.getItem('guestProgress') 
+              ? parseInt(localStorage.getItem('guestProgress')) 
+              : 0;
 
 // Initialize UI
-document.querySelector('.p-total').textContent = pTotal;
+document.querySelector('.p-total').textContent = window.pTotal;
 
 function incrementP() {
-    pTotal++;
-    document.querySelector('.p-total').textContent = pTotal;
+    window.pTotal++;
+    document.querySelector('.p-total').textContent = window.pTotal;
     
     const user = firebase.auth().currentUser;
     if (user) {
-        updateGameProgress({ pTotal: pTotal });
+        updateGameProgress({ pTotal: window.pTotal });
     } else {
-        localStorage.setItem('guestProgress', pTotal.toString());
+        localStorage.setItem('guestProgress', window.pTotal.toString());
     }
 }
