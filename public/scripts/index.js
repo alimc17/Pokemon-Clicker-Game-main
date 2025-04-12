@@ -22,3 +22,10 @@ function incrementP() {
         localStorage.setItem('guestProgress', window.pTotal.toString());
     }
 }
+
+window.addEventListener('beforeunload', () => {
+    if (firebase.auth().currentUser) {
+        // Force-save progress before page closes
+        updateGameProgress({ gameData: { pTotal: window.pTotal } });
+    }
+});
