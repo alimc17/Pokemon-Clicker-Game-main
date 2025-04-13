@@ -9,136 +9,8 @@
     <link rel="stylesheet" href="styles/nav.css">
     <link rel="stylesheet" href="styles/footer.css">
 
-<style>
 
-
-* {
-
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    text-decoration: none;
-}
-
-body {
-    background-color: #000000;
-    min-height: 100vh;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    
-}
-
-.navbar{
-    background: rgb(83, 1, 1);
-    font-family: sans-serif; 
-    padding-right: 25px; 
-    padding-left: 15px;
-}
-
-.navdiv{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.logo a{
-   
-    font-family: 'Pokemon Solid', sans-serif;
-    font-size: 25px;
-    font-weight: 300;
-    color: rgb(253, 246, 246);
-}
-
-li{
-    list-style: none;
-    display: inline-block;
-}
-
-li a{
-    font-family: 'Pokemon Solid', sans-serif;
-    color: white;
-    font-size: 18px;
-    font-weight: 200;
-
-}
-
-
-
-.btn-custom {
-    padding: 1px 15px;
-    border: none;
-    outline: none;
-    color: #ffffff;
-    cursor: pointer;
-    position: relative;
-    z-index: 0;
-    border-radius: 12px;
-    margin-left: 8px;
-  }
-
-  .btn-custom::after {
-  content: "";
-  z-index: -1;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: #760303;
-  left: 0;
-  top: 0;
-  border-radius: 10px;
-}
-
-.btn-custom::before {
-  content: "";
-  background: linear-gradient(
-    45deg,
-    #FF0000, #FF7300, #FFFB00, #48FF00,
-    #00FFD5, #002BFF, #FF00C8, #FF0000
-  );
-
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  background-size: 600%;
-  z-index: -1;
-  width: calc(100% + 4px);
-  height:  calc(100% + 4px);
-  filter: blur(8px);
-  animation: glowing 20s linear infinite;
-  transition: opacity .3s ease-in-out;
-  border-radius: 10px;
-  opacity: 0;
-}
-
-@keyframes glowing {
-  0% {background-position: 0 0;}
-  50% {background-position: 400% 0;}
-  100% {background-position: 0 0;}
-}
-
-
-.btn-custom:hover::before {
-  opacity: 1;
-}
-
-.btn-custom:active:after {
-  background: transparent;
-}
-
-.btn-custom:active {
-  color: #000;
-  font-weight: bold;
-}
-
-.container-grid {
-      display: grid;
-      grid-template-columns: 1fr 2fr 1fr;
-      gap: 20px;
-}
-
-</style>
-
+</head>
 <body>
     <video class="bg-video" autoplay muted loop playsinline>
         <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
@@ -154,42 +26,77 @@ li a{
                 <li><a href="login.html" class="btn-custom">Login</a></li>
             </ul>
         </div>
-    </nav>
-
-      <main class="container">
-        <div class="row">
-          <form class="col s12">
-            <h5 class="center-align">Sign Up</h5>
-      
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="email" type="email" class="validate" required>
-                <label for="email">Email</label>
-              </div>
-            </div>
-      
-            <div class="row">
-              <div class="input-field col s12">
-                <input id="password" type="password" class="validate" required>
-                <label for="password">Password</label>
-              </div>
-            </div>
-      
-            <div class="row center-align">
-              <button class="btn waves-effect waves-light" type="submit" name="action">
-                Sign Up
-                <i class="material-icons right">send</i>
-              </button>
-            </div>
-          </form>
+        <div>
+            <button onclick="document.location='index.html'">Home</button>
+            <button onclick="document.location='login.html'">Login</button>
+        </div class=right-nav>
+    </div>
+    <div class="main">
+        <div class="email">
+            <p>Email</p>
+            <input class="text-box" type="text" placeholder="n@teamplasma.com">
         </div>
-      </main>
-
-
-    
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+        <div class="password">
+            <p>Password</p>
+            <input class="text-box" type="text" placeholder="⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅">
+        </div>
+        <div class="login-button">
+            <button>
+                SignUp
+            </button>
+        </div>
 
     </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="firebaseConfig.js"></script>    
+    
+    <script>
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    
+        document.querySelector('.signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const button = document.querySelector('button[type="submit"]');
+            button.disabled = true;
+    
+            const email = document.querySelector('.signup-email').value;
+            const password = document.querySelector('.signup-password').value;
+            const username = document.querySelector('.signup-username').value.trim();
+    
+            // Check if username already exists
+            db.collection('usernames').doc(username).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        throw new Error("Username already taken.");
+                    }
+                    return auth.createUserWithEmailAndPassword(email, password);
+                })
+                .then(userCredential => {
+                    const uid = userCredential.user.uid;
+    
+                    // Save username -> email mapping
+                    return db.collection('usernames').doc(username).set({
+                        email: email,
+                        uid: uid
+                    });
+                })
+                .then(() => {
+                    alert('Signup successful! You can now log in.');
+                    window.location.href = "login.html";
+                })
+                .catch(error => {
+                    document.getElementById('signup-error').textContent = error.message;
+                })
+                .finally(() => {
+                    button.disabled = false;
+                });
+        });
+    </script>    
+
     <div class="footer">
         Footer
     </div>
