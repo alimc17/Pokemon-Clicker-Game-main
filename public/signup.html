@@ -4,36 +4,190 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokeclickr</title>
+    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/nav.css">
     <link rel="stylesheet" href="styles/footer.css">
 
+<style>
 
-</head>
+
+* {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    background-color: #000000;
+    min-height: 100vh;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    
+}
+
+.navbar{
+    background: rgb(83, 1, 1);
+    font-family: sans-serif; 
+    padding-right: 25px; 
+    padding-left: 15px;
+}
+
+.navdiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a{
+   
+    font-family: 'Pokemon Solid', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: rgb(253, 246, 246);
+}
+
+li{
+    list-style: none;
+    display: inline-block;
+}
+
+li a{
+    font-family: 'Pokemon Solid', sans-serif;
+    color: white;
+    font-size: 18px;
+    font-weight: 200;
+
+}
+
+
+
+.btn-custom {
+    padding: 1px 15px;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 12px;
+    margin-left: 8px;
+  }
+
+  .btn-custom::after {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #760303;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+.btn-custom::before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #FF0000, #FF7300, #FFFB00, #48FF00,
+    #00FFD5, #002BFF, #FF00C8, #FF0000
+  );
+
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 600%;
+  z-index: -1;
+  width: calc(100% + 4px);
+  height:  calc(100% + 4px);
+  filter: blur(8px);
+  animation: glowing 20s linear infinite;
+  transition: opacity .3s ease-in-out;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+@keyframes glowing {
+  0% {background-position: 0 0;}
+  50% {background-position: 400% 0;}
+  100% {background-position: 0 0;}
+}
+
+
+.btn-custom:hover::before {
+  opacity: 1;
+}
+
+.btn-custom:active:after {
+  background: transparent;
+}
+
+.btn-custom:active {
+  color: #000;
+  font-weight: bold;
+}
+
+.container-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 20px;
+}
+
+</style>
+
 <body>
-    <div class="nav">
-        <div class="left-nav">
-            <h1>Title</h1>
+    <video class="bg-video" autoplay muted loop playsinline>
+        <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+
+
+    <nav class="navbar">
+        <div class="navdiv">
+            <div class="logo"><a href="#">PokeClickr</a></div>
+            <ul>
+                <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
+                <li><a href="login.html" class="btn-custom">Login</a></li>
+            </ul>
         </div>
-        <div>
-            <button onclick="document.location='index.html'">Home</button>
-            <button onclick="document.location='login.html'">Login</button>
-        </div class=right-nav>
-    </div>
-    <div class="main">
-        <div class="email">
-            <p>Email</p>
-            <input class="text-box" type="text" placeholder="n@teamplasma.com">
+    </nav>
+
+      <main class="container">
+        <div class="row">
+          <form class="col s12">
+            <h5 class="center-align">Sign Up</h5>
+      
+            <div class="row">
+              <div class="input-field col s12">
+                <input id="email" type="email" class="validate" required>
+                <label for="email">Email</label>
+              </div>
+            </div>
+      
+            <div class="row">
+              <div class="input-field col s12">
+                <input id="password" type="password" class="validate" required>
+                <label for="password">Password</label>
+              </div>
+            </div>
+      
+            <div class="row center-align">
+              <button class="btn waves-effect waves-light" type="submit" name="action">
+                Sign Up
+                <i class="material-icons right">send</i>
+              </button>
+            </div>
+          </form>
         </div>
-        <div class="password">
-            <p>Password</p>
-            <input class="text-box" type="text" placeholder="⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅">
-        </div>
-        <div class="login-button">
-            <button>
-                SignUp
-            </button>
-        </div>
+      </main>
+
+
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
     </div>
     <div class="footer">

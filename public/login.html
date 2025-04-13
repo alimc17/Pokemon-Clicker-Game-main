@@ -4,36 +4,271 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokeclickr</title>
+    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/nav.css">
     <link rel="stylesheet" href="styles/footer.css">
 
+<style>
 
-</head>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+    }
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  font-family: sans-serif;
+}
+
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(90vh - 55px); /* adjust if navbar height changes */
+  position: relative;
+  overflow: hidden;
+}
+
+
+.bg-video {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+
+.navbar{
+    background: rgb(83, 1, 1);
+    font-family: sans-serif; 
+    padding-right: 25px; 
+    padding-left: 15px;
+
+
+}
+
+.navdiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo a{
+   
+    font-family: 'Pokemon Solid', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: rgb(253, 246, 246);
+}
+
+li{
+    list-style: none;
+    display: inline-block;
+}
+
+li a{
+    font-family: 'Pokemon Solid', sans-serif;
+    color: white;
+    font-size: 18px;
+    font-weight: 200;
+
+}
+
+.btn-custom {
+    padding: 1px 15px;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    cursor: pointer;
+    position: relative;
+    z-index: 0;
+    border-radius: 12px;
+    margin-left: 8px;
+  }
+
+  .btn-custom::after {
+  content: "";
+  z-index: -1;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: #760303;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+.btn-custom::before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #FF0000, #FF7300, #FFFB00, #48FF00,
+    #00FFD5, #002BFF, #FF00C8, #FF0000
+  );
+
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 600%;
+  z-index: -1;
+  width: calc(100% + 4px);
+  height:  calc(100% + 4px);
+  filter: blur(8px);
+  animation: glowing 20s linear infinite;
+  transition: opacity .3s ease-in-out;
+  border-radius: 10px;
+  opacity: 0;
+}
+
+@keyframes glowing {
+  0% {background-position: 0 0;}
+  50% {background-position: 400% 0;}
+  100% {background-position: 0 0;}
+}
+
+
+.btn-custom:hover::before {
+  opacity: 1;
+}
+
+.btn-custom:active:after {
+  background: transparent;
+}
+
+.btn-custom:active {
+  color: #000;
+  font-weight: bold;
+}
+
+
+.wrapper {
+  position: relative;
+  width: 400px;
+  height: 500px;
+  background: black;
+  background-image: ;
+  box-shadow: 0 0 50px rgb(250, 246, 246);
+  border-radius: 20px;
+  padding: 40px;
+  overflow: hidden;
+}
+
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  transition: 1s ease-in-out;
+}
+.wrapper.active .form-wrapper.sign-in {
+  transform: translateY(-450px);
+}
+
+h2 {
+  font-size: 30px;
+  color: #fff;
+  text-align: center;
+}
+.input-group {
+  position: relative;
+  margin: 30px 0;
+  border-bottom: 2px solid #fff;
+}
+.input-group label {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  transform: translateY(-50%);
+  font-size: 16px;
+  color: #fff;
+  pointer-events: none;
+  transition: .5s;
+}
+.input-group input {
+  width: 320px;
+  height: 40px;
+  font-size: 16px;
+  color: #fff;
+  padding: 0 5px;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+.input-group input:focus~label,
+.input-group input:valid~label {
+  top: -5px;
+}
+
+
+button {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background: rgb(243, 239, 239);
+  box-shadow: 0 0 10px rgb(212, 205, 205);
+  font-size: 16px;
+  color: #000;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 30px;
+  border: none;
+  outline: none;
+}
+
+
+</style>
+
 <body>
-    <div class="nav">
-        <div class="left-nav">
-            <h1>Title</h1>
-        </div>
-        <div>
-            <button onclick="document.location='index.html'">Home</button>
-            <button onclick="document.location='signup.html'">Signup</button>
-        </div class=right-nav>
+
+  <nav class="navbar">
+    <div class="navdiv">
+      <div class="logo"><a href="#">PokeClickr</a></div>
+      <ul>
+        <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
+        <li><a href="login.html" class="btn-custom">Login</a></li>
+      </ul>
     </div>
-    <div class="main">
-        <div class="email">
-            <p>Email</p>
-            <input class="text-box" type="text" placeholder="n@teamplasma.com">
-        </div>
-        <div class="password">
-            <p>Password</p>
-            <input class="text-box" type="text" placeholder="⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅">
-        </div>
-        <div class="login-button">
-            <button>
-                Login
-            </button>
-        </div>
+  </nav>
+  
+  <main class="main-content">
+    <video class="bg-video" autoplay muted loop playsinline>
+      <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
+    </video>
+    <div class="bg-overlay"></div>
+  
+    <div class="wrapper">
+      <div class="form-wrapper sign-in">
+        <form action="">
+          <h2>Login</h2>
+          <div class="input-group">
+            <input type="text" required>
+            <label>Username</label>
+          </div>
+          <div class="input-group">
+            <input type="password" required>
+            <label>Password</label>
+          </div>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+
+  
+
+      
+
+     
 
     </div>
     <div class="footer">
