@@ -1,82 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokeclickr</title>
-    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/nav.css">
-    <link rel="stylesheet" href="styles/footer.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokeclickr</title>
 
-
+  <!-- Fonts & Styles -->
+  <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles/general.css"/>
+  <link rel="stylesheet" href="styles/nav.css"/>
+  <link rel="stylesheet" href="styles/footer.css"/>
+  <link rel="stylesheet" href="styles/upgrade_table.css"/>
 </head>
-
 <body>
-    <video class="bg-video" autoplay muted loop playsinline>
-        <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
-    </video>
-    <div class="bg-overlay"></div>
+  <!-- Background Video -->
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
+  </video>
+  <div class="bg-overlay"></div>
 
-<header>
-    <nav class="navbar">
-        <div class="navdiv">
-            <div class="logo"><a href="#">PokeClickr</a></div>
-            <ul>
-                <li><a href="signup.html" class="btn-custom"> Sign Up </a></li>
-                <li><a href="login.html" class="btn-custom"> Login </a></li>
-            </ul>
-        </div>
-    </nav>
-</header>
-    <div class="main">
-        <div class="left-main">
-            <button class="gambling">let's go gambling!</button>
-            <button class="prestige">prestige</button>
-        </div>
-        <div class="mid-main">
-            <div class="Region">
-                Region
-            </div>
-            <div class="pokeball">
-                <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP()">
-            </div>
-            <div>
-
-            </div>
-        </div>
-        <div class="right-main">
-            <img class="pokedollar" src="assets/pokedollar.png" alt="P" draggable="false">
-            <p>: <span class="p-total">0</span></p>
-            <div class="upgrades-and-items-table">
-                <div class="upgrade">
-                    <div class="left-upg">
-                        <img class="pokemon-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" alt="snorlax" draggable="false">
-                    </div>
-                    <div class="mid-upg">
-                        <p>Snorlax</p>
-                        <div>
-                            Cost: <span>10</span>
-
-                        </div>
-                    </div>
-                    <div class="right-upg">
-
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Navbar -->
+  <div class="nav">
+    <div class="left-nav" id="nav-left">
+      <h1>PokeClickr</h1>
+      <!-- Welcome message goes here -->
     </div>
-    <div class="footer">
-        Footer
+    <div class="right-nav" id="nav-right">
+      <!-- Login/Logout buttons go here -->
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="left-main">
+      <button class="gambling">let's go gambling!</button>
+      <button class="prestige">prestige</button>
     </div>
 
-    <script src="scripts/index.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-    <script src="firebaseConfig.js"></script>
-    <script src="scripts/script.js"></script>
-    <script src="scripts/gameProgress.js"></script>
+    <div class="mid-main">
+      <div class="Region">Region</div>
+      <div class="pokeball">
+        <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP()"/>
+      </div>
+    </div>
+
+    <div class="right-main">
+      <img class="pokedollar" src="assets/pokedollar.png" alt="P" draggable="false"/>
+      <p>: <span class="p-total">0</span></p>
+
+      <div class="upgrades-and-items-table">
+        <div class="upgrade">
+          <div class="left-upg">
+            <img class="pokemon-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" alt="snorlax" draggable="false"/>
+          </div>
+          <div class="mid-upg">
+            <p>Snorlax</p>
+            <div>Cost: <span>10</span></div>
+          </div>
+          <div class="right-upg">
+            <!-- Upgrade button maybe? -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">Footer</div>
+
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="firebaseConfig.js"></script>
+  <script src="scripts/index.js"></script>
+  <script src="scripts/script.js"></script>
+  <script src="scripts/gameProgress.js"></script>
+
+  <!-- Optional: Add dynamic nav population -->
+  <script>
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    const navRight = document.getElementById('nav-right');
+    const navLeft = document.getElementById('nav-left');
+
+    auth.onAuthStateChanged(user => {
+      navRight.innerHTML = '';
+      if (user) {
+        // Logged in
+        const logoutBtn = document.createElement('button');
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.classList.add('nav-button');
+        logoutBtn.onclick = () => auth.signOut();
+        navRight.appendChild(logoutBtn);
+
+        navLeft.innerHTML += `<p class="welcome-msg">Welcome, ${user.email}</p>`;
+      } else {
+        // Logged out
+        navRight.innerHTML = `
+          <a href="login.html" class="nav-button">Login</a>
+          <a href="signup.html" class="nav-button">Sign Up</a>
+        `;
+        const welcome = navLeft.querySelector('.welcome-msg');
+        if (welcome) welcome.remove();
+      }
+    });
+  </script>
 </body>
 </html>

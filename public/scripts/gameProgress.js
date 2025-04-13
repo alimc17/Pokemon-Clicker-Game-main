@@ -17,4 +17,3 @@
       const progress = { level: level, score: score };
       updateGameProgress(progress);
   }
-
