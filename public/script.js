@@ -74,9 +74,15 @@ function loadGameProgress(uid) {
         .then(doc => {
             if (doc.exists) {
                 const data = doc.data();
-                window.pTotal = data.pTotal || 0;
-                document.querySelector('.p-total').textContent = window.pTotal;
                 console.log("Loaded progress:", data);
+
+                // Set pTotal from saved progress if available
+                if (typeof data.pTotal === 'number') {
+                    pTotal = data.pTotal;
+                    document.querySelector('.p-total').textContent = pTotal;
+                }
+            } else {
+                console.log("No progress found.");
             }
         })
         .catch(error => {
