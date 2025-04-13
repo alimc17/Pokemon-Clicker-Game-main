@@ -43,7 +43,7 @@ function updateNav(user) {
 
     if (user) {
         const welcomeMsg = document.createElement('div');
-        welcomeMsg.textContent = `Welcome, ${user.email}`;
+        welcomeMsg.textContent = `Welcome, ${user.username}`;
         leftNav.appendChild(welcomeMsg);
 
         const logoutBtn = document.createElement('button');
