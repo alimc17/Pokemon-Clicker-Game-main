@@ -21,14 +21,14 @@
 
     <div class="main">
         <form class="login-form">
-            <div class="email">
-                <label for="login-email">Email</label>
-                <input id="login-email" 
+            <div class="username">
+                <label for="login-username">Username</label>
+                <input id="login-username" 
                        class="text-box" 
-                       type="email" 
-                       placeholder="email@example.com" 
+                       type="text" 
+                       placeholder="Your username" 
                        required>
-            </div>
+            </div>            
             <div class="password">
                 <label for="login-password">Password</label>
                 <input id="login-password" 
@@ -51,24 +51,26 @@
     <script>
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-
+        const db = firebase.firestore();
+    
         document.querySelector('.login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const button = document.querySelector('button[type="submit"]');
             button.disabled = true;
-
-            const email = document.getElementById('login-email').value;
+    
+            const username = document.getElementById('login-username').value.trim();
             const password = document.getElementById('login-password').value;
-            
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const user = userCredential.user;
-                    if (user.emailVerified) {
-                        window.location.href = "index.html";
-                    } else {
-                        document.getElementById('login-error').textContent = "Please verify your email first";
-                        auth.signOut();
+    
+            db.collection('usernames').doc(username).get()
+                .then(doc => {
+                    if (!doc.exists) {
+                        throw new Error("Username not found.");
                     }
+                    const email = doc.data().email;
+                    return auth.signInWithEmailAndPassword(email, password);
+                })
+                .then(() => {
+                    window.location.href = "index.html";
                 })
                 .catch((error) => {
                     document.getElementById('login-error').textContent = error.message;
@@ -77,7 +79,7 @@
                     button.disabled = false;
                 });
         });
-    </script>
+    </script>    
 
     <div class="footer">
         Footer

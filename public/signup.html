@@ -28,6 +28,13 @@
                        placeholder="email@example.com" 
                        required>
             </div>
+            <div class="username">
+                <label>Username</label>
+                <input class="text-box signup-username" 
+                       type="text" 
+                       placeholder="e.g. pokeMaster99" 
+                       required>
+            </div>            
             <div class="password">
                 <label>Password</label>
                 <input class="text-box signup-password" 
@@ -50,31 +57,46 @@
     <script>
         const app = firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-
+        const db = firebase.firestore();
+    
         document.querySelector('.signup-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const button = document.querySelector('button[type="submit"]');
             button.disabled = true;
-
+    
             const email = document.querySelector('.signup-email').value;
             const password = document.querySelector('.signup-password').value;
-            
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    return userCredential.user.sendEmailVerification();
+            const username = document.querySelector('.signup-username').value.trim();
+    
+            // Check if username already exists
+            db.collection('usernames').doc(username).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        throw new Error("Username already taken.");
+                    }
+                    return auth.createUserWithEmailAndPassword(email, password);
+                })
+                .then(userCredential => {
+                    const uid = userCredential.user.uid;
+    
+                    // Save username -> email mapping
+                    return db.collection('usernames').doc(username).set({
+                        email: email,
+                        uid: uid
+                    });
                 })
                 .then(() => {
-                    alert('Verification email sent! Please check your inbox.');
+                    alert('Signup successful! You can now log in.');
                     window.location.href = "login.html";
                 })
-                .catch((error) => {
+                .catch(error => {
                     document.getElementById('signup-error').textContent = error.message;
                 })
                 .finally(() => {
                     button.disabled = false;
                 });
         });
-    </script>
+    </script>    
 
     <div class="footer">
         Footer
