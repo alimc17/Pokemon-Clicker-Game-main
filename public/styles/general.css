@@ -28,7 +28,7 @@
 
 @font-face {
     font-family: 'PokemonTitle';
-    src: url(assets/fonts/Pokemon\Solid.ttf);
+    src: url(assets/fonts/PokemonSolid.ttf);
     font-weight: normal;
     font-style: normal;
 }
@@ -36,7 +36,6 @@
 * {
     box-sizing: border-box;
     text-decoration: none;
-
 }
 
 
@@ -55,6 +54,10 @@ html, body {
 
 h1 {
     font-family: 'PokemonTitle', serif;
+}
+
+h1, h2, h3, h4, p {
+    margin: 0;
 }
 
 .bg-video {
@@ -109,14 +112,26 @@ h1 {
     display: flex;
     flex-direction: column;
     text-align: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    align-items: center;
     flex: 1;
     height: 100%;
 }
 
-.pokedollar {
-    height: 3%;
-    width: 3%;
+.total-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.p-total-img {
+    width: 3.5%;
+    object-fit: cover;
+    filter: invert(1);
 }
 
 .pokeball-img {
