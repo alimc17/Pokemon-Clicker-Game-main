@@ -1,31 +1,28 @@
-// Initialize with default 0 FIRST
+// Set default value
 window.pTotal = 0;
 
-// Then check auth state BEFORE loading from localStorage
 document.addEventListener("DOMContentLoaded", () => {
-    const user = firebase.auth().currentUser; // Check auth state synchronously
-    if (!user) {
-        window.pTotal = parseInt(localStorage.getItem('guestProgress')) || 0;
-    }
+    // Just update the display — actual value will be set later in script.js
     document.querySelector('.p-total').textContent = window.pTotal;
 });
 
+// Clicking the pokeball increases pTotal
 function incrementP() {
     window.pTotal++;
     document.querySelector('.p-total').textContent = window.pTotal;
-    
+
     const user = firebase.auth().currentUser;
     if (user) {
-        // Use a nested object to prevent field collisions
         updateGameProgress({ gameData: { pTotal: window.pTotal } });
     } else {
         localStorage.setItem('guestProgress', window.pTotal.toString());
     }
 }
 
+// Save progress before page unloads
 window.addEventListener('beforeunload', () => {
-    if (firebase.auth().currentUser) {
-        // Force-save progress before page closes
+    const user = firebase.auth().currentUser;
+    if (user) {
         updateGameProgress({ gameData: { pTotal: window.pTotal } });
     }
 });
