@@ -42,9 +42,22 @@ function updateNav(user) {
     rightNav.innerHTML = "";
 
     if (user) {
-        const welcomeMsg = document.createElement('div');
-        welcomeMsg.textContent = `Welcome, ${user.usernames}`;
-        leftNav.appendChild(welcomeMsg);
+        // Fetch the username from the "usernames" collection using UID
+        db.collection("usernames").doc(user.uid).get()
+            .then(doc => {
+                const welcomeMsg = document.createElement('div');
+                if (doc.exists) {
+                    const username = doc.data().username;
+                    welcomeMsg.textContent = `Welcome, ${username}`;
+                } else {
+                    welcomeMsg.textContent = `Welcome, Trainer`;
+                }
+                welcomeMsg.classList.add('welcome-msg');
+                leftNav.appendChild(welcomeMsg);
+            })
+            .catch(error => {
+                console.error("Error fetching username:", error);
+            });
 
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
@@ -75,6 +88,7 @@ function updateNav(user) {
         if (welcome) welcome.remove();
     }
 }
+
 
 function loadGameProgress(uid) {
     db.collection("users").doc(uid).get()
