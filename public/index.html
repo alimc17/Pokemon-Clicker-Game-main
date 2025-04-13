@@ -1,79 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokeclickr</title>
-    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/nav.css">
-    <link rel="stylesheet" href="styles/footer.css">
-    <link rel="stylesheet" href="styles/upgrade_table.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pokeclickr</title>
 
-
+  <!-- Fonts & Styles -->
+  <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet" />
+  <link rel="stylesheet" href="styles/general.css" />
+  <link rel="stylesheet" href="styles/nav.css" />
+  <link rel="stylesheet" href="styles/footer.css" />
+  <link rel="stylesheet" href="styles/upgrade_table.css" />
 </head>
 <body>
-  <!-- Background Video -->
+  <!-- Background -->
   <video class="bg-video" autoplay muted loop playsinline>
-    <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
+    <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4" />
   </video>
   <div class="bg-overlay"></div>
 
-<header>
+  <!-- Nav Bar -->
+  <header>
     <nav class="navbar">
-        <div class="navdiv">
-            <div class="logo"><a href="#">PokeClickr</a></div>
-            <ul>
-                <li><a href="signup.html" class="btn-custom"> Sign Up </a></li>
-                <li><a href="login.html" class="btn-custom"> Login </a></li>
-            </ul>
-        </div>
+      <div class="navdiv">
+        <div id="nav-left" class="logo"><a href="#">PokeClickr</a></div>
+        <ul id="nav-right">
+          <!-- Login/Logout will be injected here -->
+        </ul>
+      </div>
     </nav>
-</header>
-    <div class="main">
-        <div class="left-main">
-            <button class="gambling">let's go gambling!</button>
-            <button class="prestige">prestige</button>
-        </div>
-        <div class="mid-main">
-            <div class="Region">
-                Region
-            </div>
-            <div class="pokeball">
-                <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP()">
-            </div>
-            <div>
+  </header>
 
-            </div>
-        </div>
-        <div class="right-main">
-            <div class="total-container">
-                <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false">
-                <p>: <span class="p-total">0</span></p>
-            </div>
-            <div class="upgrades-and-items-table">
-                <div class="upgrade">
-                    <div class="left-upg">
-                        <img class="upg-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" alt="snorlax" draggable="false">
-                    </div>
-                    <div class="mid-upg">
-                        <h4>Bulbasaur</h4>
-                        <div class="cost-info">
-                            <p>Cost:</p>
-                            <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false">
-                            <span>10</span>
-                        </div>
-                    </div>
-                    <div class="right-upg">
-                        <p>Level <span>0</span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Main Content -->
+  <div class="main">
+    <div class="left-main">
+      <button class="gambling">let's go gambling!</button>
+      <button class="prestige">prestige</button>
     </div>
-    <div class="footer">
-        Footer
+
+    <div class="mid-main">
+      <div class="Region">Region</div>
+      <div class="pokeball">
+        <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP()" />
+      </div>
     </div>
+
+    <div class="right-main">
+      <div class="total-container">
+        <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false" />
+        <p>: <span class="p-total">0</span></p>
+      </div>
+
+      <div class="upgrades-and-items-table">
+        <div class="upgrade">
+          <div class="left-upg">
+            <img class="upg-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/143.png" alt="Snorlax" draggable="false" />
+          </div>
+          <div class="mid-upg">
+            <h4>Bulbasaur</h4>
+            <div class="cost-info">
+              <p>Cost:</p>
+              <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false" />
+              <span>10</span>
+            </div>
+          </div>
+          <div class="right-upg">
+            <p>Level <span>0</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">Footer</div>
 
   <!-- Scripts -->
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -84,7 +84,7 @@
   <script src="scripts/script.js"></script>
   <script src="scripts/gameProgress.js"></script>
 
-  <!-- Optional: Add dynamic nav population -->
+  <!-- Auth-based Nav Bar -->
   <script>
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
@@ -100,17 +100,16 @@
         logoutBtn.textContent = 'Logout';
         logoutBtn.classList.add('nav-button');
         logoutBtn.onclick = () => auth.signOut();
+        const welcomeMsg = document.createElement('li');
+        welcomeMsg.textContent = `Welcome, ${user.email}`;
+        navRight.appendChild(welcomeMsg);
         navRight.appendChild(logoutBtn);
-
-        navLeft.innerHTML += `<p class="welcome-msg">Welcome, ${user.email}</p>`;
       } else {
         // Logged out
         navRight.innerHTML = `
-          <a href="login.html" class="nav-button">Login</a>
-          <a href="signup.html" class="nav-button">Sign Up</a>
+          <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
+          <li><a href="login.html" class="btn-custom">Login</a></li>
         `;
-        const welcome = navLeft.querySelector('.welcome-msg');
-        if (welcome) welcome.remove();
       }
     });
   </script>
