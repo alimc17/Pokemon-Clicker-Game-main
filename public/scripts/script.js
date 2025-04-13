@@ -53,6 +53,7 @@ function updateNav(user) {
 
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
+        logoutBtn.classList.add('btn-custom');
         logoutBtn.onclick = () => {
             if (!localStorage.getItem('guestProgress')) {
                 localStorage.setItem('guestProgress', window.pTotal.toString());
@@ -66,7 +67,7 @@ function updateNav(user) {
             const btn = document.createElement('a');
             btn.href = i === 0 ? 'login.html' : 'signup.html';
             btn.textContent = text;
-            btn.classList.add('nav-button');
+            btn.classList.add('btn-custom');
             rightNav.appendChild(btn);
         });
     }
