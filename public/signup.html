@@ -4,54 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pokeclickr</title>
-    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
     <link rel="stylesheet" href="styles/general.css">
     <link rel="stylesheet" href="styles/nav.css">
     <link rel="stylesheet" href="styles/footer.css">
-
-
 </head>
-
 <body>
-    <video class="bg-video" autoplay muted loop playsinline>
-        <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
-    </video>
-    <div class="bg-overlay"></div>
-
-
-    <nav class="navbar">
-        <div class="navdiv">
-            <div class="logo"><a href="#">PokeClickr</a></div>
-            <ul>
-                <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
-                <li><a href="login.html" class="btn-custom">Login</a></li>
-            </ul>
+    <div class="nav">
+        <div class="left-nav">
+            <h1>Title</h1>
         </div>
-        <div>
-            <button onclick="document.location='index.html'">Home</button>
-            <button onclick="document.location='login.html'">Login</button>
-        </div class=right-nav>
+        <div class="right-nav">
+            <a href="index.html" class="nav-button">Home</a>
+            <a href="login.html" class="nav-button">Login</a>
+        </div>
     </div>
-    <div class="main">
-        <div class="email">
-            <p>Email</p>
-            <input class="text-box" type="text" placeholder="n@teamplasma.com">
-        </div>
-        <div class="password">
-            <p>Password</p>
-            <input class="text-box" type="text" placeholder="⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅">
-        </div>
-        <div class="login-button">
-            <button>
-                SignUp
-            </button>
-        </div>
 
+    <div class="main">
+        <form class="signup-form">
+            <div class="email">
+                <label>Email</label>
+                <input class="text-box signup-email" 
+                       type="email" 
+                       placeholder="email@example.com" 
+                       required>
+            </div>
+            <div class="username">
+                <label>Username</label>
+                <input class="text-box signup-username" 
+                       type="text" 
+                       placeholder="e.g. pokeMaster99" 
+                       required>
+            </div>            
+            <div class="password">
+                <label>Password</label>
+                <input class="text-box signup-password" 
+                       type="password" 
+                       placeholder="••••••••" 
+                       minlength="6" 
+                       required>
+            </div>
+            <div class="login-button">
+                <button type="submit">SignUp</button>
+                <div id="signup-error" class="error"></div>
+            </div>
+        </form>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="firebaseConfig.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="scripts/firebaseConfig.js"></script>    
     
     <script>
         const app = firebase.initializeApp(firebaseConfig);
