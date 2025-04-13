@@ -5,10 +5,12 @@ const db = firebase.firestore();
 
 // Wait until DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    // THEN wait for auth state
+    const leftNav = document.getElementById('nav-left');
+    const rightNav = document.getElementById('nav-right');
+
     auth.onAuthStateChanged(user => {
         updateNav(user);
-        
+
         if (user) {
             loadGameProgress(user.uid);
         } else {
@@ -44,11 +46,10 @@ function updateNav(user) {
         welcomeMsg.textContent = `Welcome, ${user.email}`;
         leftNav.appendChild(welcomeMsg);
 
-        // Create logout button with progress preservation
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
+        logoutBtn.classList.add('nav-button');
         logoutBtn.onclick = () => {
-            // Save guest progress before logout
             if (!localStorage.getItem('guestProgress')) {
                 localStorage.setItem('guestProgress', window.pTotal.toString());
             }
@@ -57,15 +58,21 @@ function updateNav(user) {
         rightNav.appendChild(logoutBtn);
 
     } else {
-        const loginBtn = document.createElement('button');
+        const loginBtn = document.createElement('a');
+        loginBtn.href = 'login.html';
         loginBtn.textContent = 'Login';
-        loginBtn.onclick = () => location.href = 'login.html';
-        rightNav.appendChild(loginBtn);
+        loginBtn.classList.add('nav-button');
 
-        const signupBtn = document.createElement('button');
-        signupBtn.textContent = 'Signup';
-        signupBtn.onclick = () => location.href = 'signup.html';
+        const signupBtn = document.createElement('a');
+        signupBtn.href = 'signup.html';
+        signupBtn.textContent = 'Sign Up';
+        signupBtn.classList.add('nav-button');
+
+        rightNav.appendChild(loginBtn);
         rightNav.appendChild(signupBtn);
+
+        const welcome = leftNav.querySelector('.welcome-msg');
+        if (welcome) welcome.remove();
     }
 }
 

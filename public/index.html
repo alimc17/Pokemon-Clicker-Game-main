@@ -83,35 +83,6 @@
   <script src="scripts/index.js"></script>
   <script src="scripts/script.js"></script>
   <script src="scripts/gameProgress.js"></script>
-
-  <!-- Auth-based Nav Bar -->
-  <script>
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    const navRight = document.getElementById('nav-right');
-    const navLeft = document.getElementById('nav-left');
-
-    auth.onAuthStateChanged(user => {
-      navRight.innerHTML = '';
-      if (user) {
-        // Logged in
-        const logoutBtn = document.createElement('button');
-        logoutBtn.textContent = 'Logout';
-        logoutBtn.classList.add('nav-button');
-        logoutBtn.onclick = () => auth.signOut();
-        const welcomeMsg = document.createElement('li');
-        welcomeMsg.textContent = `Welcome, ${user.email}`;
-        navRight.appendChild(welcomeMsg);
-        navRight.appendChild(logoutBtn);
-      } else {
-        // Logged out
-        navRight.innerHTML = `
-          <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
-          <li><a href="login.html" class="btn-custom">Login</a></li>
-        `;
-      }
-    });
-  </script>
+  
 </body>
 </html>
