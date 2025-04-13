@@ -30,38 +30,29 @@ function updateNav(user) {
     const leftNav = document.getElementById('nav-left');
     const rightNav = document.getElementById('nav-right');
 
-    if (!leftNav || !rightNav) {
-        console.warn("Nav elements not found in the DOM.");
-        return;
-    }
-
-    // Clear previous content but keep title
-    while (leftNav.children.length > 1) {
-        leftNav.removeChild(leftNav.lastChild);
-    }
+    // Clear old content
+    while (leftNav.children.length > 1) leftNav.removeChild(leftNav.lastChild);
     rightNav.innerHTML = "";
 
     if (user) {
-        // Fetch the username from the "usernames" collection using UID
-        db.collection("usernames").doc(user.uid).get()
-            .then(doc => {
-                const welcomeMsg = document.createElement('div');
-                if (doc.exists) {
-                    const username = doc.data().username;
-                    welcomeMsg.textContent = `Welcome, ${username}`;
-                } else {
-                    welcomeMsg.textContent = `Welcome, Trainer`;
+        // Get all usernames and find the one matching this user's UID
+        db.collection("usernames").get().then(querySnapshot => {
+            let username = "Unknown";
+
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.uid === user.uid) {
+                    username = doc.id; // document ID is the username
                 }
-                welcomeMsg.classList.add('welcome-msg');
-                leftNav.appendChild(welcomeMsg);
-            })
-            .catch(error => {
-                console.error("Error fetching username:", error);
             });
+
+            const welcomeMsg = document.createElement('div');
+            welcomeMsg.textContent = `Welcome, ${username}`;
+            leftNav.appendChild(welcomeMsg);
+        });
 
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
-        logoutBtn.classList.add('nav-button');
         logoutBtn.onclick = () => {
             if (!localStorage.getItem('guestProgress')) {
                 localStorage.setItem('guestProgress', window.pTotal.toString());
@@ -71,21 +62,13 @@ function updateNav(user) {
         rightNav.appendChild(logoutBtn);
 
     } else {
-        const loginBtn = document.createElement('a');
-        loginBtn.href = 'login.html';
-        loginBtn.textContent = 'Login';
-        loginBtn.classList.add('nav-button');
-
-        const signupBtn = document.createElement('a');
-        signupBtn.href = 'signup.html';
-        signupBtn.textContent = 'Sign Up';
-        signupBtn.classList.add('nav-button');
-
-        rightNav.appendChild(loginBtn);
-        rightNav.appendChild(signupBtn);
-
-        const welcome = leftNav.querySelector('.welcome-msg');
-        if (welcome) welcome.remove();
+        ['Login', 'Sign Up'].forEach((text, i) => {
+            const btn = document.createElement('a');
+            btn.href = i === 0 ? 'login.html' : 'signup.html';
+            btn.textContent = text;
+            btn.classList.add('nav-button');
+            rightNav.appendChild(btn);
+        });
     }
 }
 
