@@ -60,6 +60,10 @@ h1, h2, h3, h4, p {
     margin: 0;
 }
 
+p {
+    font-family: 'PokemonText', serif;
+}
+
 .bg-video {
     position: fixed;
     top: 0;
