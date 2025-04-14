@@ -1,104 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokeclickr</title>
-    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
-    <link rel="stylesheet" href="styles/general.css">
-    <link rel="stylesheet" href="styles/nav.css">
-    <link rel="stylesheet" href="styles/footer.css">
-
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pokeclickr</title>
+  <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles/general.css" />
+  <link rel="stylesheet" href="styles/nav.css" />
+  <link rel="stylesheet" href="styles/footer.css" />
 </head>
-
 <body>
-    <video class="bg-video" autoplay muted loop playsinline>
-        <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
-    </video>
-    <div class="bg-overlay"></div>
-
-
+  <header>
     <nav class="navbar">
-        <div class="navdiv">
-            <div class="logo"><a href="#">PokeClickr</a></div>
-            <ul>
-                <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
-                <li><a href="login.html" class="btn-custom">Login</a></li>
-            </ul>
-        </div>
-        <div>
-            <button onclick="document.location='index.html'">Home</button>
-            <button onclick="document.location='login.html'">Login</button>
-        </div class=right-nav>
-    </div>
-    <div class="main">
-        <div class="email">
-            <p>Email</p>
-            <input class="text-box" type="text" placeholder="n@teamplasma.com">
-        </div>
-        <div class="password">
-            <p>Password</p>
-            <input class="text-box" type="text" placeholder="⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅⋅">
-        </div>
-        <div class="login-button">
-            <button>
-                SignUp
-            </button>
-        </div>
+      <div class="navdiv">
+        <div class="logo"><a href="#">PokeClickr</a></div>
+        <ul>
+          <li><a href="index.html" class="btn-custom">Home</a></li>
+          <li><a href="login.html" class="btn-custom">Login</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
 
+  <div class="wrapper">
+    <div class="form-wrapper sign-up">
+      <form class="signup-form">
+        <h2>Sign Up</h2>
+        <div class="input-group">
+          <input type="email" class="signup-email" required />
+          <label>Email</label>
+        </div>
+        <div class="input-group">
+          <input type="text" class="signup-username" required />
+          <label>Username</label>
+        </div>
+        <div class="input-group">
+          <input type="password" class="signup-password" required minlength="6" />
+          <label>Password</label>
+        </div>
+        <button type="submit">Sign Up</button>
+        <div id="signup-error" class="error-message" style="color: red; margin-top: 10px;"></div>
+      </form>
     </div>
+  </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="firebaseConfig.js"></script>
-    
-    <script>
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-    
-        document.querySelector('.signup-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const button = document.querySelector('button[type="submit"]');
-            button.disabled = true;
-    
-            const email = document.querySelector('.signup-email').value;
-            const password = document.querySelector('.signup-password').value;
-            const username = document.querySelector('.signup-username').value.trim();
-    
-            // Check if username already exists
-            db.collection('usernames').doc(username).get()
-                .then(doc => {
-                    if (doc.exists) {
-                        throw new Error("Username already taken.");
-                    }
-                    return auth.createUserWithEmailAndPassword(email, password);
-                })
-                .then(userCredential => {
-                    const uid = userCredential.user.uid;
-    
-                    // Save username -> email mapping
-                    return db.collection('usernames').doc(username).set({
-                        email: email,
-                        uid: uid
-                    });
-                })
-                .then(() => {
-                    alert('Signup successful! You can now log in.');
-                    window.location.href = "login.html";
-                })
-                .catch(error => {
-                    document.getElementById('signup-error').textContent = error.message;
-                })
-                .finally(() => {
-                    button.disabled = false;
-                });
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+  <script src="scripts/firebaseConfig.js"></script>
+
+  <script>
+    const app = firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    document.querySelector('.signup-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const button = document.querySelector('button[type="submit"]');
+      button.disabled = true;
+
+      const email = document.querySelector('.signup-email').value.trim();
+      const password = document.querySelector('.signup-password').value;
+      const username = document.querySelector('.signup-username').value.trim();
+
+      db.collection('usernames').doc(username).get()
+        .then(doc => {
+          if (doc.exists) {
+            throw new Error("Username already taken.");
+          }
+          return auth.createUserWithEmailAndPassword(email, password);
+        })
+        .then(userCredential => {
+          const uid = userCredential.user.uid;
+          return db.collection('usernames').doc(username).set({
+            email: email,
+            uid: uid
+          });
+        })
+        .then(() => {
+          alert("Signup successful! You can now log in.");
+          window.location.href = "login.html";
+        })
+        .catch(error => {
+          document.getElementById('signup-error').textContent = error.message;
+        })
+        .finally(() => {
+          button.disabled = false;
         });
-    </script>    
+    });
+  </script>
 
-    <div class="footer">
-        Footer
-    </div>
+  <div class="footer">
+    Footer
+  </div>
 </body>
 </html>

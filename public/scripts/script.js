@@ -5,10 +5,12 @@ const db = firebase.firestore();
 
 // Wait until DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    // THEN wait for auth state
+    const leftNav = document.getElementById('nav-left');
+    const rightNav = document.getElementById('nav-right');
+
     auth.onAuthStateChanged(user => {
         updateNav(user);
-        
+
         if (user) {
             loadGameProgress(user.uid);
         } else {
@@ -28,27 +30,31 @@ function updateNav(user) {
     const leftNav = document.getElementById('nav-left');
     const rightNav = document.getElementById('nav-right');
 
-    if (!leftNav || !rightNav) {
-        console.warn("Nav elements not found in the DOM.");
-        return;
-    }
-
-    // Clear previous content but keep title
-    while (leftNav.children.length > 1) {
-        leftNav.removeChild(leftNav.lastChild);
-    }
+    // Clear old content
+    while (leftNav.children.length > 1) leftNav.removeChild(leftNav.lastChild);
     rightNav.innerHTML = "";
 
     if (user) {
-        const welcomeMsg = document.createElement('div');
-        welcomeMsg.textContent = `Welcome, ${user.email}`;
-        leftNav.appendChild(welcomeMsg);
+        // Get all usernames and find the one matching this user's UID
+        db.collection("usernames").get().then(querySnapshot => {
+            let username = "Unknown";
 
-        // Create logout button with progress preservation
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.uid === user.uid) {
+                    username = doc.id; // document ID is the username
+                }
+            });
+
+            const welcomeMsg = document.createElement('div');
+            welcomeMsg.textContent = `Welcome, ${username}`;
+            leftNav.appendChild(welcomeMsg);
+        });
+
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
+        logoutBtn.classList.add('btn-custom');
         logoutBtn.onclick = () => {
-            // Save guest progress before logout
             if (!localStorage.getItem('guestProgress')) {
                 localStorage.setItem('guestProgress', window.pTotal.toString());
             }
@@ -57,17 +63,16 @@ function updateNav(user) {
         rightNav.appendChild(logoutBtn);
 
     } else {
-        const loginBtn = document.createElement('button');
-        loginBtn.textContent = 'Login';
-        loginBtn.onclick = () => location.href = 'login.html';
-        rightNav.appendChild(loginBtn);
-
-        const signupBtn = document.createElement('button');
-        signupBtn.textContent = 'Signup';
-        signupBtn.onclick = () => location.href = 'signup.html';
-        rightNav.appendChild(signupBtn);
+        ['Login', 'Sign Up'].forEach((text, i) => {
+            const btn = document.createElement('a');
+            btn.href = i === 0 ? 'login.html' : 'signup.html';
+            btn.textContent = text;
+            btn.classList.add('btn-custom');
+            rightNav.appendChild(btn);
+        });
     }
 }
+
 
 function loadGameProgress(uid) {
     db.collection("users").doc(uid).get()

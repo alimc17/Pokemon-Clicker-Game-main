@@ -1,34 +1,34 @@
 @font-face {
     font-family: 'PokemonText';
-    src: url(assets/fonts/Georgia.ttf);
+    src: url(/assets/fonts/PokemonText.woff2);
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PokemonText';
-    src: url(assets/fonts/GeorgiaBold.ttf);
+    src: url(/assets/fonts/PokemonTextBold.woff2);
     font-weight: bold;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'PokemonText';
-    src: url(assets/fonts/GeorgiaItalic.ttf);
+    src: url(/assets/fonts/PokemonTextItalic.woff2);
     font-weight: normal;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'PokemonText';
-    src: url(assets/fonts/GeorgiaBoldItalic.ttf);
+    src: url(/assets/fonts/PokemonTextBoldItalic.woff2);
     font-weight: bold;
     font-style: italic;
 }
 
 @font-face {
     font-family: 'PokemonTitle';
-    src: url(assets/fonts/Pokemon\Solid.ttf);
+    src: url(/assets/fonts/PokemonTitle.woff2);
     font-weight: normal;
     font-style: normal;
 }
@@ -36,7 +36,6 @@
 * {
     box-sizing: border-box;
     text-decoration: none;
-
 }
 
 
@@ -55,6 +54,14 @@ html, body {
 
 h1 {
     font-family: 'PokemonTitle', serif;
+}
+
+h1, h2, h3, h4, p {
+    margin: 0;
+}
+
+p {
+    font-family: 'PokemonText', serif;
 }
 
 .bg-video {
@@ -109,14 +116,26 @@ h1 {
     display: flex;
     flex-direction: column;
     text-align: center;
-    justify-content: space-evenly;
+    justify-content: center;
+    align-items: center;
     flex: 1;
     height: 100%;
 }
 
-.pokedollar {
-    height: 3%;
-    width: 3%;
+.total-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 24px;
+}
+
+.p-total-img {
+    width: 3.5%;
+    object-fit: cover;
+    filter: invert(1);
 }
 
 .pokeball-img {
