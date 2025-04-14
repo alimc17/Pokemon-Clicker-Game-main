@@ -112,6 +112,34 @@ p {
     height: 100%;
 }
 
+.stats-container {
+    display: flex;
+    background-color: rgba(0, 0, 0, 0.7);
+    border: 4px solid white;
+    border-radius: 10px;
+    width: 250px;
+    margin: 0 auto;
+    padding: 10px 20px;
+}
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+}
+
+.stats-element {
+    display: flex;
+    font-size: 24px;
+    align-items: center;
+}
+
+.stats-element img {
+    width: 14px;
+    margin-right: 2px;
+}
+
 .right-main {
     display: flex;
     flex-direction: column;
@@ -138,21 +166,28 @@ p {
     filter: invert(1);
 }
 
+.pokeball {
+    position: relative;
+}
+
 .pokeball-img {
     height: 400px;
     width: 400px;
     border-radius: 50%;
     box-shadow: none;
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease, transform 0.2s ease-out;
 }
 
 .pokeball-img:hover {
     cursor: pointer;
     box-shadow: 0px 0px 10px #F0F0F0;
-
 }
 
+.pokeball-img:active {
+    transform: scale(1.03);
+    box-shadow: 0px 0px 15px #FFFFFF;
 
+}
 
 .gambling {
     padding: 12px 30px;
@@ -168,21 +203,94 @@ p {
     margin-left: 30px;
     margin-top: -230px;
   
-  }
+}
   
-  button:hover {
+button:hover {
     letter-spacing: 3px;
     background-color: hsl(0, 90%, 45%);
     color: hsl(0, 0%, 100%);
     box-shadow: rgb(216, 20, 43) 0px 7px 29px 0px;
-  }
+}
   
-  button:active {
+button:active {
     letter-spacing: 3px;
     background-color: hsl(359, 80%, 48%);
     color: hsl(0, 0%, 100%);
     box-shadow: rgb(220, 24, 66) 0px 0px 0px 0px;
     transform: translateY(10px);
     transition: 100ms;
-  }
+}
   
+.fade-up {
+    animation: fade-up 1s;
+}
+
+@keyframes fade-up {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    10% {
+      transform: translateY(-2px);
+      opacity: 0.95;
+    }
+    20% {
+      transform: translateY(-5px);
+      opacity: 0.9;
+    }
+    30% {
+      transform: translateY(-9px);
+      opacity: 0.82;
+    }
+    40% {
+      transform: translateY(-13px);
+      opacity: 0.75;
+    }
+    50% {
+      transform: translateY(-18px);
+      opacity: 0.65;
+    }
+    60% {
+      transform: translateY(-25px);
+      opacity: 0.55;
+    }
+    70% {
+      transform: translateY(-33px);
+      opacity: 0.45;
+    }
+    80% {
+      transform: translateY(-42px);
+      opacity: 0.3;
+    }
+    90% {
+      transform: translateY(-53px);
+      opacity: 0.15;
+    }
+    100% {
+      transform: translateY(-65px);
+      opacity: 0;
+    }
+}
+
+@keyframes sparkle-move {
+    0% {
+      transform: translate(0, 0) scale(1);
+      opacity: 1;
+    }
+    100% {
+      transform: translate(var(--dx), var(--dy)) scale(0.5);
+      opacity: 0;
+    }
+}
+
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, white, yellow);
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 1;
+    animation: sparkle-move 0.8s ease-out forwards;
+    z-index: 100;
+}

@@ -39,10 +39,19 @@
         <div class="mid-main">
             <div class="Region">Region</div>
             <div class="pokeball">
-                <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP()"/>
+                <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP(event)"/>
             </div>
-            <div>
-
+            <div class="stats-container">
+                <div class="stats">
+                    <div class="stats-element">
+                        <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                        <p>PC: <span class="ppc-text">1</span></p>
+                    </div>
+                    <div class="stats-element">
+                        <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                        <p>PS: <span class="pps-text">0</span></p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -60,7 +69,6 @@
                     <div class="mid-upg">
                         <h4>Snorlax</h4>
                         <div class="cost-info">
-                            <p>Cost:</p>
                             <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
                             <span class="upg-cost">10</span>
                         </div>
@@ -116,6 +124,7 @@
     <script src="scripts/gameProgress.js"></script>
     <script src="scripts/friends.js"></script>
     <script src="scripts/bgvideo.js"></script>
+    <script src="scripts/audio.js"></script>
 
 </body>
 </html>

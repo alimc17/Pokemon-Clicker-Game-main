@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Choose Your Type - Pokeclickr</title>
+    <link rel="stylesheet" href="styles/general.css"/>
+    <link rel="stylesheet" href="styles/choose_types.css"/>
+
+</head>
+<body>
+    <video class="bg-video" autoplay muted loop playsinline>
+        <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4"/>
+    </video>
+    <div class="bg-overlay"></div>
+
+    <div class="main-container">
+        <div class="selection-box">
+            <h1>Choose your type!</h1>
+            
+            <div class="type-options">
+                <div class="type-option grass-type">
+                    <div class="type-circle">
+                        <img src="assets/grasstype.png" alt="Grass Type" draggable="false">
+                    </div>
+                    <div class="type-name">GRASS</div>
+                </div>
+                
+                <div class="type-option fire-type">
+                    <div class="type-circle">
+                        <img src="assets/firetype.png" alt="Fire Type" draggable="false">
+                    </div>
+                    <div class="type-name">FIRE</div>
+                </div>
+                
+                <div class="type-option water-type">
+                    <div class="type-circle">
+                        <img src="assets/watertype.png" alt="Water Type" draggable="false">
+                    </div>
+                    <div class="type-name">WATER</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', function() {
+            if (localStorage.getItem('chosenType')) {
+                // User has already chosen a type, redirect to main page
+                window.location.href = 'index.html';
+            }
+        });
+
+        document.querySelectorAll('.type-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const typeClass = this.className.split(' ')[1].split('-')[0].toUpperCase();
+                console.log(`${typeClass} type selected!`);
+                
+                // Set the chosen type based on selection
+                let chosenType;
+                if (typeClass === 'GRASS') {
+                    chosenType = 1;
+                } else if (typeClass === 'FIRE') {
+                    chosenType = 2;
+                } else if (typeClass === 'WATER') {
+                    chosenType = 3;
+                }
+                
+                // Save to localStorage so it persists across sessions
+                localStorage.setItem('chosenType', chosenType);
+                console.log(`chosenType set to: ${chosenType} and saved to localStorage`);
+                
+                // Add a small delay for better user experience (optional)
+                setTimeout(function() {
+                    // Redirect to main page
+                    window.location.href = 'index.html';
+                }, 500); // 500ms delay
+            });
+        });
+    </script>
+</body>
+</html>
