@@ -68,9 +68,9 @@
       const button = document.querySelector('button[type="submit"]');
       button.disabled = true;
 
-      const email = document.querySelector('.signup-email').value.trim();
-      const password = document.querySelector('.signup-password').value;
-      const username = document.querySelector('.signup-username').value.trim();
+      const email = document.getElementById('.signup-email').value.trim();
+      const password = document.getElementById('.signup-password').value;
+      const username = document.getElementById('.signup-username').value.trim();
 
       db.collection('usernames').doc(username).get()
         .then(doc => {
@@ -99,8 +99,5 @@
     });
   </script>
 
-  <div class="footer">
-    Footer
-  </div>
 </body>
 </html>

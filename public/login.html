@@ -23,8 +23,8 @@
             <div class="navdiv">
                 <div class="logo"><a href="#">PokeClickr</a></div>
                 <ul>
-                    <li><a href="signup.html" class="btn-custom"> Sign Up </a></li>
-                    <li><a href="login.html" class="btn-custom"> Login </a></li>
+                  <li><a href="index.html" class="btn-custom">Home</a></li>
+                  <li><a href="signup.html" class="btn-custom">Sign Up</a></li>
                 </ul>
             </div>
         </nav>
@@ -32,21 +32,24 @@
 
     <div class="box">
         <div class="container">
+          <form class="login-form">
             <div class="top-header">
                 <h2 class="form-title">Login</h2>
             </div>
             <div class="input-field">
-                <input type="text" class="input" placeholder="Username" required>
+                <input type="text" class="input" id="login-username" placeholder="Username" required>
                 <i class="bx bx-user"></i>
             </div>
             <div class="input-field">
-                <input type="password" class="input" placeholder="Password" required>
+                <input type="password" class="input" id="login-password" placeholder="Password" required>
                 <i class="bx bx-lock-alt"></i>
             </div>
             <div class="input-field">
-                <input type="submit" class="submit" value="Login">
+                <button type="submit" class="submit">Login</button>
             </div>
-
+          </form>
+        </div>
+    </div>
 
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
@@ -86,8 +89,5 @@
     });
   </script>
 
-  <div class="footer">
-    Footer
-  </div>
 </body>
 </html>
