@@ -8,6 +8,8 @@
     border-radius: 5px;
     justify-content: space-evenly;
     padding: 10px 20px;
+    position: relative;
+    cursor: pointer;
 }
 
 .cost-info {
@@ -34,4 +36,30 @@
 
 .right-upg p {
     white-space: nowrap;
+}
+
+.next-upg-info {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: -100px;
+    background-color: rgba(0, 0, 0, 0.9);
+    height: 60px;
+    width: 100px;
+    text-align: center;
+    z-index: -1;
+    border-radius: 5px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity ease 0.25s, visibility 0.25s ease;
+}
+
+.next-upg-info img{
+    width: 8%;
+    margin: 0;
+}
+
+.upgrade:hover .next-upg-info {
+    opacity: 1;
+    visibility: visible;
 }
