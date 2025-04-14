@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pokeclickr</title>
-  <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet">
-  <link rel="stylesheet" href="styles/general.css">
-  <link rel="stylesheet" href="styles/nav.css">
-  <link rel="stylesheet" href="styles/login.css">
-  <link rel="stylesheet" href="styles/footer.css">
-
+  <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet"/>
+  <link rel="stylesheet" href="styles/general.css" />
+  <link rel="stylesheet" href="styles/nav.css" />
+  <link rel="stylesheet" href="styles/signup.css">
+  <link rel="stylesheet" href="styles/footer.css" />
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
 
@@ -17,7 +17,6 @@
     <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4">
 </video>
 <div class="bg-overlay"></div>
-
 
   <header>
     <nav class="navbar">
@@ -33,30 +32,26 @@
 
   <div class="box">
     <div class="container">
-      <form class="login-form">
         <div class="top-header">
             <h2 class="form-title">Sign Up</h2>
         </div>
         <div class="input-field">
-            <input type="text" class="input" id="signup-username" placeholder="Username" required>
+            <input type="text" class="input" placeholder="Username" required>
             <i class="bx bx-user"></i>
         </div>
         <div class="input-field">
-          <input type="email" class="input" id = "signup-email" placeholder="Email" required>
-          <i class="bx bx-user"></i>
+            <input type="email" class="input" placeholder="Email" required>
+            <i class="bx bx-envelope"></i>
         </div>
         <div class="input-field">
-            <input type="password" class="input" id="signup-password" placeholder="Password" required minlength="6">
+            <input type="password" class="input" placeholder="Password" required>
             <i class="bx bx-lock-alt"></i>
         </div>
         <div class="input-field">
-            <button type="submit" class="submit">Sign Up</button>
+            <input type="submit" class="submit" value="Sign Up">
         </div>
-
-        <div id="signup-error" class="error-message" style="color: red; margin-top: 10px;"></div>
-      </form>
     </div>
-  </div>
+</div>
 
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
