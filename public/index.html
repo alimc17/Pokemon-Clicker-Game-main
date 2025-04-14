@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="styles/nav.css" />
     <link rel="stylesheet" href="styles/footer.css" />
     <link rel="stylesheet" href="styles/upgrade_table.css" />
+    <link rel="stylesheet" href="styles/footer.css" />
 </head>
 <body>
 
@@ -72,6 +73,28 @@
         </div>
     </div>
 
+
+    <div id="friends-header" style="display: none;" class="friends-header">
+        <h2>Friends</h2>
+        <button id="add-friend-btn" class="btn-custom" style="margin-left: 10px;">+</button>
+    </div>
+      
+    <div id="friends-body" style="display: none;" class="friends-body">
+        <!-- Content changes depending on auth state -->
+    </div>
+
+    <div id="add-friend-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+          <span id="close-modal" class="close">&times;</span>
+          <h3>Add a Friend</h3>
+          <input type="text" id="search-username" placeholder="Enter username" />
+          <button id="send-request-btn" class="btn-custom">Send Friend Request</button>
+          <p id="add-friend-message" class="modal-message"></p>
+        </div>
+      </div>
+      
+      
+
     <div class="footer">
         <button id="friends-toggle" class="btn-custom">Friends</button>
     </div>
@@ -83,6 +106,7 @@
     <script src="scripts/index.js"></script>
     <script src="scripts/script.js"></script>
     <script src="scripts/gameProgress.js"></script>
+    <script src="scripts/friends.js"></script>
     <script src="scripts/bgvideo.js"></script>
 
 </body>
