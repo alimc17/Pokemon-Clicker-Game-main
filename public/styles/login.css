@@ -11,10 +11,14 @@
 }
 
 .navbar{
-    background: #400000;
-    font-family: sans-serif; 
+    background: rgb(188, 13, 13);
+    font-family: 'Pokemon Solid';
+    letter-spacing: 2px;
+    font-weight: bold;
     padding-right: 25px; 
     padding-left: 15px;
+    font-weight: 300;
+
 }
 
 .navdiv{
@@ -25,7 +29,7 @@
 
 .logo a{
 
-    font-family: 'Pokemon Solid', sans-serif;
+    font-family:'Pokemon Solid', sans-serif;
     font-size: 25px;
     font-weight: 300;
     color: white;
@@ -46,7 +50,7 @@ li a{
 }
 
 .btn-custom {
-    padding: 10px 15px;
+    padding: 2px 10px;
     border: none;
     outline: none;
     color: white;

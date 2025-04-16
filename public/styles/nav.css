@@ -8,10 +8,15 @@
 }
 
 .navbar{
-    background: #400000;
-    font-family: sans-serif; 
+    background: rgb(188, 13, 13);
+    font-family: 'Pokemon Solid', sans-serif;
+    letter-spacing: 2px;
+    font-weight: bold;
     padding-right: 25px; 
     padding-left: 15px;
+    font-weight: 300;
+    
+
 }
 
 .navdiv{
@@ -37,13 +42,13 @@ li{
 li a{
     font-family: 'PokemonText';
     color: white;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 200;
 
 }
 
 .btn-custom {
-    padding: 10px 15px;
+    padding: 2px 8px;
     border: none;
     outline: none;
     color: white;
@@ -52,6 +57,11 @@ li a{
     z-index: 0;
     border-radius: 12px;
     margin-left: 8px;
+    font-family: 'Pokemon Solid', sans-serif;
+    font-size: 17px;
+    font-weight: 200;
+    color: white;
+    
 }
 
 .btn-custom::after {
@@ -60,7 +70,7 @@ li a{
     position: absolute;
     width: 100%;
     height: 100%;
-    background-color: #800000;
+    background-color: #960A0A;
     left: 0;
     top: 0;
     border-radius: 10px;
