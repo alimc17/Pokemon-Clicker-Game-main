@@ -1,108 +1,128 @@
-.modal {
-    position: fixed;
-    z-index: 10;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .modal-content {
-    background-color: #fefefe;
-    color: black;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 12px;
-    width: 300px;
-    text-align: center;
-    position: relative;
-  }
-  
-  .close {
-    position: absolute;
-    right: 10px;
-    top: 5px;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
-  .modal-message {
-    margin-top: 10px;
-    color: green;
-  }
-  
-  .friend-request {
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+/* === Modal Overlay === */
+.modal,
+.modal-overlay {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
 
-  .friends-list {
-    margin-top: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .friend-entry {
-    background: rgba(255,255,255,0.1);
-    padding: 6px 12px;
-    border-radius: 8px;
-    color: white;
-    font-weight: 500;
-  }
-  
-  .login-message {
-    color: white;
-    font-size: 18px;
-    text-align: center;
-    margin-top: 20px;
-  }
+/* === Modal Content === */
+.modal-content {
+  width: 450px;
+  height: 450px;
+  background-color: #222;
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+}
 
-  /* --- Modal Styles --- */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0; top: 0;
-    width: 100%; height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .modal-content {
-    background-color: #222;
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
-    max-width: 90%;
-    margin: auto;
-    text-align: center;
-    position: relative;
-  }
-  
-  .modal-content input {
-    width: 80%;
-    padding: 8px;
-    margin-top: 10px;
-    border-radius: 6px;
-    border: none;
-  }
-  
-  .modal-content button {
-    margin-top: 10px;
-  }
-  
-  .close-button {
-    position: absolute;
-    top: 8px; right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-  }
-  
+/* === Close Buttons === */
+.close,
+.close-modal,
+.close-button {
+  position: absolute;
+  top: 8px; right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+}
+
+/* === Inputs & Buttons === */
+.modal-content input {
+  width: 80%;
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.modal-content button {
+  margin-top: 10px;
+}
+
+/* === Success Message === */
+.modal-message {
+  margin-top: 10px;
+  color: green;
+}
+
+/* === Shared Box Style: Friend & Search Result Entries === */
+.friend-entry,
+#search-result {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 10px 15px;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: default;
+  transition: background 0.2s, border 0.2s;
+}
+
+.friend-entry:hover,
+#search-result:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* === Friends List and Search Results === */
+.friends-list, 
+#search-results{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
+  max-height: 80%;
+  overflow-y: auto;
+}
+
+/* === Individual Friend Entry (flex alignment) === */
+.friend-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* === Scrollbar Styling === */
+.friends-list::-webkit-scrollbar,
+#search-result::-webkit-scrollbar {
+  width: 12px;
+}
+
+.friends-list::-webkit-scrollbar-thumb,
+#search-result::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.friends-list::-webkit-scrollbar-thumb:hover,
+#search-result::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Online Status */
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.status-dot.online {
+  background-color: limegreen;
+}
+
+.status-dot.offline {
+  background-color: gray;
+}
   
