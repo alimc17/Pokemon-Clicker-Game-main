@@ -62,6 +62,9 @@ let pokemon = [];
 let pokemonOfType = [];
 const upgrades = [];
 
+const clickSFX = new Audio('assets/audio/click.wav');
+clickSFX.volume = 0.2;
+
 async function getPokemon() {
     let url = 'https://pokeapi.co/api/v2/pokemon?limit=150';
     try {
@@ -157,10 +160,20 @@ function buyGeneratedUpgrade(index) {
         const upgradeDiv = document.querySelector(`.upgrade[data-index="${index}"]`);
         upgradeDiv.querySelector('.upg-cost').innerHTML = upgrade.cost;
         upgradeDiv.querySelector('.upg-level').innerHTML = upgrade.level;
+
+        const pokeId = getPokemonIdFromUrl(pokemon[index].url);
+        const cryUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokeId}.ogg`;
+        const cryAudio = new Audio(cryUrl);
+        cryAudio.volume = 0.2;
+        cryAudio.play();
+
     }
 }
 
 function incrementP(event) {
+    clickSFX.playbackRate = 0.8 + Math.random() * 0.4;
+    clickSFX.play();
+
     parsedPTotal += ppc;
     pTotal.innerHTML = Math.round(parsedPTotal);
 
