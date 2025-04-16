@@ -50,14 +50,9 @@ function buyUpg() {
 
 let pTotal = document.querySelector('.p-total');
 let parsedPTotal = parseFloat(pTotal.innerHTML);
-let upgCost = document.querySelector('.upg-cost');
-let parsedUpgCost = parseFloat(upgCost.innerHTML);
-let upgLevel = document.querySelector('.upg-level');
-let upgIncrease = document.querySelector('.upg-increase');
-let parsedUpgIncrease = parseFloat(upgIncrease.innerHTML);
-
 let ppcText = document.querySelector('.ppc-text');
 let ppsText = document.querySelector('.pps-text');
+
 let ppc = 1;
 let pps = 0;
 
@@ -65,86 +60,127 @@ let pokeball = document.querySelector('.pokeball');
 
 let pokemon = [];
 let pokemonOfType = [];
-const typeNames = ["grass", "fire", "water"];
+const upgrades = [];
+
+const clickSFX = new Audio('assets/audio/click.wav');
+clickSFX.volume = 0.2;
 
 async function getPokemon() {
-    let url = 'https://pokeapi.co/api/v2/pokemon';
+    let url = 'https://pokeapi.co/api/v2/pokemon?limit=150';
     try {
-        while (url) {
-            const response = await fetch(url);
-            const data = await response.json();
-            
-            pokemon = pokemon.concat(data.results);
-            console.log(`Fetched ${pokemon.length} Pokémon so far...`);
-            
-            url = data.next;
-        }
-        console.log(`Completed! Total Pokémon fetched: ${pokemon.length}`);
+        const response = await fetch(url);
+        const data = await response.json();
+        pokemon = data.results;
+        console.log(`Fetched ${pokemon.length} Pokémon`);
     } catch (error) {
         console.error("Error fetching Pokémon:", error);
     }
 }
 
-async function getPokemonDetails(pokemonUrl) {
-    const response = await fetch(pokemonUrl);
-    const data = await response.json();
-    return data.types;
+function getPokemonIdFromUrl(url) {
+    const parts = url.split('/');
+    return parts[parts.length - 2];
 }
 
-async function filterPokemonByType(chosenType) {
-    const chosenTypeName = typeNames[chosenType - 1];
-    for (const poke of pokemon) {
-        const types = await getPokemonDetails(poke.url);
+function generateUpgrades(pokemonList) {
+    const upgradeContainer = document.querySelector('.upgrades-container');
+    upgradeContainer.innerHTML = '';
 
-        const hasChosenType = types.some(typeInfo => typeInfo.type.name === chosenTypeName);
-        if (hasChosenType) {
-            pokemonOfType.push(poke);
-        }
-    }
-}
+    const baseCost = 25;
+    const baseIncrease = 1;
+    const costMultiplier = 1.55;
+    const powerMultiplier = 1.25;
 
-await getPokemon();
-await filterPokemonByType(1);
-console.log(pokemonOfType);
+    for (let i = 0; i < 15; i++) {
+        const poke = pokemonList[i];
+        const cost = Math.round(baseCost * Math.pow(costMultiplier, i));
+        const increase = parseFloat((baseIncrease * Math.pow(powerMultiplier, i)).toFixed(2));
 
-/*
-//* im not testing this now im too tired
-let upgrades = [];
-
-async function createUpgradesForPokemon() {
-    // Assuming pokemonOfType has already been populated
-    for (const poke of pokemonOfType) {
-        const pokemonDetails = await getPokemonDetails(poke.url);  // Fetch the Pokémon details (types)
-        
-        // Create the upgrade for each Pokémon
         const upgrade = {
-            name: poke.name, // Pokémon name as the upgrade name
-            cost: document.querySelector(`.${poke.name}-cost`), // Assuming you have elements with these class names
-            parsedCost: parseFloat(document.querySelector(`.${poke.name}-cost`).innerHTML),
-            increase: document.querySelector(`.${poke.name}-increase`), // Assuming you have elements with these class names
-            parsedIncrease: parseFloat(document.querySelector(`.${poke.name}-increase`).innerHTML),
-            level: document.querySelector(`.${poke.name}-level`), // Assuming you have elements with these class names
-            gemMultiplier: 1.025,
-            costMultiplier: 1.12,
+            name: poke.name,
+            cost: cost,
+            increase: increase,
+            level: 0,
+            pMult: increase,
+            costMult: costMultiplier,
+            type: i === 0 ? 'click' : 'second'
         };
-        
-        upgrades.push(upgrade); // Push each upgrade to the array
+
+        upgrades.push(upgrade);
+
+        const upgradeDiv = document.createElement('div');
+        upgradeDiv.classList.add('upgrade');
+        upgradeDiv.setAttribute('data-index', i);
+        upgradeDiv.onclick = () => buyGeneratedUpgrade(i);
+
+        upgradeDiv.innerHTML = `
+            <div class="left-upg">
+                <img class="upg-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(poke.url)}.png" alt="${poke.name}" draggable="false"/>
+            </div>
+            <div class="mid-upg">
+                <h4>${poke.name.charAt(0).toUpperCase() + poke.name.slice(1)}</h4>
+                <div class="cost-info">
+                    <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                    <span class="upg-cost">${cost}</span>
+                </div>
+            </div>
+            <div class="right-upg">
+                <p>Level <span class="upg-level">0</span></p>
+            </div>
+            <div class="next-upg-info">
+                <p>
+                    +
+                    <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                    <span class="upg-increase">${increase}</span>
+                    per ${i === 0 ? 'click' : 'second'}
+                </p>
+            </div>
+        `;
+
+        upgradeContainer.appendChild(upgradeDiv);
     }
 }
 
-// Example usage:
-await createUpgradesForPokemon();
-console.log(upgrades); // Array of upgrades for each Pokémon of the selected type
-*/
+function buyGeneratedUpgrade(index) {
+    const upgrade = upgrades[index];
+    if (parsedPTotal >= upgrade.cost) {
+        parsedPTotal -= upgrade.cost;
+        pTotal.innerHTML = Math.round(parsedPTotal);
+
+        upgrade.level++;
+        upgrade.cost = Math.round(upgrade.cost * upgrade.costMult);
+        
+        if (upgrade.type === 'click') {
+            ppc += upgrade.increase * upgrade.pMult;
+        }
+        else {
+            pps += upgrade.increase * upgrade.pMult;
+        }
+
+        const upgradeDiv = document.querySelector(`.upgrade[data-index="${index}"]`);
+        upgradeDiv.querySelector('.upg-cost').innerHTML = upgrade.cost;
+        upgradeDiv.querySelector('.upg-level').innerHTML = upgrade.level;
+
+        const pokeId = getPokemonIdFromUrl(pokemon[index].url);
+        const cryUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokeId}.ogg`;
+        const cryAudio = new Audio(cryUrl);
+        cryAudio.volume = 0.2;
+        cryAudio.play();
+
+    }
+}
 
 function incrementP(event) {
-    parsedPTotal = parseFloat(pTotal.innerHTML);
+    clickSFX.playbackRate = 0.8 + Math.random() * 0.4;
+    clickSFX.play();
+
     parsedPTotal += ppc;
     pTotal.innerHTML = Math.round(parsedPTotal);
 
     let x = event.clientX;
     let y = event.clientY;
     createSparkles(x, y);
+
     x = event.offsetX;
     y = event.offsetY;
     const div = document.createElement('div');
@@ -163,56 +199,21 @@ function incrementP(event) {
     `;
     pokeball.appendChild(div);
     div.classList.add('fade-up');
-    timeout(div);
-}
-
-const timeout = (div) => {
-    setTimeout(() => {
-        div.remove();
-    }, 800)
+    setTimeout(() => div.remove(), 800);
 }
 
 function createSparkles(x, y, amount = 10) {
     for (let i = 0; i < amount; i++) {
-      const sparkle = document.createElement('div');
-      sparkle.classList.add('sparkle');
-  
-      const dx = (Math.random() - 0.5) * 100 + 'px';
-      const dy = (Math.random() - 1) * 100 + 'px';
-  
-      sparkle.style.left = `${x}px`;
-      sparkle.style.top = `${y}px`;
-  
-      sparkle.style.setProperty('--dx', dx);
-      sparkle.style.setProperty('--dy', dy);
-  
-      document.body.appendChild(sparkle);
-  
-      setTimeout(() => {
-        sparkle.remove();
-      }, 800);
-    }
-}
-
-function buyUpg() {
-    parsedPTotal = parseFloat(pTotal.innerHTML);
-    parsedUpgCost = parseFloat(upgCost.innerHTML);
-    parsedUpgIncrease = parseFloat(upgIncrease.innerHTML);
-
-    if (parsedPTotal >= parsedUpgCost) {
-        parsedPTotal -= parsedUpgCost;
-        pTotal.innerHTML = Math.round(parsedPTotal);
-
-        let level = parseInt(upgLevel.innerHTML);
-        upgLevel.innerHTML = level + 1;
-
-        parsedUpgIncrease = parseFloat((parsedUpgIncrease * 1.01).toFixed(2));
-        upgIncrease.innerHTML = parsedUpgIncrease;
-
-        ppc += parsedUpgIncrease;
-
-        parsedUpgCost *= 1.2;
-        upgCost.innerHTML = Math.round(parsedUpgCost);
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+        const dx = (Math.random() - 0.5) * 100 + 'px';
+        const dy = (Math.random() - 1) * 100 + 'px';
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        sparkle.style.setProperty('--dx', dx);
+        sparkle.style.setProperty('--dy', dy);
+        document.body.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), 800);
     }
 }
 
@@ -221,4 +222,9 @@ setInterval(() => {
     pTotal.innerHTML = Math.round(parsedPTotal);
     ppcText.innerHTML = Math.round(ppc);
     ppsText.innerHTML = Math.round(pps);
-}, 100)
+}, 100);
+
+(async () => {
+    await getPokemon();
+    generateUpgrades(pokemon);
+})();
