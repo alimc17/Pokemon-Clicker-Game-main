@@ -117,3 +117,17 @@ li a{
     color: #000;
     font-weight: bold;
 }
+
+/* For Welcome Message */
+#welcome-container {
+    display:inline-block;
+    position: absolute;
+    bottom: 82%;
+    margin: 0px;
+    max-width: 1200px;
+    padding-right: 25px; 
+    padding-left: 15px;
+    font-family: 'Pokemon Solid', sans-serif;
+    letter-spacing: 2px;
+    font-size: 0.9em;
+}

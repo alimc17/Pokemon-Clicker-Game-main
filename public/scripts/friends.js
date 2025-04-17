@@ -216,7 +216,6 @@ searchInput.addEventListener("input", async () => {
             // Use the document ID as the sender's chosen username.
             senderUsername = usernameQuery.docs[0].id;
           }
-          console.log(!usernameQuery.empty);
 
           // Update outgoing requests for the sender.
           await db.collection("users").doc(currentUser.uid).set({
@@ -271,10 +270,15 @@ async function acceptFriendRequest(recipientUid, requesterUid) {
       [`friends.${requesterUid}`]: { username: requesterData.username }
     });
 
-    // Fetch the recipient's actual username from their user document.
-    const recipientDoc = await db.collection("users").doc(recipientUid).get();
-    const recipientData = recipientDoc.data() || {};
-    const recipientUsername = recipientData.username || firebase.auth().currentUser.displayName || "Anonymous";
+    // Lookup the recipient's actual username in the usernames collection.
+    let recipientUsername = "Anonymous";
+    const usernameQuery = await db.collection("usernames")
+      .where("uid", "==", recipientUid)
+      .limit(1)
+      .get();
+    if (!usernameQuery.empty) {
+      recipientUsername = usernameQuery.docs[0].id;
+    }
 
     // Add the recipient to the requester's friends list using the recipient's username.
     await db.collection("users").doc(requesterUid).update({
