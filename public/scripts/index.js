@@ -217,6 +217,26 @@ function createSparkles(x, y, amount = 10) {
     }
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+    const gamblingBtn = document.querySelector(".gambling");
+    const gamblingModal = document.getElementById("gambling-modal");
+    const closeGamblingModal = document.getElementById("close-gambling-modal");
+  
+    gamblingBtn.addEventListener("click", () => {
+      gamblingModal.style.display = "flex";
+    });
+  
+    closeGamblingModal.addEventListener("click", () => {
+      gamblingModal.style.display = "none";
+    });
+  
+    window.addEventListener("click", (e) => {
+      if (e.target === gamblingModal) {
+        gamblingModal.style.display = "none";
+      }
+    });
+});
+
 setInterval(() => {
     parsedPTotal += pps / 10;
     pTotal.innerHTML = Math.round(parsedPTotal);
