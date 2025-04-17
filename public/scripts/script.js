@@ -7,7 +7,6 @@ const db = firebase.firestore();
 document.addEventListener("DOMContentLoaded", () => {
     const leftNav = document.getElementById('nav-left');
     const rightNav = document.getElementById('nav-right');
-
     auth.onAuthStateChanged(user => {
         updateNav(user);
 
@@ -29,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function updateNav(user) {
     const leftNav = document.getElementById('nav-left');
     const rightNav = document.getElementById('nav-right');
+    const welcomeContainer = document.getElementById('welcome-container');
 
     // Clear old content
     while (leftNav.children.length > 1) leftNav.removeChild(leftNav.lastChild);
@@ -48,7 +48,8 @@ function updateNav(user) {
 
             const welcomeMsg = document.createElement('div');
             welcomeMsg.textContent = `Welcome, ${username}`;
-            leftNav.appendChild(welcomeMsg);
+        //    welcomeMsg.classList.add('welcome-message');
+            welcomeContainer.appendChild(welcomeMsg);
         });
 
         const logoutBtn = document.createElement('button');

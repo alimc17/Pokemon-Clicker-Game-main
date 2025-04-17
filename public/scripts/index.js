@@ -120,7 +120,7 @@ function generateUpgrades(pokemonList) {
             <div class="mid-upg">
                 <h4>${poke.name.charAt(0).toUpperCase() + poke.name.slice(1)}</h4>
                 <div class="cost-info">
-                    <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                     <span class="upg-cost">${cost}</span>
                 </div>
             </div>
@@ -130,7 +130,7 @@ function generateUpgrades(pokemonList) {
             <div class="next-upg-info">
                 <p>
                     +
-                    <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                     <span class="upg-increase">${increase}</span>
                     per ${i === 0 ? 'click' : 'second'}
                 </p>
@@ -214,6 +214,95 @@ function createSparkles(x, y, amount = 10) {
         sparkle.style.setProperty('--dy', dy);
         document.body.appendChild(sparkle);
         setTimeout(() => sparkle.remove(), 800);
+    }
+}
+
+const prestigeCost = 100; // Cost to prestige
+const rewardMultiplier = 1.2; // The multiplier applied after prestige
+const maxPrestige = 5; // Max prestige levels
+let prestigeLevel = 0; // Tracks how many times the player has prestiged
+
+const prestigeModal = document.getElementById('prestige-modal');
+const prestigeMessage = document.getElementById('prestige-message');
+const confirmPrestigeBtn = document.getElementById('confirm-prestige');
+const closePrestigeModalBtn = document.getElementById('close-prestige-modal-btn');
+const closePrestigeModal = document.getElementById('close-prestige-modal');
+
+function openPrestigeModal() {
+    const pTotalValue = parsedPTotal;
+    
+    if (prestigeLevel < maxPrestige) {
+        if (pTotalValue >= prestigeCost) {
+            // If the player has enough Pokedollars, show confirmation
+            prestigeMessage.textContent = `Are you sure you want to prestige? This will reset your progress, but you'll get a multiplier of x${rewardMultiplier}.`;
+            confirmPrestigeBtn.style.display = 'inline-block';
+        } else {
+            // If the player doesn't have enough Pokedollars, show the deficit
+            const remainingPokedollars = prestigeCost - pTotalValue;
+            prestigeMessage.textContent = `You need ${remainingPokedollars} more Pokedollars to prestige.`;
+            confirmPrestigeBtn.style.display = 'none';
+        }
+        prestigeModal.style.display = 'block';
+    }
+}
+
+// Function to confirm prestige
+function confirmPrestige() {
+    const pTotalValue = parsedPTotal;
+    
+    if (pTotalValue >= prestigeCost && prestigeLevel < maxPrestige) {
+        // Deduct the prestige cost from Pokedollars
+        parsedPTotal -= prestigeCost;
+
+        // Reset upgrades to level 1
+        upgrades.upgrade1 = 1;
+        upgrades.upgrade2 = 1;
+        // Add similar reset for all other upgrades here...
+
+        // Apply the prestige rewards: reset relevant game variables
+        ppc *= rewardMultiplier;  // Apply the multiplier to Pokedollars per click
+        pps *= rewardMultiplier;  // Apply the multiplier to Pokedollars per second
+        prestigeLevel++;  // Increment the prestige level
+
+        // Update the player's Pokedollars display (you will need to have a display element)
+        pTotal.innerHTML = Math.round(parsedPTotal);
+
+        // Update the region and background (example, adjust with your game logic)
+        updateRegionAndVideo();  // Assuming you have a function to do this
+        
+        // Close the modal
+        closePrestigeModal.click();
+    }
+}
+
+// Function to close the prestige modal
+function closePrestigeModalFunc() {
+    prestigeModal.style.display = 'none';
+}
+
+// Event listeners
+document.querySelector('.prestige').addEventListener('click', openPrestigeModal);
+confirmPrestigeBtn.addEventListener('click', confirmPrestige);
+closePrestigeModalBtn.addEventListener('click', closePrestigeModalFunc);
+closePrestigeModal.addEventListener('click', closePrestigeModalFunc);
+
+// Prevent closing if clicking inside the modal content
+prestigeModal.querySelector('.modal-content').addEventListener('click', (event) => {
+    event.stopPropagation(); // Prevent closing if clicking inside the modal content
+});
+
+function updateRegionAndVideo() {
+    // Assuming the regions are stored in an array or defined
+    const regions = ['Kanto', 'Johto', 'Hoenn', 'Sinnoh', 'Unova'];
+    const backgroundVideos = ['kanto.mp4', 'johto.mp4', 'hoenn.mp4', 'sinnoh.mp4', 'unova.mp4'];
+
+    if (prestigeLevel <= regions.length) {
+        const regionName = regions[prestigeLevel - 1];  // Get the region based on prestige level
+        const backgroundVideo = backgroundVideos[prestigeLevel - 1];  // Get the background video for the region
+
+        // Update region name and background video
+        document.getElementById('region-name').innerText = regionName;
+        document.getElementById('background-video').src = `path/to/videos/${backgroundVideo}`;
     }
 }
 

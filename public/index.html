@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pokeclickr</title>
     <link rel="icon" type="image/png" href="./assets/favicon.png" />
     <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet" />
@@ -16,7 +16,7 @@
 <body>
 
     <video class="bg-video" autoplay muted loop playsinline>
-        <source src="assets/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4"/>
+        <source src="assets/videos/kanto.mp4" type="video/mp4"/>
     </video>
     <div class="bg-overlay"></div>
 
@@ -31,25 +31,27 @@
         </nav>
     </header>
 
+    <div id="welcome-container"></div>
+
     <div class="main">
         <div class="left-main">
             <button class="gambling">let's go gambling!</button>
-            <button class="prestige">prestige</button> 
+            <button class="prestige">prestige</button>
         </div>
 
         <div class="mid-main">
-            <div class="Region">Region</div>
+            <div class="Region">Kanto</div>
             <div class="pokeball">
-                <img class="pokeball-img" src="assets/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP(event)"/>
+                <img class="pokeball-img" src="assets/images/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP(event)"/>
             </div>
             <div class="stats-container">
                 <div class="stats">
                     <div class="stats-element">
-                        <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                        <img class="p-total-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                         <p>PC: <span class="ppc-text">1</span></p>
                     </div>
                     <div class="stats-element">
-                        <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                        <img class="p-total-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                         <p>PS: <span class="pps-text">0</span></p>
                     </div>
                 </div>
@@ -58,7 +60,7 @@
 
         <div class="right-main">
             <div class="total-container">
-                <img class="p-total-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                <img class="p-total-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                 <p>: <span class="p-total">0</span></p>
             </div>
 
@@ -69,27 +71,81 @@
     </div>
 
     <!-- Friends Modal -->
-<div id="friends-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-      <span id="close-friends-modal" class="close-modal">&times;</span>
-      <h3>Friends List <span id="open-add-friend-modal" style="cursor:pointer; font-size: 20px;">➕</span></h3>
-      <div id="friends-list" class="friends-list"></div>
+    <div id="friends-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+        <span id="close-friends-modal" class="close-modal">&times;</span>
+        <h3>Friends List <span id="open-add-friend-modal" style="cursor:pointer; font-size: 20px;">➕</span></h3>
+        <div id="friends-list" class="friends-list"></div>
+        <h3>Incoming Friend Requests</h3>
+        <div id="incoming-requests" class="friends-list"></div>
+        </div>
     </div>
-  </div>
-  
-  <!-- Add Friend Modal (layered on top) -->
-  <div id="add-friend-modal" class="modal-overlay" style="display: none;">
-    <div class="modal-content">
-      <span id="close-add-modal" class="close-modal">&times;</span>
-      <h3>Search Friends</h3>
-      <input type="text" id="search-username" placeholder="Type a username..." />
-      <div id="search-results" class="friends-list"></div>
+    
+    <!-- Add Friend Modal (layered on top) -->
+    <div id="add-friend-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+        <span id="close-add-modal" class="close-modal">&times;</span>
+        <h3>Search Friends</h3>
+        <input type="text" id="search-username" placeholder="Type a username..."/>
+        <div id="search-results" class="friends-list"></div>
+        </div>
     </div>
-  </div>
   
-      
-      
+    <!-- Gambling Modal -->
+    <div id="gambling-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content gambling-modal-content">
+            <span id="close-gambling-modal" class="close-modal">&times;</span>
+  
+            <!-- Top Section -->
+            <div class="gambling-modal-top">
+                <h1>Legendaries</h1>
+            </div>
+  
+            <!-- Middle Section -->
+            <div class="gambling-modal-middle">
+                <img src="assets/images/masterball.png" alt="Master Ball" class="masterball-img" />
+                <button class="buy-button">
+                <img src="assets/images/pokedollar.png" class="p-icon" alt="P" style="filter: invert(0)"/>
+                5
+                </button>
+            </div>
+  
+            <!-- Bottom Section -->
+            <div class="gambling-modal-bottom">
+                <div class="question-grid">
+                <!-- 15 slots -->
+                    <div class="legendary-slot question-slot" data-index="0">?</div>
+                    <div class="legendary-slot question-slot" data-index="1">?</div>
+                    <div class="legendary-slot question-slot" data-index="2">?</div>
+                    <div class="legendary-slot question-slot" data-index="3">?</div>
+                    <div class="legendary-slot question-slot" data-index="4">?</div>
+                    <div class="legendary-slot question-slot" data-index="5">?</div>
+                    <div class="legendary-slot question-slot" data-index="6">?</div>
+                    <div class="legendary-slot question-slot" data-index="7">?</div>
+                    <div class="legendary-slot question-slot" data-index="8">?</div>
+                    <div class="legendary-slot question-slot" data-index="9">?</div>
+                    <div class="legendary-slot question-slot" data-index="10">?</div>
+                    <div class="legendary-slot question-slot" data-index="11">?</div>
+                    <div class="legendary-slot question-slot" data-index="12">?</div>
+                    <div class="legendary-slot question-slot" data-index="13">?</div>
+                    <div class="legendary-slot question-slot" data-index="14">?</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Prestige Modal -->
+    <div id="prestige-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span id="close-prestige-modal" class="close-modal">&times;</span>
+            <h3>Prestige</h3>
+            <p id="prestige-message"></p>
+            <button class="prestige-button" id="confirm-prestige" style="display: none;">Confirm Prestige</button>
+            <button class="prestige-button" id="close-prestige-modal-btn">Close</button>
+        </div>
+    </div>
+
+      
     <div class="footer">
         <button id="friends-toggle" class="btn-custom">Friends</button>
     </div>
@@ -104,6 +160,7 @@
     <script src="scripts/friends.js"></script>
     <script src="scripts/bgvideo.js"></script>
     <script src="scripts/audio.js"></script>
+    <script src="scripts/gambling.js"></script>
 
 </body>
 </html>

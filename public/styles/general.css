@@ -33,16 +33,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: "PokemonHallow";
-    src: url(/assets/fontsPokemonHallow.ttf);
-}
-
-@font-face {
-    font-family: "PokemonSolid";
-    src: url(/assets/fontsPokemonSolid.ttf);
-}
-
 * {
     box-sizing: border-box;
     text-decoration: none;
@@ -247,7 +237,7 @@ button:active {
     margin-bottom: -250px;
   
 }
-  
+
 button:hover {
     letter-spacing: 3px;
     background-color: hsl(0, 90%, 45%);
