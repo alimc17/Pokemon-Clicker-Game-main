@@ -120,7 +120,7 @@ function generateUpgrades(pokemonList) {
             <div class="mid-upg">
                 <h4>${poke.name.charAt(0).toUpperCase() + poke.name.slice(1)}</h4>
                 <div class="cost-info">
-                    <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                     <span class="upg-cost">${cost}</span>
                 </div>
             </div>
@@ -130,7 +130,7 @@ function generateUpgrades(pokemonList) {
             <div class="next-upg-info">
                 <p>
                     +
-                    <img class="p-upg-img" src="assets/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
                     <span class="upg-increase">${increase}</span>
                     per ${i === 0 ? 'click' : 'second'}
                 </p>
