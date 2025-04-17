@@ -1,7 +1,7 @@
 .footer {
     display: flex;
     flex-direction: row;
-    background-color: red;
+    background-color: rgb(188, 13, 13);
     flex-grow: 1;
     height: 60px;
     justify-content: space-evenly;
