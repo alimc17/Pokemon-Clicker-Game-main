@@ -119,7 +119,7 @@ const legendaryButton = document.querySelector('.buy-button');
 legendaryButton.addEventListener('click', buyLegendary);
 
 function buyLegendary() {
-    if (parsedPTotal < 5) return;
+    if (window.pTotal < 5) return;
 
     const lockedIndexes = unlockedLegendaries
         .map((unlocked, index) => !unlocked ? index : null)
@@ -148,6 +148,6 @@ function buyLegendary() {
     cryAudio.play();
 
     // Deduct pokédollars
-    parsedPTotal -= 5;
-    pTotal.innerHTML = Math.round(parsedPTotal);
+    window.pTotal -= 5;
+    pTotal.innerHTML = Math.round(window.pTotal);
 }
