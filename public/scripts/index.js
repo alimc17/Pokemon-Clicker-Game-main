@@ -48,13 +48,20 @@ function buyUpg() {
 }
 */
 
-let pTotal = document.querySelector('.p-total');
-let parsedPTotal = parseFloat(pTotal.innerHTML);
+window.pTotal = 0;
+window.ppc = 1;
+window.pps = 0;
+window.prestigeLevel = 0;
+window.upgrades = [];
+window.rewardMultiplier = 1;
+
+let pTotalElement = document.querySelector('.p-total');
+window.pTotal = parseFloat(pTotalElement.innerHTML) || 0;
 let ppcText = document.querySelector('.ppc-text');
 let ppsText = document.querySelector('.pps-text');
 
-let ppc = 1;
-let pps = 0;
+window.ppc = 1;
+window.pps = 0;
 
 let pokeball = document.querySelector('.pokeball');
 
@@ -118,13 +125,13 @@ function updatePrestigeModal() {
     currentMultiplierEl.textContent = currentMult.toFixed(2);
     nextMultiplierEl.textContent = nextMult.toFixed(2);
 
-    currentPrestigeEl.textContent = Math.round(parsedPTotal);
+    currentPrestigeEl.textContent = Math.round(window.PTotal);
     requiredPrestigeEl.textContent = PRESTIGE_REQUIREMENT;
 
-    const progressPercentage = Math.min(100, (parsedPTotal / PRESTIGE_REQUIREMENT) * 100);
+    const progressPercentage = Math.min(100, (window.PTotal / PRESTIGE_REQUIREMENT) * 100);
     progressBarEl.style.width = `${progressPercentage}%`;
 
-    if (parsedPTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
+    if (window.PTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
         confirmPrestige.disabled = false;
     } else {
         confirmPrestige.disabled = true;
@@ -141,29 +148,29 @@ function closeModal() {
 }
 
 function handlePrestigeConfirmation() {
-    if (parsedPTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
-        parsedPTotal = 0;
-        pTotal.innerHTML = parsedPTotal;
-        ppc = 1;
-        pps = 0;
-        upgrades.length = 0;
+    if (window.pTotal >= PRESTIGE_REQUIREMENT && window.prestigeLevel < maxPrestige) {
+        window.pTotal = 0;
+        pTotalElement.innerHTML = window.pTotal;
+        window.ppc = 1;
+        window.pps = 0;
+        window.upgrades = [];
 
-        prestigeLevel++;
-        rewardMultiplier = calculateRewardMultiplier(prestigeLevel);
+        window.prestigeLevel++;
+        window.rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
 
-        regionNameEl.innerText = regionData[prestigeLevel].name;
-        prestigeLevelEl.innerText = prestigeLevel;
-        ppcText.innerHTML = ppc;
-        ppsText.innerHTML = pps;
-        prestigeButton.disabled = prestigeLevel >= maxPrestige;
+        regionNameEl.innerText = regionData[window.prestigeLevel].name;
+        prestigeLevelEl.innerText = window.prestigeLevel;
+        ppcText.innerHTML = window.ppc;
+        ppsText.innerHTML = window.pps;
+        prestigeButton.disabled = window.prestigeLevel >= maxPrestige;
 
         if (currentMultiplierEl && nextMultiplierEl) {
-            currentMultiplierEl.textContent = rewardMultiplier.toFixed(2);
-            nextMultiplierEl.textContent = calculateRewardMultiplier(prestigeLevel + 1).toFixed(2);
+            currentMultiplierEl.textContent = window.rewardMultiplier.toFixed(2);
+            nextMultiplierEl.textContent = calculateRewardMultiplier(window.prestigeLevel + 1).toFixed(2);
         }
 
         const videoElement = document.querySelector('.bg-video');
-        videoElement.querySelector('source').src = regionData[prestigeLevel].bg;
+        videoElement.querySelector('source').src = regionData[window.prestigeLevel].bg;
         videoElement.load();
 
         try {
@@ -174,7 +181,7 @@ function handlePrestigeConfirmation() {
             console.log("Prestige sound effect not found");
         }
 
-        getPokemon(regionData[prestigeLevel].startId);
+        getPokemon(regionData[window.prestigeLevel].startId);
         
         closeModal();
         
@@ -188,19 +195,8 @@ function handlePrestigeConfirmation() {
             }, i * 300);
         }
         
-        // FIREBASE STUFF ALIM IT MAY WORK <3
-        const user = firebase.auth().currentUser;
-        if (user) {
-            updateGameProgress({ 
-                gameData: { 
-                    pTotal: parsedPTotal,
-                    ppc: ppc,
-                    pps: pps,
-                    prestigeLevel: prestigeLevel,
-                    rewardMultiplier: rewardMultiplier
-                } 
-            });
-        }
+        // Save to Firebase/localStorage
+        updateGameProgress({});
     }
 }
 
@@ -312,12 +308,9 @@ function renderVisibleUpgrades() {
 
 function buyGeneratedUpgrade(index) {
     const upgrade = upgrades[index];
-    if (parsedPTotal >= upgrade.cost) {
-        parsedPTotal -= upgrade.cost;
-        pTotal.innerHTML = Math.round(parsedPTotal);
-
-        const previousPPC = ppc;
-        const previousPPS = pps;
+    if (window.pTotal >= upgrade.cost) {
+        window.pTotal -= upgrade.cost;
+        pTotalElement.innerHTML = Math.round(window.pTotal);
 
         upgrade.level++;
         upgrade.cost = Math.round(upgrade.cost * upgrade.costMult);
@@ -327,7 +320,7 @@ function buyGeneratedUpgrade(index) {
             renderVisibleUpgrades();
         }
 
-        const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
+        const effectiveMultiplier = window.prestigeLevel === 0 ? 1 : window.rewardMultiplier;
         
         const levelMultiplier = Math.pow(1.2, upgrade.level - 1);
         const currentIncome = parseFloat((upgrade.increase * effectiveMultiplier * levelMultiplier).toFixed(2));
@@ -339,17 +332,17 @@ function buyGeneratedUpgrade(index) {
             if (upgrade.level > 1) {
                 const prevLevelMultiplier = Math.pow(1.2, upgrade.level - 2);
                 const prevIncome = upgrade.increase * effectiveMultiplier * prevLevelMultiplier;
-                ppc = ppc - prevIncome + currentIncome;
+                window.ppc = window.ppc - prevIncome + currentIncome;
             } else {
-                ppc += currentIncome;
+                window.ppc += currentIncome;
             }
         } else {
             if (upgrade.level > 1) {
                 const prevLevelMultiplier = Math.pow(1.2, upgrade.level - 2);
                 const prevIncome = upgrade.increase * effectiveMultiplier * prevLevelMultiplier;
-                pps = pps - prevIncome + currentIncome;
+                window.pps = window.pps - prevIncome + currentIncome;
             } else {
-                pps += currentIncome;
+                window.pps += currentIncome;
             }
         }
 
@@ -372,8 +365,11 @@ function buyGeneratedUpgrade(index) {
             console.log("Error playing Pokemon cry:", error);
         }
         
-        ppcText.innerHTML = Math.round(ppc);
-        ppsText.innerHTML = Math.round(pps);
+        ppcText.innerHTML = Math.round(window.ppc);
+        ppsText.innerHTML = Math.round(window.pps);
+        
+        // Save after buying upgrade
+        updateGameProgress({});
     }
 }
 
@@ -381,8 +377,8 @@ function incrementP(event) {
     clickSFX.playbackRate = 0.8 + Math.random() * 0.4;
     clickSFX.play();
 
-    parsedPTotal += ppc;
-    pTotal.innerHTML = Math.round(parsedPTotal);
+    window.pTotal += window.ppc;
+    pTotalElement.innerHTML = Math.round(window.pTotal);
 
     let x = event.clientX;
     let y = event.clientY;
@@ -391,7 +387,7 @@ function incrementP(event) {
     x = event.offsetX;
     y = event.offsetY;
     const div = document.createElement('div');
-    div.innerHTML = `+${Math.round(ppc)}`;
+    div.innerHTML = `+${Math.round(window.ppc)}`;
     div.style.cssText = `
         color: white;
         position: absolute;
@@ -407,6 +403,7 @@ function incrementP(event) {
     pokeball.appendChild(div);
     div.classList.add('fade-up');
     setTimeout(() => div.remove(), 800);
+    updateGameProgress({});
 }
 
 function createSparkles(x, y, amount = 10) {
@@ -425,13 +422,29 @@ function createSparkles(x, y, amount = 10) {
 }
 
 setInterval(() => {
-    parsedPTotal += pps / 10;
-    pTotal.innerHTML = Math.round(parsedPTotal);
-    ppcText.innerHTML = Math.round(ppc);
-    ppsText.innerHTML = Math.round(pps);
+    window.PTotal += window.pps / 10;
+    pTotal.innerHTML = Math.round(window.PTotal);
+    ppcText.innerHTML = Math.round(window.ppc);
+    ppsText.innerHTML = Math.round(window.pps);
 }, 100);
 
 (async () => {
     getPokemon(regionData[prestigeLevel].startId);
     generateUpgrades(pokemon);
 })();
+
+
+
+
+function loadFromLocalStorage() {
+    try {
+        const savedProgress = localStorage.getItem('guestProgress');
+        if (savedProgress) {
+            const gameState = JSON.parse(savedProgress);
+            applyGameState(gameState);
+            console.log("Progress loaded from localStorage");
+        }
+    } catch (error) {
+        console.error("Error loading local progress:", error);
+    }
+}
