@@ -47,7 +47,7 @@
   
 .gambling-modal-top h1 {
     font-size: 2rem;
-    font-family: 'PokemonTitle';
+    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
 }
   
 .gambling-modal-middle {

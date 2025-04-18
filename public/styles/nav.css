@@ -9,7 +9,7 @@
 
 .navbar{
     background: rgb(188, 13, 13);
-    font-family: 'Pokemon Solid', sans-serif;
+    font-family: 'PokemonTitle', 'PokemoneTitleLive', sans-serif;
     letter-spacing: 2px;
     font-weight: bold;
     padding-right: 25px; 
@@ -27,7 +27,7 @@
 
 .logo a{
 
-    font-family: 'Pokemon Solid', sans-serif;
+    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
     font-size: 25px;
     font-weight: 300;
     color: white;
@@ -40,7 +40,7 @@ li{
     }
 
 li a{
-    font-family: 'PokemonText';
+    font-family: 'PokemonText', 'PokemonTextLive', sans-serif;
     color: white;
     font-size: 16px;
     font-weight: 200;
@@ -57,7 +57,7 @@ li a{
     z-index: 0;
     border-radius: 12px;
     margin-left: 8px;
-    font-family: 'Pokemon Solid', sans-serif;
+    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
     font-size: 17px;
     font-weight: 200;
     color: white;
@@ -127,7 +127,7 @@ li a{
     max-width: 1200px;
     padding-right: 25px; 
     padding-left: 15px;
-    font-family: 'Pokemon Solid', sans-serif;
+    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
     letter-spacing: 2px;
     font-size: 0.9em;
 }
