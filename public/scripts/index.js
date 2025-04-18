@@ -157,8 +157,10 @@ function handlePrestigeConfirmation() {
         ppsText.innerHTML = pps;
         prestigeButton.disabled = prestigeLevel >= maxPrestige;
 
-        currentMultiplierEl.textContent = rewardMultiplier.toFixed(2);
-        nextMultiplierEl.textContent = calculateRewardMultiplier(prestigeLevel + 1).toFixed(2);
+        if (currentMultiplierEl && nextMultiplierEl) {
+            currentMultiplierEl.textContent = rewardMultiplier.toFixed(2);
+            nextMultiplierEl.textContent = calculateRewardMultiplier(prestigeLevel + 1).toFixed(2);
+        }
 
         const videoElement = document.querySelector('.bg-video');
         videoElement.querySelector('source').src = regionData[prestigeLevel].bg;
@@ -186,6 +188,7 @@ function handlePrestigeConfirmation() {
             }, i * 300);
         }
         
+        // FIREBASE STUFF ALIM IT MAY WORK <3
         const user = firebase.auth().currentUser;
         if (user) {
             updateGameProgress({ 
@@ -244,45 +247,67 @@ function generateUpgrades(pokemonList) {
             increase: increase,
             level: 0,
             costMult: costMultiplier,
-            type: i === 0 ? 'click' : 'second'
+            type: i === 0 ? 'click' : 'second',
+            visible: i === 0
         };
 
         upgrades.push(upgrade);
+    }
 
-        const initialIncome = prestigeLevel === 0 ? 
-            increase : parseFloat((increase * rewardMultiplier).toFixed(2));
+    renderVisibleUpgrades();
+}
 
+function renderVisibleUpgrades() {
+    const upgradeContainer = document.querySelector('.upgrades-container');
+    upgradeContainer.innerHTML = '';
+    
+    upgrades.forEach((upgrade, index) => {
+        if (!upgrade.visible) return;
+        
+        const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
+        
+        let displayedIncome;
+        if (upgrade.level > 0) {
+            const nextLevelMultiplier = Math.pow(1.2, upgrade.level);
+            displayedIncome = parseFloat((upgrade.increase * effectiveMultiplier * nextLevelMultiplier).toFixed(2));
+        } else {
+            displayedIncome = prestigeLevel === 0 ? 
+                upgrade.increase : parseFloat((upgrade.increase * effectiveMultiplier).toFixed(2));
+        }
+        
         const upgradeDiv = document.createElement('div');
         upgradeDiv.classList.add('upgrade');
-        upgradeDiv.setAttribute('data-index', i);
-        upgradeDiv.onclick = () => buyGeneratedUpgrade(i);
+        upgradeDiv.setAttribute('data-index', index);
+        upgradeDiv.onclick = () => buyGeneratedUpgrade(index);
 
+        const pokeId = getPokemonIdFromUrl(pokemon[index].url);
+        
         upgradeDiv.innerHTML = `
             <div class="left-upg">
-                <img class="upg-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${getPokemonIdFromUrl(poke.url)}.png" alt="${poke.name}" draggable="false"/>
+                <img class="upg-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeId}.png" alt="${upgrade.name}" draggable="false"/>
             </div>
             <div class="mid-upg">
-                <h4>${poke.name.charAt(0).toUpperCase() + poke.name.slice(1)}</h4>
+                <h4>${upgrade.name.charAt(0).toUpperCase() + upgrade.name.slice(1)}</h4>
                 <div class="cost-info">
                     <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
-                    <span class="upg-cost">${cost}</span>
+                    <span class="upg-cost">${upgrade.cost}</span>
                 </div>
             </div>
             <div class="right-upg">
-                <p>Level <span class="upg-level">0</span></p>
+                <p>Level <span class="upg-level">${upgrade.level}</span></p>
             </div>
             <div class="next-upg-info">
                 <p>
                     +
                     <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
-                    <span class="upg-increase">${initialIncome}</span>
-                    per ${i === 0 ? 'click' : 'second'}
+                    <span class="upg-increase">${displayedIncome}</span>
+                    per ${upgrade.type === 'click' ? 'click' : 'second'}
                 </p>
             </div>
         `;
 
         upgradeContainer.appendChild(upgradeDiv);
-    }
+    });
 }
 
 function buyGeneratedUpgrade(index) {
@@ -297,8 +322,13 @@ function buyGeneratedUpgrade(index) {
         upgrade.level++;
         upgrade.cost = Math.round(upgrade.cost * upgrade.costMult);
 
-        const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
+        if (upgrade.level === 1 && index + 1 < upgrades.length) {
+            upgrades[index + 1].visible = true;
+            renderVisibleUpgrades();
+        }
 
+        const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
+        
         const levelMultiplier = Math.pow(1.2, upgrade.level - 1);
         const currentIncome = parseFloat((upgrade.increase * effectiveMultiplier * levelMultiplier).toFixed(2));
         
@@ -323,11 +353,14 @@ function buyGeneratedUpgrade(index) {
             }
         }
 
-        const upgradeDiv = document.querySelector(`.upgrade[data-index="${index}"]`);
-        upgradeDiv.querySelector('.upg-cost').innerHTML = upgrade.cost;
-        upgradeDiv.querySelector('.upg-level').innerHTML = upgrade.level;
-
-        upgradeDiv.querySelector('.upg-increase').innerHTML = nextIncome.toFixed(2);
+        if (upgrade.level > 1) {
+            const upgradeDiv = document.querySelector(`.upgrade[data-index="${index}"]`);
+            if (upgradeDiv) {
+                upgradeDiv.querySelector('.upg-cost').innerHTML = upgrade.cost;
+                upgradeDiv.querySelector('.upg-level').innerHTML = upgrade.level;
+                upgradeDiv.querySelector('.upg-increase').innerHTML = nextIncome.toFixed(2);
+            }
+        }
 
         const pokeId = getPokemonIdFromUrl(pokemon[index].url);
         const cryUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokeId}.ogg`;
@@ -343,7 +376,6 @@ function buyGeneratedUpgrade(index) {
         ppsText.innerHTML = Math.round(pps);
     }
 }
-
 
 function incrementP(event) {
     clickSFX.playbackRate = 0.8 + Math.random() * 0.4;
