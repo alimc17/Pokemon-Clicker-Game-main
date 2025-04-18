@@ -116,7 +116,7 @@ li a{
 }
 
 .form-title {
-    font-family: 'Gill Sans', sans-serif;
+    font-family: 'PokemonTitle';
     color: #fff;
     font-size: 28px;
     text-align: center;
@@ -147,6 +147,7 @@ span{
     justify-content: center;
     padding: 10px 0 10px 0;
     margin-bottom: 10px;
+
 }
 
 .input-field{
@@ -164,6 +165,7 @@ span{
     color: #fff;
     padding: 0 0 0 42px;
     background: rgba(255,255,255,0.1);
+    font-family: 'PokemonTitle';
 }
 
 i{
@@ -187,6 +189,7 @@ i{
     background: rgba(255,255,255,0.7);
     cursor: pointer;
     transition: .3s;
+    font-family: 'PokemonTitle';
 }
 .submit:hover{
     box-shadow: 1px 5px 7px 1px rgba(0, 0, 0, 0.2);

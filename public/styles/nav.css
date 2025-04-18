@@ -1,7 +1,7 @@
 .nav {
     display: flex;
     flex-direction: row;
-    background-color: blue;
+    background-color: white;
     height: 60px;
     justify-content: space-around;
     align-items: center;
@@ -27,8 +27,8 @@
 
 .logo a{
 
-    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
-    font-size: 25px;
+    font-family: 'Pokemon Solid';
+    font-size: 27px;
     font-weight: 300;
     color: white;
 
@@ -41,7 +41,7 @@ li{
 
 li a{
     font-family: 'PokemonText', 'PokemonTextLive', sans-serif;
-    color: white;
+    color: #ffffff;
     font-size: 16px;
     font-weight: 200;
 
@@ -57,7 +57,7 @@ li a{
     z-index: 0;
     border-radius: 12px;
     margin-left: 8px;
-    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
+    font-family: 'Pokemon Solid';
     font-size: 17px;
     font-weight: 200;
     color: white;
