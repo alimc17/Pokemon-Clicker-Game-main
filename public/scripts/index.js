@@ -66,7 +66,7 @@ const clickSFX = new Audio('assets/audio/click.wav');
 clickSFX.volume = 0.2;
 
 let prestigeLevel = 0;
-let rewardMultiplier = 1;
+let rewardMultiplier = calculateRewardMultiplier(prestigeLevel);
 const maxPrestige = 5;
 
 const regionData = [
@@ -81,32 +81,128 @@ const prestigeButton = document.getElementById('prestige-button');
 const regionNameEl = document.getElementById('region-name');
 const prestigeLevelEl = document.getElementById('prestige-level');
 
-prestigeButton.addEventListener('click', handlePrestige);
+const prestigeModal = document.getElementById('prestige-modal');
+const closePrestigeModal = document.getElementById('close-prestige-modal');
+const cancelPrestige = document.getElementById('cancel-prestige');
+const confirmPrestige = document.getElementById('confirm-prestige');
+
+const currentRegionEl = document.getElementById('prestige-current-region');
+const nextRegionEl = document.getElementById('prestige-next-region');
+const currentMultiplierEl = document.getElementById('prestige-current-multiplier');
+const nextMultiplierEl = document.getElementById('prestige-next-multiplier');
+const requiredPrestigeEl = document.getElementById('prestige-required');
+const currentPrestigeEl = document.getElementById('prestige-current');
+const progressBarEl = document.getElementById('prestige-progress-bar'); 
+
+const PRESTIGE_REQUIREMENT = 100;
+
+document.getElementById('prestige-button').addEventListener('click', openPrestigeModal);
+
+closePrestigeModal.addEventListener('click', closeModal);
+cancelPrestige.addEventListener('click', closeModal);
+confirmPrestige.addEventListener('click', handlePrestigeConfirmation);
+
+function calculateRewardMultiplier(level) {
+    if (level === 0) return 1.0;
+    return parseFloat((1.2 * level).toFixed(2));
+}
+
+function updatePrestigeModal() {
+    currentRegionEl.textContent = regionData[prestigeLevel].name;
+    nextRegionEl.textContent = prestigeLevel < maxPrestige - 1 ? 
+                             regionData[prestigeLevel + 1].name : 
+                             'Max Level Reached';
+
+    const currentMult = calculateRewardMultiplier(prestigeLevel);
+    const nextMult = calculateRewardMultiplier(prestigeLevel + 1);
+    currentMultiplierEl.textContent = currentMult.toFixed(2);
+    nextMultiplierEl.textContent = nextMult.toFixed(2);
+
+    currentPrestigeEl.textContent = Math.round(parsedPTotal);
+    requiredPrestigeEl.textContent = PRESTIGE_REQUIREMENT;
+
+    const progressPercentage = Math.min(100, (parsedPTotal / PRESTIGE_REQUIREMENT) * 100);
+    progressBarEl.style.width = `${progressPercentage}%`;
+
+    if (parsedPTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
+        confirmPrestige.disabled = false;
+    } else {
+        confirmPrestige.disabled = true;
+    }
+}
+
+function openPrestigeModal() {
+    updatePrestigeModal();
+    prestigeModal.style.display = 'flex';
+}
+
+function closeModal() {
+    prestigeModal.style.display = 'none';
+}
+
+function handlePrestigeConfirmation() {
+    if (parsedPTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
+        parsedPTotal = 0;
+        pTotal.innerHTML = parsedPTotal;
+        ppc = 1;
+        pps = 0;
+        upgrades.length = 0;
+
+        prestigeLevel++;
+        rewardMultiplier = calculateRewardMultiplier(prestigeLevel);
+
+        regionNameEl.innerText = regionData[prestigeLevel].name;
+        prestigeLevelEl.innerText = prestigeLevel;
+        ppcText.innerHTML = ppc;
+        ppsText.innerHTML = pps;
+        prestigeButton.disabled = prestigeLevel >= maxPrestige;
+
+        currentMultiplierEl.textContent = rewardMultiplier.toFixed(2);
+        nextMultiplierEl.textContent = calculateRewardMultiplier(prestigeLevel + 1).toFixed(2);
+
+        const videoElement = document.querySelector('.bg-video');
+        videoElement.querySelector('source').src = regionData[prestigeLevel].bg;
+        videoElement.load();
+
+        try {
+            const prestigeSFX = new Audio('assets/audio/prestige.wav');
+            prestigeSFX.volume = 0.3;
+            prestigeSFX.play();
+        } catch (error) {
+            console.log("Prestige sound effect not found");
+        }
+
+        getPokemon(regionData[prestigeLevel].startId);
+        
+        closeModal();
+        
+        for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+                createSparkles(
+                    Math.random() * window.innerWidth, 
+                    Math.random() * window.innerHeight, 
+                    30
+                );
+            }, i * 300);
+        }
+        
+        const user = firebase.auth().currentUser;
+        if (user) {
+            updateGameProgress({ 
+                gameData: { 
+                    pTotal: parsedPTotal,
+                    ppc: ppc,
+                    pps: pps,
+                    prestigeLevel: prestigeLevel,
+                    rewardMultiplier: rewardMultiplier
+                } 
+            });
+        }
+    }
+}
 
 function handlePrestige() {
-    if (parsedPTotal < 100 || prestigeLevel >= maxPrestige) return;
-
-    parsedPTotal = 0;
-    pTotal.innerHTML = parsedPTotal;
-    ppc = 1;
-    pps = 0;
-    upgrades.length = 0; // clear upgrades
-
-    prestigeLevel++;
-    rewardMultiplier = parseFloat((1.2 * prestigeLevel).toFixed(2));
-
-    // Update UI
-    regionNameEl.innerText = regionData[prestigeLevel].name;
-    prestigeLevelEl.innerText = prestigeLevel;
-    prestigeButton.disabled = prestigeLevel >= maxPrestige;
-
-    // Change background
-    const videoElement = document.querySelector('.bg-video');
-    videoElement.querySelector('source').src = regionData[prestigeLevel].bg;
-    videoElement.load();
-
-    // Fetch new Pokémon and regenerate upgrades
-    getPokemon(regionData[prestigeLevel].startId);
+    openPrestigeModal();
 }
 
 async function getPokemon(startId) {
@@ -130,16 +226,16 @@ function generateUpgrades(pokemonList) {
     const upgradeContainer = document.querySelector('.upgrades-container');
     upgradeContainer.innerHTML = '';
 
-    const baseCost = 25;
+    const baseCost = prestigeLevel === 0 ? 25 : 25 * rewardMultiplier;
     const baseIncrease = 1;
     const costMultiplier = 1.55;
     const powerMultiplier = 1.25;
 
-    upgrades.length = 0; // Clear upgrades array
+    upgrades.length = 0;
 
     for (let i = 0; i < 15; i++) {
         const poke = pokemonList[i];
-        const cost = Math.round(baseCost * Math.pow(costMultiplier, i));
+        const cost = Math.round((baseCost * Math.pow(costMultiplier, i)));
         const increase = parseFloat((baseIncrease * Math.pow(powerMultiplier, i)).toFixed(2));
 
         const upgrade = {
@@ -147,12 +243,14 @@ function generateUpgrades(pokemonList) {
             cost: cost,
             increase: increase,
             level: 0,
-            pMult: increase,
             costMult: costMultiplier,
             type: i === 0 ? 'click' : 'second'
         };
 
         upgrades.push(upgrade);
+
+        const initialIncome = prestigeLevel === 0 ? 
+            increase : parseFloat((increase * rewardMultiplier).toFixed(2));
 
         const upgradeDiv = document.createElement('div');
         upgradeDiv.classList.add('upgrade');
@@ -177,7 +275,7 @@ function generateUpgrades(pokemonList) {
                 <p>
                     +
                     <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
-                    <span class="upg-increase">${increase}</span>
+                    <span class="upg-increase">${initialIncome}</span>
                     per ${i === 0 ? 'click' : 'second'}
                 </p>
             </div>
@@ -193,28 +291,59 @@ function buyGeneratedUpgrade(index) {
         parsedPTotal -= upgrade.cost;
         pTotal.innerHTML = Math.round(parsedPTotal);
 
+        const previousPPC = ppc;
+        const previousPPS = pps;
+
         upgrade.level++;
         upgrade.cost = Math.round(upgrade.cost * upgrade.costMult);
+
+        const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
+
+        const levelMultiplier = Math.pow(1.2, upgrade.level - 1);
+        const currentIncome = parseFloat((upgrade.increase * effectiveMultiplier * levelMultiplier).toFixed(2));
         
+        const nextLevelMultiplier = Math.pow(1.2, upgrade.level);
+        const nextIncome = parseFloat((upgrade.increase * effectiveMultiplier * nextLevelMultiplier).toFixed(2));
+
         if (upgrade.type === 'click') {
-            ppc += upgrade.increase * upgrade.pMult;
-        }
-        else {
-            pps += upgrade.increase * upgrade.pMult;
+            if (upgrade.level > 1) {
+                const prevLevelMultiplier = Math.pow(1.2, upgrade.level - 2);
+                const prevIncome = upgrade.increase * effectiveMultiplier * prevLevelMultiplier;
+                ppc = ppc - prevIncome + currentIncome;
+            } else {
+                ppc += currentIncome;
+            }
+        } else {
+            if (upgrade.level > 1) {
+                const prevLevelMultiplier = Math.pow(1.2, upgrade.level - 2);
+                const prevIncome = upgrade.increase * effectiveMultiplier * prevLevelMultiplier;
+                pps = pps - prevIncome + currentIncome;
+            } else {
+                pps += currentIncome;
+            }
         }
 
         const upgradeDiv = document.querySelector(`.upgrade[data-index="${index}"]`);
         upgradeDiv.querySelector('.upg-cost').innerHTML = upgrade.cost;
         upgradeDiv.querySelector('.upg-level').innerHTML = upgrade.level;
 
+        upgradeDiv.querySelector('.upg-increase').innerHTML = nextIncome.toFixed(2);
+
         const pokeId = getPokemonIdFromUrl(pokemon[index].url);
         const cryUrl = `https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${pokeId}.ogg`;
         const cryAudio = new Audio(cryUrl);
         cryAudio.volume = 0.2;
-        cryAudio.play();
-
+        try {
+            cryAudio.play();
+        } catch (error) {
+            console.log("Error playing Pokemon cry:", error);
+        }
+        
+        ppcText.innerHTML = Math.round(ppc);
+        ppsText.innerHTML = Math.round(pps);
     }
 }
+
 
 function incrementP(event) {
     clickSFX.playbackRate = 0.8 + Math.random() * 0.4;

@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="styles/upgrade_table.css"/>
     <link rel="stylesheet" href="styles/friends.css"/>
     <link rel="stylesheet" href="styles/gambling.css"/>
+    <link rel="stylesheet" href="styles/prestige.css"/>
+
 </head>
 <body>
 
@@ -38,13 +40,14 @@
             <button class="gambling">let's go gambling!</button>
             <div class="prestige-section">
                 <button id="prestige-button">Prestige</button>
-                <p>Region: <span id="region-name">Kanto</span></p>
-                <p>Prestige Level: <span id="prestige-level">0</span>/5</p>
             </div>
         </div>
 
         <div class="mid-main">
-            <div class="Region">Region</div>
+            <div class="Region">
+                <p>Region: <span id="region-name">Kanto</span></p>
+                <p>Prestige Level: <span id="prestige-level">0</span>/5</p>
+            </div>
             <div class="pokeball">
                 <img class="pokeball-img" src="assets/images/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP(event)"/>
             </div>
@@ -138,6 +141,56 @@
             </div>
         </div>
   </div>
+
+  <!-- Prestige Modal -->
+    <div id="prestige-modal" class="prestige-modal-overlay modal-overlay" style="display: none;">
+        <div class="prestige-modal-content modal-content">
+            <span id="close-prestige-modal" class="close-modal">&times;</span>
+            <h2 class="prestige-modal-title">Prestige to Next Region</h2>
+            
+            <div class="prestige-info-container">
+                <div class="prestige-info-item">
+                    <h3>Current Region</h3>
+                    <p id="prestige-current-region">Kanto</p>
+                </div>
+                
+                <div class="prestige-info-item">
+                    <h3>Next Region</h3>
+                    <p id="prestige-next-region">Johto</p>
+                </div>
+                
+                <div class="prestige-info-item">
+                    <h3>Current Multiplier</h3>
+                    <p><span id="prestige-current-multiplier">1.2</span>×</p>
+                </div>
+                
+                <div class="prestige-info-item">
+                    <h3>Next Multiplier</h3>
+                    <p><span id="prestige-next-multiplier">2.4</span>×</p>
+                </div>
+            </div>
+            
+            <div class="prestige-requirements">
+                <h3>Requirements</h3>
+                <div class="prestige-currency">
+                    <img class="p-total-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
+                    <span id="prestige-current">100</span> / <span id="prestige-required">0</span>
+                </div>
+                <div class="prestige-progress-bar-container">
+                    <div id="prestige-progress-bar" class="prestige-progress-bar"></div>
+                </div>
+            </div>
+            
+            <div class="prestige-warning">
+                <p>⚠️ Warning: Prestiging will reset all your upgrades and currency, but you'll earn rewards faster!</p>
+            </div>
+            
+            <div class="prestige-buttons">
+                <button id="cancel-prestige" class="prestige-button cancel-button">Cancel</button>
+                <button id="confirm-prestige" class="prestige-button confirm-button" disabled>Confirm Prestige</button>
+            </div>
+        </div>
+    </div>
       
     <div class="footer">
         <button id="friends-toggle" class="btn-custom">Friends</button>

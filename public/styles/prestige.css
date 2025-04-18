@@ -22,3 +22,177 @@
     background: #888;
     cursor: not-allowed;
 }
+
+.prestige-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  
+.prestige-modal-content {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 4px solid #ffcc00;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+    color: white;
+    width: 90%;
+    max-width: 550px;
+    padding: 25px;
+    position: relative;
+    animation: modal-appear 0.3s ease-out;
+}
+  
+@keyframes modal-appear {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+  
+.prestige-modal-title {
+    font-family: 'PokemonTitle', serif;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+  
+.prestige-info-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+  
+.prestige-info-item {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+}
+  
+.prestige-info-item h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #a3a3ff;
+}
+  
+.prestige-info-item p {
+    font-size: 20px;
+    font-weight: bold;
+}
+  
+.prestige-requirements {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+  
+.prestige-requirements h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #a3a3ff;
+}
+  
+.prestige-currency {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+  
+.prestige-currency img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    filter: invert(1);
+}
+  
+.prestige-progress-bar-container {
+    background: rgba(0, 0, 0, 0.3);
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+  
+.prestige-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #ff0000, #ffcc00);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+  
+.prestige-warning {
+    background: rgba(255, 0, 0, 0.2);
+    border-left: 4px solid #ff0000;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+  
+.prestige-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+  
+.prestige-button {
+    padding: 10px 25px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'PokemonText', serif;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+  
+.cancel-button {
+    background-color: #6c757d;
+    color: white;
+}
+  
+.cancel-button:hover {
+    background-color: #5a6268;
+    letter-spacing: 2px;
+}
+  
+.confirm-button {
+    background-color: #ffcc00;
+    color: #000;
+}
+  
+.confirm-button:hover:not([disabled]) {
+    background-color: #ffd700;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+    letter-spacing: 2px;
+}
+  
+.confirm-button:disabled {
+    background-color: #999;
+    color: #555;
+    cursor: not-allowed;
+    letter-spacing: 1px;
+}
+  
+  #close-prestige-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+  
+  #close-prestige-modal:hover {
+    transform: scale(1.2);
+}
