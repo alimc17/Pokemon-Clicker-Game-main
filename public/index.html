@@ -4,6 +4,7 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pokeclickr</title>
+<<<<<<< HEAD
     <link rel="icon" type="image/png" href="./assets/images/favicon.png" />
     <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet" />
     <link rel="stylesheet" href="styles/general.css" />
@@ -12,11 +13,21 @@
     <link rel="stylesheet" href="styles/upgrade_table.css" />
     <link rel="stylesheet" href="styles/friends.css" />
     <link rel="stylesheet" href="styles/prestige.css" />
+=======
+
+    <link href="https://fonts.cdnfonts.com/css/pokemon-hollow" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles/general.css"/>
+    <link rel="stylesheet" href="styles/nav.css"/>
+    <link rel="stylesheet" href="styles/footer.css"/>
+    <link rel="stylesheet" href="styles/upgrade_table.css"/>
+    <link rel="stylesheet" href="styles/friends.css"/>
+    <link rel="stylesheet" href="styles/gambling.css"/>
+>>>>>>> parent of d7f8030 (prestiging (except it doesnt prestige [well it does but not really]))
 </head>
 <body>
 
     <video class="bg-video" autoplay muted loop playsinline>
-        <source src="assets/videos/kanto.mp4" type="video/mp4"/>
+        <source src="assets/videos/pokemon-emerald-waterfall-pixel-moewalls-com.mp4" type="video/mp4"/>
     </video>
     <div class="bg-overlay"></div>
 
@@ -40,7 +51,7 @@
         </div>
 
         <div class="mid-main">
-            <div class="Region">Kanto</div>
+            <div class="Region">Region</div>
             <div class="pokeball">
                 <img class="pokeball-img" src="assets/images/pokeball-img.png" alt="pokeball :3" draggable="false" onclick="incrementP(event)"/>
             </div>
@@ -132,19 +143,7 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Prestige Modal -->
-    <div id="prestige-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <span id="close-prestige-modal" class="close-modal">&times;</span>
-            <h3>Prestige</h3>
-            <p id="prestige-message"></p>
-            <button class="prestige-button" id="confirm-prestige" style="display: none;">Confirm Prestige</button>
-            <button class="prestige-button" id="close-prestige-modal-btn">Close</button>
-        </div>
-    </div>
-
+  </div>
       
     <div class="footer">
         <button id="friends-toggle" class="btn-custom">Friends</button>
