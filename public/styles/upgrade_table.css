@@ -104,3 +104,146 @@
 .upgrades-container::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+
+.upgrade-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+    width: 455px;
+}
+
+.tab-button {
+    padding: 8px 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 2px solid white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-family: 'PokemonText', serif;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.tab-button:hover {
+    background-color: rgba(204, 0, 0, 0.7);
+    letter-spacing: 1.5px;
+}
+
+.tab-button.active {
+    background-color: rgba(204, 0, 0, 0.9);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.berry-upgrade {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.75);
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.2s ease;
+    overflow: visible;
+    width: 300px;
+    margin-left: 5px;
+    opacity: 1;
+}
+
+.berry-upgrade.purchased {
+    border-color: #4CAF50;
+    background-color: rgba(0, 50, 0, 0.75);
+    cursor: default;
+}
+
+.berry-upgrade:hover:not(.purchased) {
+    transform: scale(1.02);
+}
+
+.berry-img {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    padding: 5px;
+}
+
+.berry-info-tooltip {
+    padding: 12px 16px;
+    min-width: 150px;
+    width: auto;
+    height: auto;
+    max-width: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.berry-effect-title {
+    font-size: 14px;
+    color: #ffffff;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.berry-multiplier {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.berry-multiplier .current-value {
+    color: #cccccc;
+}
+
+.berry-multiplier .arrow {
+    color: #ffcc00;
+    font-weight: bold;
+}
+
+.berry-multiplier .new-value {
+    color: #4caf50;
+    font-weight: bold;
+}
+
+.berry-gain {
+    color: #4caf50;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.berry-multiplier-value {
+    color: #ffcc00;
+    font-size: 12px;
+    font-style: italic;
+}
+
+/* Make the tooltip appear smoother */
+.berry-upgrade:hover .next-upg-info {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Improve the purchased berry appearance */
+.berry-upgrade.purchased {
+    border-color: #4CAF50;
+    background-color: rgba(0, 50, 0, 0.75);
+    cursor: default;
+}
+
+.berry-upgrade.purchased .berry-img {
+    filter: brightness(1.2);
+}

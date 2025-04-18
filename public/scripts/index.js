@@ -104,6 +104,16 @@ function handlePrestigeConfirmation() {
         window.ppc = 1;
         window.pps = 0;
         window.upgrades = [];
+        
+        if (window.berries) {
+            window.berries.forEach(berry => {
+                berry.purchased = false;
+                berry.visible = false;
+            });
+            window.berries[0].visible = true;
+            window.purchasedBerries = [];
+            renderVisibleBerries();
+        }
 
         window.prestigeLevel++;
         window.rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
@@ -145,7 +155,6 @@ function handlePrestigeConfirmation() {
             }, i * 300);
         }
         
-        // Save to Firebase/localStorage
         updateGameProgress({});
     }
 }
@@ -204,7 +213,7 @@ function generateUpgrades(pokemonList) {
 }
 
 function renderVisibleUpgrades() {
-    const upgradeContainer = document.querySelector('.upgrades-container');
+    const upgradeContainer = document.getElementById('pokemon-container') || document.querySelector('.upgrades-container');
     upgradeContainer.innerHTML = '';
     
     upgrades.forEach((upgrade, index) => {
@@ -318,10 +327,283 @@ function buyGeneratedUpgrade(index) {
         ppcText.innerHTML = Math.round(window.ppc);
         ppsText.innerHTML = Math.round(window.pps);
         
-        // Save after buying upgrade
         updateGameProgress({});
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (!window.berriesLoaded) {
+        fetchBerries();
+    }
+    
+    const gamblingButton = document.querySelector('.gambling');
+    if (gamblingButton) {
+        gamblingButton.addEventListener('click', function() {
+            const gamblingModal = document.getElementById('gambling-modal');
+            if (gamblingModal) {
+                gamblingModal.style.display = 'flex';
+            }
+        });
+    }
+});
+
+window.berries = [];
+window.berriesLoaded = false;
+window.purchasedBerries = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    setupTabs();
+    
+    if (!window.berriesLoaded) {
+        fetchBerries();
+    }
+});
+
+function setupTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+            switchTab(tabName);
+        });
+    });
+}
+
+function switchTab(tabName) {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
+        if (button.getAttribute('data-tab') === tabName) {
+            button.classList.add('active');
+        } else {
+            button.classList.remove('active');
+        }
+    });
+
+    const pokemonContainer = document.getElementById('pokemon-container');
+    const berriesContainer = document.getElementById('berries-container');
+
+    if (tabName === 'pokemon') {
+        pokemonContainer.style.display = 'flex';
+        berriesContainer.style.display = 'none';
+    } else if (tabName === 'berries') {
+        pokemonContainer.style.display = 'none';
+        berriesContainer.style.display = 'flex';
+        
+        if (window.berriesLoaded && !hasVisibleBerry()) {
+            showNextBerry();
+        }
+    }
+}
+
+async function fetchBerries() {
+    try {
+        const allBerries = [];
+        let url = 'https://pokeapi.co/api/v2/berry/?limit=43';
+        
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        window.berries = data.results.slice(0, 43).map((berry, index) => {
+            const id = getBerryIdFromUrl(berry.url);
+            const baseCost = 100 * Math.pow(5, index);
+            const multiplierValue = calculateBerryMultiplier(index);
+            
+            return {
+                id: id,
+                name: berry.name,
+                url: berry.url,
+                cost: Math.round(baseCost),
+                multiplier: multiplierValue,
+                visible: index === 0,
+                purchased: false,
+                effect: index % 2 === 0 ? 'click' : 'second'
+            };
+        });
+        
+        window.berriesLoaded = true;
+        renderVisibleBerries();
+        
+        fetchBerryDetails();
+        
+    } catch (error) {
+        console.error("Error fetching berries:", error);
+    }
+}
+
+function getBerryIdFromUrl(url) {
+    const match = url.match(/\/berry\/(\d+)\//);
+    return match ? match[1] : "1";
+}
+
+function calculateBerryMultiplier(index) {
+    const baseMultiplier = 0.2 + (index * 0.1);
+    const randomFactor = 1 + (Math.random() * 0.2 - 0.1);
+    return parseFloat((baseMultiplier * randomFactor).toFixed(2));
+}
+
+async function fetchBerryDetails() {
+    for (let berry of window.berries) {
+        try {
+            const response = await fetch(berry.url);
+            const data = await response.json();
+            
+            const itemResponse = await fetch(data.item.url);
+            const itemData = await itemResponse.json();
+            
+            berry.sprite = itemData.sprites.default;
+            
+            const berryElement = document.querySelector(`.berry-upgrade[data-id="${berry.id}"]`);
+            if (berryElement) {
+                const imgElement = berryElement.querySelector('.berry-img');
+                if (imgElement && berry.sprite) {
+                    imgElement.src = berry.sprite;
+                }
+            }
+        } catch (error) {
+            console.error(`Error fetching details for berry ${berry.name}:`, error);
+        }
+    }
+}
+
+function renderVisibleBerries() {
+    const berriesContainer = document.getElementById('berries-container');
+    if (!berriesContainer) return;
+    
+    berriesContainer.innerHTML = '';
+    
+    window.berries.forEach((berry, index) => {
+        if (!berry.visible) return;
+        
+        const berryDiv = document.createElement('div');
+        berryDiv.classList.add('berry-upgrade');
+        berryDiv.setAttribute('data-id', berry.id);
+        berryDiv.setAttribute('data-index', index);
+        
+        if (berry.purchased) {
+            berryDiv.classList.add('purchased');
+        } else {
+            berryDiv.onclick = () => buyBerry(index);
+        }
+        
+        const spriteUrl = berry.sprite || `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/berries/${berry.name}-berry.png`;
+        
+        const currentValueType = berry.effect === 'click' ? window.ppc : window.pps;
+        const newValue = Math.round(currentValueType * (1 + berry.multiplier));
+        const increaseAmount = Math.round(newValue - currentValueType);
+        
+        berryDiv.innerHTML = `
+            <div class="left-upg">
+                <img class="berry-img" src="${spriteUrl}" alt="${berry.name}" draggable="false"/>
+            </div>
+            <div class="mid-upg">
+                <h4>${berry.name.charAt(0).toUpperCase() + berry.name.slice(1)} Berry</h4>
+                <div class="cost-info">
+                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
+                    <span class="upg-cost">${berry.purchased ? 'Purchased' : berry.cost}</span>
+                </div>
+            </div>
+            <div class="right-upg">
+                <p>${berry.purchased ? 'Active' : 'Inactive'}</p>
+            </div>
+            <div class="next-upg-info berry-info-tooltip">
+                <p class="berry-gain">+${increaseAmount} per ${berry.effect}</p>
+                <p class="berry-multiplier-value">(×${berry.multiplier + 1} multiplier)</p>
+            </div>
+        `;
+        
+        berriesContainer.appendChild(berryDiv);
+    });
+}
+
+function buyBerry(index) {
+    const berry = window.berries[index];
+    if (!berry || berry.purchased || window.pTotal < berry.cost) return;
+    
+    window.pTotal -= berry.cost;
+    pTotalElement.innerHTML = Math.round(window.pTotal);
+    
+    berry.purchased = true;
+    window.purchasedBerries.push(berry);
+    
+    if (berry.effect === 'click') {
+        window.ppc *= (1 + berry.multiplier);
+        ppcText.innerHTML = Math.round(window.ppc);
+    } else {
+        window.pps *= (1 + berry.multiplier);
+        ppsText.innerHTML = Math.round(window.pps);
+    }
+    
+    /* 
+    TODO: maybe sfx idk
+    const berrySFX = new Audio('assets/audio/sfx.wav');
+    berrySFX.volume = 0.3;
+    berrySFX.playbackRate = 1.5;
+    berrySFX.play();
+    */
+    
+    renderVisibleBerries();
+    
+    showNextBerry();
+    
+    updateGameProgress({});
+}
+
+function showNextBerry() {
+    let foundNext = false;
+    
+    for (let i = 0; i < window.berries.length; i++) {
+        if (window.berries[i].visible && !window.berries[i].purchased) {
+            foundNext = true;
+            break;
+        }
+    }
+    
+    if (!foundNext) {
+        for (let i = 0; i < window.berries.length; i++) {
+            if (!window.berries[i].purchased) {
+                window.berries[i].visible = true;
+                renderVisibleBerries();
+                break;
+            }
+        }
+    }
+}
+
+function hasVisibleBerry() {
+    return window.berries.some(berry => berry.visible && !berry.purchased);
+}
+
+window.updateGameProgress = function(data) {
+    data.purchasedBerries = window.purchasedBerries.map(berry => berry.id);
+    data.berries = window.berries;
+    
+    originalUpdateGameProgress(data);
+};
+
+const originalApplyGameState = window.applyGameState || function() {};
+
+window.applyGameState = function(gameState) {
+    originalApplyGameState(gameState);
+    
+    if (gameState.berries) {
+        window.berries = gameState.berries;
+        window.berriesLoaded = true;
+    }
+    
+    if (gameState.purchasedBerries && Array.isArray(gameState.purchasedBerries)) {
+        window.purchasedBerries = [];
+        
+        gameState.purchasedBerries.forEach(berryId => {
+            const berry = window.berries.find(b => b.id === berryId);
+            if (berry) {
+                berry.purchased = true;
+                window.purchasedBerries.push(berry);
+            }
+        });
+    }
+    
+    renderVisibleBerries();
+};
 
 function incrementP(event) {
     clickSFX.playbackRate = 0.8 + Math.random() * 0.4;
@@ -373,17 +655,17 @@ function createSparkles(x, y, amount = 10) {
 
 setInterval(() => {
     window.pTotal += window.pps / 10;
-    pTotal.innerHTML = Math.round(window.pTotal);
-    ppcText.innerHTML = Math.round(window.ppc);
-    ppsText.innerHTML = Math.round(window.pps);
-}, 100);
+  
+    pTotalElement.innerHTML = Math.round(window.pTotal);
+  
+    ppcText.innerHTML   = Math.round(window.ppc);
+    ppsText.innerHTML   = Math.round(window.pps);
+  }, 100);
 
 (async () => {
     getPokemon(regionData[prestigeLevel].startId);
     generateUpgrades(pokemon);
 })();
-
-
 
 
 function loadFromLocalStorage() {
