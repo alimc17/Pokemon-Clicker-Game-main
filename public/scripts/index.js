@@ -1,53 +1,3 @@
-/*
-// Set default value
-window.pTotal = 0;
-
-document.addEventListener("DOMContentLoaded", () => {
-    // Just update the display — actual value will be set later in script.js
-    document.querySelector('.p-total').textContent = window.pTotal;
-});
-
-// Clicking the pokeball increases pTotal
-function incrementP() {
-    window.pTotal++;
-    document.querySelector('.p-total').textContent = window.pTotal;
-
-    const user = firebase.auth().currentUser;
-    if (user) {
-        updateGameProgress({ gameData: { pTotal: window.pTotal } });
-    } else {
-        localStorage.setItem('guestProgress', window.pTotal.toString());
-    }
-}
-
-// Save progress before page unloads
-window.addEventListener('beforeunload', () => {
-    const user = firebase.auth().currentUser;
-    if (user) {
-        updateGameProgress({ gameData: { pTotal: window.pTotal } });
-    }
-});
-
-function buyUpg() {
-    const upgCost = document.querySelector('.upg-cost');
-    const upgLevel = document.querySelector('.upg-level')
-    const cost = parseInt(upgCost.textContent);
-
-    if (window.pTotal >= cost) {
-        window.pTotal -= cost;
-        document.querySelector('.p-total').textContent = window.pTotal;
-        upgLevel.textContent = parseInt(upgLevel.textContent) + 1;
-
-        const user = firebase.auth().currentUser;
-        if (user) {
-            updateGameProgress({ gameData: { pTotal: window.pTotal } });
-        } else {
-            localStorage.setItem('guestProgress', window.pTotal.toString());
-        }
-    }
-}
-*/
-
 window.pTotal = 0;
 window.ppc = 1;
 window.pps = 0;
@@ -125,13 +75,13 @@ function updatePrestigeModal() {
     currentMultiplierEl.textContent = currentMult.toFixed(2);
     nextMultiplierEl.textContent = nextMult.toFixed(2);
 
-    currentPrestigeEl.textContent = Math.round(window.PTotal);
+    currentPrestigeEl.textContent = Math.round(window.pTotal);
     requiredPrestigeEl.textContent = PRESTIGE_REQUIREMENT;
 
-    const progressPercentage = Math.min(100, (window.PTotal / PRESTIGE_REQUIREMENT) * 100);
+    const progressPercentage = Math.min(100, (window.pTotal / PRESTIGE_REQUIREMENT) * 100);
     progressBarEl.style.width = `${progressPercentage}%`;
 
-    if (window.PTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
+    if (window.pTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
         confirmPrestige.disabled = false;
     } else {
         confirmPrestige.disabled = true;
@@ -422,8 +372,8 @@ function createSparkles(x, y, amount = 10) {
 }
 
 setInterval(() => {
-    window.PTotal += window.pps / 10;
-    pTotal.innerHTML = Math.round(window.PTotal);
+    window.pTotal += window.pps / 10;
+    pTotal.innerHTML = Math.round(window.pTotal);
     ppcText.innerHTML = Math.round(window.ppc);
     ppsText.innerHTML = Math.round(window.pps);
 }, 100);
