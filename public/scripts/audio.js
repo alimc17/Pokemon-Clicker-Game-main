@@ -17,10 +17,8 @@ let sources = [null, null];
 let current = 0;
 let nextTrackIndex = Math.floor(Math.random() * bgmFiles.length);
 let playlist = [...bgmFiles];
-
-const volume = 0.1;
-
-gainNodes[0].gain.value = volume;
+  
+gainNodes[0].gain.value = 0.1;
 gainNodes[1].gain.value = 0;
   
 gainNodes[0].connect(audioCtx.destination);
@@ -63,10 +61,10 @@ async function crossfade() {
     sources[next].start();
   
     gainNodes[next].gain.setValueAtTime(0, audioCtx.currentTime);
-    gainNodes[next].gain.linearRampToValueAtTime(volume, audioCtx.currentTime + fadeTime);
+    gainNodes[next].gain.linearRampToValueAtTime(1, audioCtx.currentTime + fadeTime);
   
     gainNodes[old].gain.setValueAtTime(1, audioCtx.currentTime);
-    gainNodes[old].gain.linearRampToValueAtTime(volume, audioCtx.currentTime + fadeTime);
+    gainNodes[old].gain.linearRampToValueAtTime(0, audioCtx.currentTime + fadeTime);
 }
   
 async function startMusic() {
