@@ -97,6 +97,9 @@
 }
   
 .question-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: #333;
     border: 2px solid white;
     border-radius: 10px;
@@ -104,6 +107,15 @@
     padding: 20px;
     color: #fff;
     text-align: center;
+    height: 84px;
+    overflow: hidden;
+}
+
+.question-slot img {
+    border-radius: 8px;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
 }
 
 @keyframes modalFadeIn {
@@ -145,20 +157,84 @@
       opacity: 0;
     }
 }
-  
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+        filter: brightness(2);
+    }
+    60% {
+        transform: scale(1.2);
+        opacity: 1;
+        filter: brightness(1.2);
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+
 .modal-content.animate-in {
     animation: modalFadeIn 0.3s ease-out forwards;
 }
-  
+
 .modal-content.animate-out {
     animation: modalFadeOut 0.2s ease-in forwards;
 }
 
-  
+
 .modal-overlay.animate-in {
     animation: overlayFadeIn 0.3s ease-out forwards;
 }
-  
+
 .modal-overlay.animate-out {
     animation: overlayFadeOut 0.2s ease-in forwards;
+}
+
+.legendary-reveal {
+    animation: popIn 0.6s ease-out forwards;
+    border: 2px solid gold;
+    box-shadow: 0 0 15px gold;
+    border-radius: 8px;
+}
+
+.legendary-slot {
+    position: relative;
+    cursor: help;
+}
+
+.legendary-slot:hover::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 1000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    pointer-events: none; 
+}
+
+.question-slot[data-name]:hover::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #222;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 10;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
 }
