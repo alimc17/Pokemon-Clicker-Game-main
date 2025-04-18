@@ -60,26 +60,70 @@ let pokeball = document.querySelector('.pokeball');
 
 let pokemon = [];
 let pokemonOfType = [];
-const upgrades = [];
+let upgrades = [];
 
 const clickSFX = new Audio('assets/audio/click.wav');
 clickSFX.volume = 0.2;
 
-async function getPokemon() {
-    let url = 'https://pokeapi.co/api/v2/pokemon?limit=150';
+let prestigeLevel = 0;
+let rewardMultiplier = 1;
+const maxPrestige = 5;
+
+const regionData = [
+    { name: "Kanto", startId: 1, bg: "assets/videos/kanto.mp4" },
+    { name: "Johto", startId: 152, bg: "assets/videos/johto.mp4" },
+    { name: "Hoenn", startId: 252, bg: "assets/videos/hoenn.mp4" },
+    { name: "Sinnoh", startId: 387, bg: "assets/videos/sinnoh.mp4" },
+    { name: "Unova", startId: 495, bg: "assets/videos/unova.mp4" },
+];
+
+const prestigeButton = document.getElementById('prestige-button');
+const regionNameEl = document.getElementById('region-name');
+const prestigeLevelEl = document.getElementById('prestige-level');
+
+prestigeButton.addEventListener('click', handlePrestige);
+
+function handlePrestige() {
+    if (parsedPTotal < 100 || prestigeLevel >= maxPrestige) return;
+
+    parsedPTotal = 0;
+    pTotal.innerHTML = parsedPTotal;
+    ppc = 1;
+    pps = 0;
+    upgrades.length = 0; // clear upgrades
+
+    prestigeLevel++;
+    rewardMultiplier = parseFloat((1.2 * prestigeLevel).toFixed(2));
+
+    // Update UI
+    regionNameEl.innerText = regionData[prestigeLevel].name;
+    prestigeLevelEl.innerText = prestigeLevel;
+    prestigeButton.disabled = prestigeLevel >= maxPrestige;
+
+    // Change background
+    const videoElement = document.querySelector('.bg-video');
+    videoElement.querySelector('source').src = regionData[prestigeLevel].bg;
+    videoElement.load();
+
+    // Fetch new Pokémon and regenerate upgrades
+    getPokemon(regionData[prestigeLevel].startId);
+}
+
+async function getPokemon(startId) {
+    const url = `https://pokeapi.co/api/v2/pokemon?offset=${startId - 1}&limit=15`;
     try {
         const response = await fetch(url);
         const data = await response.json();
         pokemon = data.results;
-        console.log(`Fetched ${pokemon.length} Pokémon`);
+        generateUpgrades(pokemon);
     } catch (error) {
-        console.error("Error fetching Pokémon:", error);
+        console.error("Error fetching Pokémon for region:", error);
     }
 }
 
 function getPokemonIdFromUrl(url) {
-    const parts = url.split('/');
-    return parts[parts.length - 2];
+    const match = url.match(/\/pokemon\/(\d+)\//);
+    return match ? match[1] : "1";
 }
 
 function generateUpgrades(pokemonList) {
@@ -90,6 +134,8 @@ function generateUpgrades(pokemonList) {
     const baseIncrease = 1;
     const costMultiplier = 1.55;
     const powerMultiplier = 1.25;
+
+    upgrades.length = 0; // Clear upgrades array
 
     for (let i = 0; i < 15; i++) {
         const poke = pokemonList[i];
@@ -225,6 +271,6 @@ setInterval(() => {
 }, 100);
 
 (async () => {
-    await getPokemon();
+    getPokemon(regionData[prestigeLevel].startId);
     generateUpgrades(pokemon);
 })();

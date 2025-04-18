@@ -1,0 +1,24 @@
+.prestige-section {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    color: white;
+    margin-top: 20px;
+}
+
+#prestige-button {
+    background: #ffcc00;
+    color: black;
+    font-weight: bold;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+#prestige-button:disabled {
+    background: #888;
+    cursor: not-allowed;
+}
