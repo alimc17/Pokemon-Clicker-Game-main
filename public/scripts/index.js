@@ -171,7 +171,7 @@ async function getPokemon(startId) {
         const response = await fetch(url);
         const data = await response.json();
         pokemon = data.results;
-    //    generateUpgrades(pokemon);
+        generateUpgrades(pokemon);
     } catch (error) {
         console.error("Error fetching Pokémon for region:", error);
     }
