@@ -11,6 +11,8 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     font-size: 14px;
+    position: relative; 
+    overflow: hidden;
 }
 
 #prestige-button:hover {
@@ -159,7 +161,24 @@
     letter-spacing: 1px;
     text-transform: uppercase;
 }
-  
+
+#prestige-button-progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #f00, #fff);
+    width: 0%;
+    transition: width 0.5s ease;
+    z-index: 1; /* Place behind the text */
+    opacity: 0.7; /* Make it slightly transparent */
+}
+
+#prestige-button-text {
+    position:relative;
+    z-index: 2; /* Place above the progress bar */
+}
+
 .cancel-button {
     background-color: #6c757d;
     color: white;

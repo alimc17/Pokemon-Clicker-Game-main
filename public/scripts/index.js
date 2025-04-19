@@ -48,6 +48,7 @@ const nextMultiplierEl = document.getElementById('prestige-next-multiplier');
 const requiredPrestigeEl = document.getElementById('prestige-required');
 const currentPrestigeEl = document.getElementById('prestige-current');
 const progressBarEl = document.getElementById('prestige-progress-bar'); 
+const progressButtonEl = document.getElementById('prestige-button-progress'); 
 
 const PRESTIGE_REQUIREMENT = 100;
 
@@ -78,11 +79,19 @@ function updatePrestigeModal() {
 
     const progressPercentage = Math.min(100, (window.pTotal / PRESTIGE_REQUIREMENT) * 100);
     progressBarEl.style.width = `${progressPercentage}%`;
+    progressButtonEl.style.width = `${progressPercentage}%`; 
 
     if (window.pTotal >= PRESTIGE_REQUIREMENT && window.prestigeLevel < maxPrestige) {
         confirmPrestige.disabled = false;
     } else {
         confirmPrestige.disabled = true;
+    }
+}
+
+function updatePrestigeButtonProgress() {
+    const progressPercentage = Math.min(100, (window.pTotal / PRESTIGE_REQUIREMENT) * 100);
+    if (progressButtonEl) {
+        progressButtonEl.style.width = `${progressPercentage}%`;
     }
 }
 
@@ -638,6 +647,7 @@ function incrementP(event) {
     div.classList.add('fade-up');
     setTimeout(() => div.remove(), 800);
     updateGameProgress({});
+    updatePrestigeButtonProgress();
 }
 
 function createSparkles(x, y, amount = 10) {
@@ -667,6 +677,7 @@ setInterval(() => {
 
 setInterval(() => {
     updateGameProgress({});
+    updatePrestigeButtonProgress();
 }, 5000);
     
 (async () => {
