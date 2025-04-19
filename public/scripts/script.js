@@ -78,8 +78,8 @@ function saveToLocalStorage(gameState) {
 
 // Wait until DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-    const leftNav = document.getElementById('nav-left');
-    const rightNav = document.getElementById('nav-right');
+    const leftNav = document.getElementById('nav-left-id');
+    const rightNav = document.getElementById('nav-right-id');
     
     // Save progress before page unloads
     window.addEventListener('beforeunload', () => {
@@ -99,8 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updateNav(user) {
-    const leftNav = document.getElementById('nav-left');
-    const rightNav = document.getElementById('nav-right');
+    const leftNav = document.getElementById('nav-left-id');
+    const rightNav = document.getElementById('nav-right-id');
     const welcomeContainer = document.getElementById('welcome-container');
 
     // Clear old content
