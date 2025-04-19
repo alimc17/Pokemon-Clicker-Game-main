@@ -3,6 +3,32 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// at top of the file, alongside your other globals:
+function updatePrestigeUI() {
+    const regionNameEl    = document.getElementById('region-name');
+    const prestigeLevelEl = document.getElementById('prestige-level');
+    const prestigeButton  = document.getElementById('prestige-button');
+   
+    if (!regionNameEl || !prestigeLevelEl || !prestigeButton || !window.regionData) return;
+    console.log('updatePrestigeUI → level:', window.prestigeLevel,
+        'video src should be:', window.regionData[window.prestigeLevel].bg);
+    // name & level text
+    regionNameEl.textContent    = window.regionData[window.prestigeLevel].name;
+    prestigeLevelEl.textContent = window.prestigeLevel;
+  
+    // disable button at max
+    prestigeButton.disabled = window.prestigeLevel >= maxPrestige;
+  
+    // swap the background video
+    const videoEl = document.querySelector('.bg-video');
+    if (videoEl) {
+      const src = videoEl.querySelector('source');
+      src.src = window.regionData[window.prestigeLevel].bg;
+      videoEl.load();
+    }
+  }
+  
+
 // Save game progress to Firebase for users or localStorage for guests
 function updateGameProgress(newProgress) {
     const user = firebase.auth().currentUser;
@@ -188,6 +214,8 @@ async function applyGameState(gameState) {
     window.prestigeLevel = prestigeLevel || 0;
     window.rewardMultiplier = rewardMultiplier || 1;
     
+    updatePrestigeUI();
+
     // Update DOM
     if (document.querySelector('.p-total')) {
         document.querySelector('.p-total').textContent = Math.round(window.pTotal);
@@ -204,11 +232,7 @@ async function applyGameState(gameState) {
     if (document.getElementById('prestige-level')) {
         document.getElementById('prestige-level').textContent = window.prestigeLevel;
     }
-    
-    if (document.getElementById('region-name') && window.regionData) {
-        document.getElementById('region-name').textContent = window.regionData[window.prestigeLevel].name;
-    }
-    
+  
 
     generateUpgrades(pokemon);
 

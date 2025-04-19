@@ -21,8 +21,7 @@ let pokemonOfType = [];
 const clickSFX = new Audio('assets/audio/click.wav');
 clickSFX.volume = 0.2;
 
-let prestigeLevel = 0;
-let rewardMultiplier = calculateRewardMultiplier(prestigeLevel);
+let rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
 const maxPrestige = 5;
 
 const regionData = [
@@ -64,13 +63,13 @@ function calculateRewardMultiplier(level) {
 }
 
 function updatePrestigeModal() {
-    currentRegionEl.textContent = regionData[prestigeLevel].name;
-    nextRegionEl.textContent = prestigeLevel < maxPrestige - 1 ? 
-                             regionData[prestigeLevel + 1].name : 
+    currentRegionEl.textContent = regionData[window.prestigeLevel].name;
+    nextRegionEl.textContent = window.prestigeLevel < maxPrestige - 1 ? 
+                             regionData[window.prestigeLevel + 1].name : 
                              'Max Level Reached';
 
-    const currentMult = calculateRewardMultiplier(prestigeLevel);
-    const nextMult = calculateRewardMultiplier(prestigeLevel + 1);
+    const currentMult = calculateRewardMultiplier(window.prestigeLevel);
+    const nextMult = calculateRewardMultiplier(window.prestigeLevel + 1);
     currentMultiplierEl.textContent = currentMult.toFixed(2);
     nextMultiplierEl.textContent = nextMult.toFixed(2);
 
@@ -80,7 +79,7 @@ function updatePrestigeModal() {
     const progressPercentage = Math.min(100, (window.pTotal / PRESTIGE_REQUIREMENT) * 100);
     progressBarEl.style.width = `${progressPercentage}%`;
 
-    if (window.pTotal >= PRESTIGE_REQUIREMENT && prestigeLevel < maxPrestige) {
+    if (window.pTotal >= PRESTIGE_REQUIREMENT && window.prestigeLevel < maxPrestige) {
         confirmPrestige.disabled = false;
     } else {
         confirmPrestige.disabled = true;
@@ -96,66 +95,70 @@ function closeModal() {
     prestigeModal.style.display = 'none';
 }
 
-function handlePrestigeConfirmation() {
-    if (window.pTotal >= PRESTIGE_REQUIREMENT && window.prestigeLevel < maxPrestige) {
-        window.pTotal = 0;
-        pTotalElement.innerHTML = window.pTotal;
-        window.ppc = 1;
-        window.pps = 0;
-        window.upgrades = [];
-        
-        if (window.berries) {
-            window.berries.forEach(berry => {
-                berry.purchased = false;
-                berry.visible = false;
-            });
-            window.berries[0].visible = true;
-            window.purchasedBerries = [];
-            renderVisibleBerries();
-        }
-
-        window.prestigeLevel++;
-        window.rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
-
-        regionNameEl.innerText = regionData[window.prestigeLevel].name;
-        prestigeLevelEl.innerText = window.prestigeLevel;
-        ppcText.innerHTML = window.ppc;
-        ppsText.innerHTML = window.pps;
-        prestigeButton.disabled = window.prestigeLevel >= maxPrestige;
-
-        if (currentMultiplierEl && nextMultiplierEl) {
-            currentMultiplierEl.textContent = window.rewardMultiplier.toFixed(2);
-            nextMultiplierEl.textContent = calculateRewardMultiplier(window.prestigeLevel + 1).toFixed(2);
-        }
-
-        const videoElement = document.querySelector('.bg-video');
-        videoElement.querySelector('source').src = regionData[window.prestigeLevel].bg;
-        videoElement.load();
-
-        try {
-            const prestigeSFX = new Audio('assets/audio/prestige.wav');
-            prestigeSFX.volume = 0.3;
-            prestigeSFX.play();
-        } catch (error) {
-            console.log("Prestige sound effect not found");
-        }
-
-        getPokemon(regionData[window.prestigeLevel].startId);
-        
-        closeModal();
-        
-        for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-                createSparkles(
-                    Math.random() * window.innerWidth, 
-                    Math.random() * window.innerHeight, 
-                    30
-                );
-            }, i * 300);
-        }
-        
-        updateGameProgress({});
+async function handlePrestigeConfirmation() {
+    if (window.pTotal < PRESTIGE_REQUIREMENT || window.prestigeLevel >= maxPrestige) return;
+    
+    window.pTotal = 0;
+    pTotalElement.innerHTML = window.pTotal;
+    window.ppc = 1;
+    window.pps = 0;
+    window.upgrades = [];
+    
+    if (window.berries) {
+        window.berries.forEach(berry => {
+            berry.purchased = false;
+            berry.visible = false;
+        });
+        window.berries[0].visible = true;
+        window.purchasedBerries = [];
+        renderVisibleBerries();
     }
+
+    window.prestigeLevel++;
+    window.rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
+
+    updatePrestigeModal();
+    regionNameEl.innerText = regionData[window.prestigeLevel].name;
+    prestigeLevelEl.innerText = window.prestigeLevel;
+    
+    ppcText.innerHTML = window.ppc;
+    ppsText.innerHTML = window.pps;
+    
+    prestigeButton.disabled = window.prestigeLevel >= maxPrestige;
+
+    if (currentMultiplierEl && nextMultiplierEl) {
+        currentMultiplierEl.textContent = window.rewardMultiplier.toFixed(2);
+        nextMultiplierEl.textContent = calculateRewardMultiplier(window.prestigeLevel + 1).toFixed(2);
+    }
+
+    const videoElement = document.querySelector('.bg-video');
+    videoElement.querySelector('source').src = regionData[window.prestigeLevel].bg;
+    videoElement.load();
+
+    try {
+        const prestigeSFX = new Audio('assets/audio/prestige.wav');
+        prestigeSFX.volume = 0.3;
+        prestigeSFX.play();
+    } catch (error) {
+        console.log("Prestige sound effect not found");
+    }
+
+    getPokemon(regionData[window.prestigeLevel].startId);
+    
+    closeModal();
+    
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            createSparkles(
+                Math.random() * window.innerWidth, 
+                Math.random() * window.innerHeight, 
+                30
+            );
+        }, i * 300);
+    }
+    
+    updateGameProgress({});
+    
 }
 
 function handlePrestige() {
@@ -183,7 +186,7 @@ function generateUpgrades(pokemonList) {
     const upgradeContainer = document.querySelector('.upgrades-container');
     upgradeContainer.innerHTML = '';
 
-    const baseCost = prestigeLevel === 0 ? 25 : 25 * rewardMultiplier;
+    const baseCost = window.prestigeLevel === 0 ? 25 : 25 * rewardMultiplier;
     const baseIncrease = 1;
     const costMultiplier = 1.55;
     const powerMultiplier = 1.25;
@@ -218,14 +221,14 @@ function renderVisibleUpgrades() {
     window.upgrades.forEach((upgrade, index) => {
         if (!upgrade.visible) return;
         
-        const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
+        const effectiveMultiplier = window.prestigeLevel === 0 ? 1 : rewardMultiplier;
         
         let displayedIncome;
         if (upgrade.level > 0) {
             const nextLevelMultiplier = Math.pow(1.2, upgrade.level);
             displayedIncome = parseFloat((upgrade.increase * effectiveMultiplier * nextLevelMultiplier).toFixed(2));
         } else {
-            displayedIncome = prestigeLevel === 0 ? 
+            displayedIncome = window.prestigeLevel === 0 ? 
                 upgrade.increase : parseFloat((upgrade.increase * effectiveMultiplier).toFixed(2));
         }
         
@@ -662,7 +665,7 @@ setInterval(() => {
   }, 100);
 
 (async () => {
-    getPokemon(regionData[prestigeLevel].startId);
+    getPokemon(regionData[window.prestigeLevel].startId);
     generateUpgrades(pokemon);
 })();
 
