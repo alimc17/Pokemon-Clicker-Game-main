@@ -17,7 +17,6 @@ let pokeball = document.querySelector('.pokeball');
 
 let pokemon = [];
 let pokemonOfType = [];
-let upgrades = [];
 
 const clickSFX = new Audio('assets/audio/click.wav');
 clickSFX.volume = 0.2;
@@ -169,7 +168,7 @@ async function getPokemon(startId) {
         const response = await fetch(url);
         const data = await response.json();
         pokemon = data.results;
-        generateUpgrades(pokemon);
+    //    generateUpgrades(pokemon);
     } catch (error) {
         console.error("Error fetching Pokémon for region:", error);
     }
@@ -189,7 +188,7 @@ function generateUpgrades(pokemonList) {
     const costMultiplier = 1.55;
     const powerMultiplier = 1.25;
 
-    upgrades.length = 0;
+    window.upgrades.length = 0;
 
     for (let i = 0; i < 15; i++) {
         const poke = pokemonList[i];
@@ -206,7 +205,7 @@ function generateUpgrades(pokemonList) {
             visible: i === 0
         };
 
-        upgrades.push(upgrade);
+        window.upgrades.push(upgrade);
     }
 
     renderVisibleUpgrades();
@@ -216,7 +215,7 @@ function renderVisibleUpgrades() {
     const upgradeContainer = document.getElementById('pokemon-container') || document.querySelector('.upgrades-container');
     upgradeContainer.innerHTML = '';
     
-    upgrades.forEach((upgrade, index) => {
+    window.upgrades.forEach((upgrade, index) => {
         if (!upgrade.visible) return;
         
         const effectiveMultiplier = prestigeLevel === 0 ? 1 : rewardMultiplier;
@@ -266,7 +265,7 @@ function renderVisibleUpgrades() {
 }
 
 function buyGeneratedUpgrade(index) {
-    const upgrade = upgrades[index];
+    const upgrade = window.upgrades[index];
     if (window.pTotal >= upgrade.cost) {
         window.pTotal -= upgrade.cost;
         pTotalElement.innerHTML = Math.round(window.pTotal);
@@ -274,8 +273,8 @@ function buyGeneratedUpgrade(index) {
         upgrade.level++;
         upgrade.cost = Math.round(upgrade.cost * upgrade.costMult);
 
-        if (upgrade.level === 1 && index + 1 < upgrades.length) {
-            upgrades[index + 1].visible = true;
+        if (upgrade.level === 1 && index + 1 < window.upgrades.length) {
+            window.upgrades[index + 1].visible = true;
             renderVisibleUpgrades();
         }
 

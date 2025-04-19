@@ -160,10 +160,10 @@ function loadGuestProgress() {
 }
 
 // Apply loaded game state to the game
-function applyGameState(gameState) {
+async function applyGameState(gameState) {
     if (!gameState.gameData) return;
     
-    const { pTotal, ppc, pps, prestigeLevel, rewardMultiplier, upgrades: savedUpgrades } = gameState.gameData;
+    const { pTotal, ppc, pps, prestigeLevel, rewardMultiplier, upgrades: savedUpgrades = [] } = gameState.gameData;
     
     // Update game variables
     window.pTotal = pTotal || 0;
@@ -193,6 +193,20 @@ function applyGameState(gameState) {
         document.getElementById('region-name').textContent = window.regionData[window.prestigeLevel].name;
     }
     
+
+    generateUpgrades(pokemon);
+
+    savedUpgrades.forEach((saved, i) => {
+        const upg = window.upgrades[i];
+        if (!upg) return;
+        upg.level   = saved.level;
+        upg.cost    = saved.cost;
+        upg.visible = saved.visible;
+    });
+
+    renderVisibleUpgrades();
+
+    /*
     // Update upgrades if available
     if (savedUpgrades && savedUpgrades.length && window.upgrades) {
         window.upgrades = savedUpgrades;
@@ -209,5 +223,5 @@ function applyGameState(gameState) {
             sourceElement.src = window.regionData[window.prestigeLevel].bg;
             videoElement.load();
         }
-    }
+    }*/
 }
