@@ -15,7 +15,9 @@ function updateGameProgress(newProgress) {
             pps: window.pps || 0,
             prestigeLevel: window.prestigeLevel || 0,
             rewardMultiplier: window.rewardMultiplier || 1,
-            upgrades: window.upgrades || []
+            upgrades: window.upgrades || [],
+            berries: window.berries    || [],
+            purchasedBerries: window.purchasedBerries.map(b => b.id) || []
         },
         ...newProgress // Merge any additional progress data passed in
     };
@@ -163,7 +165,15 @@ function loadGuestProgress() {
 async function applyGameState(gameState) {
     if (!gameState.gameData) return;
     
-    const { pTotal, ppc, pps, prestigeLevel, rewardMultiplier, upgrades: savedUpgrades = [] } = gameState.gameData;
+    const { pTotal, 
+            ppc, 
+            pps, 
+            prestigeLevel, 
+            rewardMultiplier, 
+            upgrades: savedUpgrades = [],
+            berries: savedBerries       = [],
+            purchasedBerries: savedPurchasedIds = [] 
+    } = gameState.gameData;
     
     // Update game variables
     window.pTotal = pTotal || 0;
@@ -205,6 +215,28 @@ async function applyGameState(gameState) {
     });
 
     renderVisibleUpgrades();
+
+    await fetchBerries();
+
+    savedBerries.forEach((saved, idx) => {
+        if (!window.berries[idx]) return;
+        Object.assign(window.berries[idx], {
+          cost:       saved.cost,
+          multiplier: saved.multiplier,
+          sprite:     saved.sprite,
+          visible:    saved.visible
+        });
+      });
+
+      window.purchasedBerries = [];
+      savedPurchasedIds.forEach(id => {
+        const berry = window.berries.find(b => b.id === id);
+        if (!berry) return;
+        berry.purchased = true;
+        window.purchasedBerries.push(berry);
+      });
+
+      renderVisibleBerries();
 
     /*
     // Update upgrades if available
