@@ -86,14 +86,29 @@ document.addEventListener("DOMContentLoaded", () => {
         updateGameProgress({});
     });
     
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async user => {
         updateNav(user);
 
+        let progress;
         if (user) {
-            loadGameProgress(user.uid);
+          const doc = await db.collection("users").doc(user.uid).get();
+          progress = doc.exists ? doc.data().gameData : null;
         } else {
-            // ONLY load guest data if no user exists
-            loadGuestProgress();
+          const saved = localStorage.getItem('guestProgress');
+          progress = saved ? JSON.parse(saved).gameData : null;
+        }
+    
+        // if we have a saved prestigeLevel > 0, show the button
+        if (progress && progress.prestigeLevel > 0) {
+          const btn = document.getElementById('return-region-btn');
+          btn.style.display = 'inline-block';
+        }
+    
+        // now actually load the progress
+        if (user) {
+          loadGameProgress(user.uid);
+        } else {
+          loadGuestProgress();
         }
     });
 });
@@ -284,3 +299,34 @@ async function applyGameState(gameState) {
         }
     }*/
 }
+
+// handler to jump back to the saved region
+async function returnToRegion() {
+    // make sure game state is fully applied
+    // if user is logged in, reload from Firebase; otherwise from localStorage
+    const user = firebase.auth().currentUser;
+    if (user) {
+      await loadGameProgress(user.uid);
+    } else {
+      loadGuestProgress();
+    }
+    const videoEl = document.querySelector('.bg-video');
+    if (videoEl) {
+      videoEl.querySelector('source').src =
+        regionData[window.prestigeLevel].bg;
+      videoEl.load();
+    }
+  
+    // swap the region name/level
+    document.getElementById('region-name').textContent =
+      regionData[window.prestigeLevel].name;
+    document.getElementById('prestige-level').textContent =
+      window.prestigeLevel;
+    await getPokemon(regionData[lvl].startId);
+    generateUpgrades(pokemon);
+  }
+  
+  // attach the click listener
+  document.getElementById('return-region-btn')
+          .addEventListener('click', returnToRegion);
+  
