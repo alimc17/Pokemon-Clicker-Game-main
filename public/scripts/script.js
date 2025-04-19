@@ -17,7 +17,9 @@ function updateGameProgress(newProgress) {
             rewardMultiplier: window.rewardMultiplier || 1,
             upgrades: window.upgrades || [],
             berries: window.berries    || [],
-            purchasedBerries: window.purchasedBerries.map(b => b.id) || []
+            purchasedBerries: window.purchasedBerries.map(b => b.id) || [],
+            unlockedLegendaries: window.unlockedLegendaries || [],
+            savedLegendaryIndices: window.savedLegendaryIndices || []
         },
         ...newProgress // Merge any additional progress data passed in
     };
@@ -142,25 +144,27 @@ function loadGameProgress(uid) {
 
 function loadGuestProgress() {
     try {
-        const savedProgress = localStorage.getItem('guestProgress');
-        if (savedProgress) {
-            try {
-                // Try parsing as JSON first (new format)
-                const gameState = JSON.parse(savedProgress);
-                applyGameState(gameState);
-                console.log("Progress loaded from localStorage (JSON)");
-            } catch (e) {
-                // Fall back to old format (just pTotal as string)
-                window.pTotal = parseInt(savedProgress);
-                document.querySelector('.p-total').textContent = window.pTotal;
-                console.log("Progress loaded from localStorage (legacy format)");
-            }
-        }
+      const savedProgress = localStorage.getItem('guestProgress');
+      if (savedProgress) {
+        // You have JSON state: restore via applyGameState()
+        const gameState = JSON.parse(savedProgress);
+        applyGameState(gameState);
+        console.log("Progress loaded from localStorage (JSON)");
+      } else {
+        // NO saved state at all → first-ever visitor
+        // 1) Bootstrap the upgrades
+        getPokemon(regionData[0].startId).then(() => generateUpgrades(pokemon));
+        // 2) Bootstrap the berries
+        fetchBerries().then(() => renderVisibleBerries());
+        // 3) **Bootstrap the gambling slots** ← step 5 goes here
+        renderLegendaries();
+        console.log("Initialized fresh game state for a guest");
+      }
     } catch (error) {
-        console.error("Error loading local progress:", error);
+      console.error("Error loading local progress:", error);
     }
-}
-
+  }
+  
 // Apply loaded game state to the game
 async function applyGameState(gameState) {
     if (!gameState.gameData) return;
@@ -172,7 +176,9 @@ async function applyGameState(gameState) {
             rewardMultiplier, 
             upgrades: savedUpgrades = [],
             berries: savedBerries       = [],
-            purchasedBerries: savedPurchasedIds = [] 
+            purchasedBerries: savedPurchasedIds = [],
+            unlockedLegendaries = [],
+            savedLegendaryIndices = []
     } = gameState.gameData;
     
     // Update game variables
@@ -228,24 +234,21 @@ async function applyGameState(gameState) {
         });
       });
 
-      window.purchasedBerries = [];
-      savedPurchasedIds.forEach(id => {
-        const berry = window.berries.find(b => b.id === id);
-        if (!berry) return;
+    window.purchasedBerries = [];
+    savedPurchasedIds.forEach(id => {
+    const berry = window.berries.find(b => b.id === id);
+    if (!berry) return;
         berry.purchased = true;
-        window.purchasedBerries.push(berry);
-      });
+    window.purchasedBerries.push(berry);
+    });
 
-      renderVisibleBerries();
+    renderVisibleBerries();
+
+    window.unlockedLegendaries   = unlockedLegendaries;
+    window.savedLegendaryIndices = savedLegendaryIndices;
+    renderLegendaries();
 
     /*
-    // Update upgrades if available
-    if (savedUpgrades && savedUpgrades.length && window.upgrades) {
-        window.upgrades = savedUpgrades;
-        if (typeof window.renderVisibleUpgrades === 'function') {
-            window.renderVisibleUpgrades();
-        }
-    }
     
     // Update background video if available
     if (document.querySelector('.bg-video') && window.regionData) {

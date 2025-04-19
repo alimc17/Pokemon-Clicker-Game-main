@@ -113,7 +113,9 @@ const legendaries = [
     },
 ]
 
-const unlockedLegendaries = new Array(15).fill(false);
+// these will survive across reloads
+window.unlockedLegendaries      = window.unlockedLegendaries      || new Array(legendaries.length).fill(false);
+window.savedLegendaryIndices    = window.savedLegendaryIndices    || [];   // list of indices we’ve opened
 
 const legendaryButton = document.querySelector('.buy-button');
 legendaryButton.addEventListener('click', buyLegendary);
@@ -121,15 +123,12 @@ legendaryButton.addEventListener('click', buyLegendary);
 function buyLegendary() {
     if (window.pTotal < 5) return;
 
-    const lockedIndexes = unlockedLegendaries
+    const lockedIndexes = window.unlockedLegendaries
         .map((unlocked, index) => !unlocked ? index : null)
         .filter(index => index !== null);
-
     if (lockedIndexes.length === 0) return;
-
     const randomIndex = lockedIndexes[Math.floor(Math.random() * lockedIndexes.length)];
     const legendary = legendaries[randomIndex];
-
     const slot = document.querySelector(`.question-slot[data-index="${randomIndex}"]`);
     slot.innerHTML = `<img src="${legendary.img}" alt="${legendary.name}" style="width: 100%; height: auto;" draggable="false"/>`;
 
@@ -142,7 +141,11 @@ function buyLegendary() {
 
     // Mark as unlocked
     unlockedLegendaries[randomIndex] = true;
-
+    if (!window.savedLegendaryIndices.includes(randomIndex)) {
+        window.savedLegendaryIndices.push(randomIndex);
+      }
+      // push to Firebase / localStorage
+    
     const cryAudio = new Audio(legendary.cry);
     cryAudio.volume = 0.4;
     cryAudio.play();
@@ -150,4 +153,21 @@ function buyLegendary() {
     // Deduct pokédollars
     window.pTotal -= 5;
     pTotal.innerHTML = Math.round(window.pTotal);
+    updateGameProgress({});
 }
+
+function renderLegendaries() {
+    // for each slot the user has opened
+    window.savedLegendaryIndices.forEach(idx => {
+      const legendary = legendaries[idx];
+      const slot = document.querySelector(`.question-slot[data-index="${idx}"]`);
+      if (!slot) return;
+      slot.innerHTML = `
+        <img src="${legendary.img}" alt="${legendary.name}"
+             style="width:100%;height:auto;" draggable="false"/>
+      `;
+      slot.setAttribute('data-name', legendary.name);
+      slot.classList.add('legendary-reveal','legendary-slot');
+    });
+  }
+  
