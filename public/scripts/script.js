@@ -2,7 +2,7 @@
 const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
-
+let leaderboardUnsub = null;
 // at top of the file, alongside your other globals:
 function updatePrestigeUI() {
     const regionNameEl    = document.getElementById('region-name');
@@ -142,11 +142,14 @@ function updateNav(user) {
         const logoutBtn = document.createElement('button');
         logoutBtn.textContent = 'Logout';
         logoutBtn.classList.add('btn-custom');
-        logoutBtn.onclick = () => {
-            // Save current progress to localStorage before logout
-            updateGameProgress({});
+        logoutBtn.onclick = async () => {
+            // save progress & flip your online flag
+            await updateGameProgress({});
+            await db.collection("users").doc(auth.currentUser.uid)
+                     .update({ online: false });
             auth.signOut().then(() => location.reload());
-        };
+          };
+          
         rightNav.appendChild(logoutBtn);
 
     } else {
@@ -318,15 +321,175 @@ async function returnToRegion() {
     }
   
     // swap the region name/level
-    document.getElementById('region-name').textContent =
-      regionData[window.prestigeLevel].name;
-    document.getElementById('prestige-level').textContent =
-      window.prestigeLevel;
+    document.getElementById('region-name').textContent = regionData[window.prestigeLevel].name;
+    document.getElementById('prestige-level').textContent = window.prestigeLevel;
+    
     await getPokemon(regionData[lvl].startId);
     generateUpgrades(pokemon);
-  }
+      
+}
   
   // attach the click listener
-  document.getElementById('return-region-btn')
-          .addEventListener('click', returnToRegion);
+document
+.getElementById('return-region-btn')
+.addEventListener('click', function() {
+    this.style.display = 'none';
+    returnToRegion();    
+});
+  
+
+/**
+ * Load your friends + your own score, sort descending, and render.
+ */
+async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend’s gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = entries.map((e,i) => `
+      <li>
+        <strong>#${i+1}</strong>
+        ${e.username}
+        — Level ${e.prestige}
+        (${Math.round(e.totalP)} P)
+      </li>
+    `).join("");
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+  }
+  
+  // Trigger it after login state settles
+  auth.onAuthStateChanged(user => {
+    // … your existing code …
+    if (user) {
+      loadLeaderboard();
+    } else {
+      // could also show guests if you store friends for guests
+      document.getElementById("leaderboard-container").style.display = "none";
+    }
+  });
+
+  async function initLeaderboardRealtime() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) clean up any previous listener
+    if (leaderboardUnsub) {
+      leaderboardUnsub();
+      leaderboardUnsub = null;
+    }
+  
+    // 2) fetch your friends map & build UID list
+    const youDoc = await db.collection("users").doc(user.uid).get();
+    const friendsMap = youDoc.data()?.friends || {};
+    const uids = [user.uid, ...Object.keys(friendsMap)];
+  
+    // 3) build a UID → username map
+    const nameMap = {};
+    // friend usernames come from your friendsMap
+    for (const fid in friendsMap) {
+      nameMap[fid] = friendsMap[fid].username;
+    }
+    // your username from the `usernames` collection
+    const youNameSnap = await db.collection("usernames")
+      .where("uid", "==", user.uid)
+      .limit(1)
+      .get();
+    nameMap[user.uid] = youNameSnap.empty
+      ? "You"
+      : youNameSnap.docs[0].id;
+  
+    // 4) subscribe to all those user docs
+    leaderboardUnsub = db.collection("users")
+      .where(firebase.firestore.FieldPath.documentId(), "in", uids)
+      .onSnapshot(snapshot => {
+        const entries = snapshot.docs.map(doc => {
+          const gd = doc.data().gameData || {};
+          return {
+            uid:       doc.id,
+            username:  nameMap[doc.id] || doc.id,
+            prestige:  gd.prestigeLevel || 0,
+            totalP:    gd.pTotal        || 0
+          };
+        });
+  
+        // 5) sort & render
+        entries.sort((a, b) => {
+          if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+          return b.totalP   - a.totalP;
+        });
+  
+        const ul = document.getElementById("leaderboard-list");
+        ul.innerHTML = entries.map((e, i) => `
+          <li>
+            <strong>#${i+1}</strong>
+            ${e.username}
+            — Level ${e.prestige}
+            (${Math.round(e.totalP)} P)
+          </li>
+        `).join("");
+  
+        document.getElementById("leaderboard-container")
+                .style.display = entries.length ? "block" : "none";
+      });
+  }
+  
+  // 6) kick off (and tear down) your live listener inside auth.onAuthStateChanged
+  auth.onAuthStateChanged(async user => {
+    updateNav(user);
+    if (user) {
+      await db.collection("users").doc(user.uid).update({ online: true });
+      window.addEventListener("beforeunload", () => {
+        db.collection("users").doc(user.uid).update({ online: false });
+      });
+
+      loadGameProgress(user.uid);
+      initLeaderboardRealtime();
+      
+    } else {
+      loadGuestProgress();
+      // unsubscribe if we were listening
+      if (leaderboardUnsub) {
+        leaderboardUnsub();
+        leaderboardUnsub = null;
+      }
+      document.getElementById("leaderboard-container").style.display = "none";
+    }
+  });
   

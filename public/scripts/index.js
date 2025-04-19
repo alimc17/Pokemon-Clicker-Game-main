@@ -662,8 +662,13 @@ setInterval(() => {
   
     ppcText.innerHTML   = Math.round(window.ppc);
     ppsText.innerHTML   = Math.round(window.pps);
+
   }, 100);
 
+setInterval(() => {
+    updateGameProgress({});
+}, 5000);
+    
 (async () => {
     getPokemon(regionData[window.prestigeLevel].startId);
     generateUpgrades(pokemon);
