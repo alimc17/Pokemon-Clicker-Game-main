@@ -36,8 +36,6 @@
         </div>
     </header>
 
-    <div id="welcome-container"></div>
-
     <div class="main">
         <div class="left-main">
             <button class="gambling">let's go gambling!</button>
@@ -45,6 +43,23 @@
             <div id="leaderboard-container" class="leaderboard" style="margin-top:1rem; display:none;">
                 <h3>Friends Leaderboard</h3>
                 <ul id="leaderboard-list"></ul>
+            </div>
+              <!-- Sticker Wall -->
+            <div id="sticker-wall" class="sticker-wall" style="margin-top:1rem; display:none">
+                <h3>Sticker Wall</h3>
+                <form id="sticker-form">
+                <label>
+                    Pick a sticker:
+                    <select id="sticker-select"></select>
+                </label>
+                <label>
+                    Note:
+                    <input type="text" id="sticker-text"
+                        placeholder="140 characters max" maxlength="140"/>
+                </label>
+                <button type="submit" class="btn-custom">Post</button>
+                </form>
+                <ul id="sticker-feed"></ul>
             </div>
         </div>
 
