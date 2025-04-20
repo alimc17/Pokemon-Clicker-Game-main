@@ -116,9 +116,8 @@
 }
   
 .prestige-currency img {
-    width: 4%;
+    width: 3%;
     margin-right: 5px;
-    filter: invert(1);
 }
   
 .prestige-progress-bar-container {
@@ -130,7 +129,7 @@
   
 .prestige-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #f00, #fff);
+    background: linear-gradient(90deg, #400, #f00);
     width: 0%;
     transition: width 0.5s ease;
 }
@@ -167,7 +166,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(90deg, #f00, #fff);
+    background: linear-gradient(90deg, #400, #f00);
     width: 0%;
     transition: width 0.5s ease;
     z-index: 1; /* Place behind the text */

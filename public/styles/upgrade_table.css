@@ -24,6 +24,7 @@
     overflow: visible;
     width: 300px;
     margin-left: 5px;
+    font-family: 'PokemonText', 'PokemonTextLive', serif;
 }
 
 .upgrade:hover {
@@ -120,7 +121,6 @@
     border: 2px solid white;
     border-radius: 10px;
     cursor: pointer;
-    font-family: 'PokemonText', serif;
     margin: 0 5px;
     transition: all 0.3s ease;
     letter-spacing: 1px;

@@ -30,6 +30,10 @@
     animation: shimmer 2.5s infinite linear;
 }
 
+.logo a {
+    color: white;
+}
+
 @keyframes shimmer {
     0% { text-shadow: 0 0 8px #ff4d4d, 0 0 12px #cc0000, 0 0 20px #990000; }
     50% { text-shadow: 0 0 12px #ff6666, 0 0 16px #e60000, 0 0 28px #b30000; }
