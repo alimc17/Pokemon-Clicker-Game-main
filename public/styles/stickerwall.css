@@ -1,0 +1,222 @@
+/* Sticker Wall Container */
+.sticker-wall {
+    background-color: rgba(30, 30, 30, 0.95);
+    border-radius: 16px;
+    border: 2px solid #e63946; /* Main red */
+    box-shadow: 0 0 15px rgba(230, 57, 70, 0.4);
+    padding: 20px;
+    z-index: 9999;
+}
+
+/* Sticker Wall Heading */
+.sticker-wall h3 {
+    color: #ffffff;
+    font-size: 1.6em;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e63946;
+}
+
+/* Sticker Form */
+#sticker-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 15px;
+    background-color: rgba(50, 50, 50, 0.9);
+    border-radius: 12px;
+    border: 1px solid #e63946;
+}
+
+/* Labels */
+#sticker-form label {
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 0.95em;
+}
+
+/* Dropdown and Textarea */
+#sticker-select,
+#sticker-text {
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #e63946;
+    background-color: #1e1e1e;
+    color: #fff;
+    font-size: 1em;
+}
+
+/* Character Counter */
+.char-count {
+    font-size: 0.85em;
+    color: #ccc;
+    align-self: flex-end;
+}
+
+.char-count.warning {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+
+/* Form Submit Button */
+#sticker-form button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+#sticker-form button:hover {
+    background-color: #ff5c66;
+}
+
+#sticker-form button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+/* Preview Container */
+.sticker-preview-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+
+.sticker-preview-img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+/* Sticker Feed List */
+#sticker-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 16px;
+}
+
+/* Sticker Post Card */
+.sticker-entry {
+    background-color: #1e1e1e;
+    border-radius: 12px;
+    border: 2px solid #e63946;
+    box-shadow: 0 0 10px rgba(230, 57, 70, 0.3);
+    padding: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sticker-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px rgba(230, 57, 70, 0.5);
+}
+
+/* Post Header */
+.sticker-post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sticker-username {
+    font-weight: bold;
+    color: #ff4c4c;
+}
+
+.sticker-time {
+    font-size: 0.8em;
+    color: #aaa;
+}
+
+/* Post Content */
+.sticker-post-content {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.sticker-image {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.sticker-text {
+    flex: 1;
+    color: #f1f1f1;
+    word-break: break-word;
+}
+
+/* Post Footer */
+.sticker-post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+    border-top: 1px solid #333;
+}
+
+/* Like Button */
+.like-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    color: #bbb;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s;
+}
+
+.like-btn:hover {
+    background-color: rgba(230, 57, 70, 0.15);
+    color: #ff4c4c;
+}
+
+.like-btn.liked {
+    color: #ff4c4c;
+}
+
+/* Delete Button */
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.delete-btn:hover {
+    opacity: 1;
+}
+
+/* Load/Error/Empty */
+.loading-spinner,
+.empty-feed,
+.error-message {
+    text-align: center;
+    padding: 20px;
+    color: #aaa;
+}
+
+.error-message {
+    color: #ff4c4c;
+    font-weight: bold;
+}
