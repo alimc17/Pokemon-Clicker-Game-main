@@ -1056,12 +1056,22 @@ async function loadLeaderboard() {
   
 
 // Sticker wall functionality
-const STICKERS = [
-    "BulbasaurSticker.png",
-    "CharmanderSticker.png",
-    "EeveeSticker.png",
-    "PichuSticker.png",
-    "SquirtleSticker.png"
+let STICKERS = [
+    "Articuno.png",
+    "Zapados.png",
+    "Moltres.png",
+    "Mewtwo.png",
+    "Lugia.png",
+    "Ho-Oh.png",
+    "Kyogre.png",
+    "Groudon.png",
+    "Rayquaza.png",
+    "Dialga.png",
+    "Palkia.png",
+    "Regigigas.png",
+    "Girantina.png",
+    "Reshiram.png",
+    "Zekrom.png"
   ];
   
   // Initialize the sticker wall component
@@ -1514,3 +1524,39 @@ const STICKERS = [
     initStickerWall();
   });
   
+const konamiCode = [
+  'ArrowUp', 'ArrowUp',
+  'ArrowDown', 'ArrowDown',
+  'ArrowLeft', 'ArrowRight',
+  'ArrowLeft', 'ArrowRight',
+  'b', 'a', 'Enter'
+];
+
+let konamiCodePosition = 0;
+let konamiCodeActivated = false;
+
+document.addEventListener('keydown', function(e) {
+  const key = e.key;
+  
+  const expectedKey = konamiCode[konamiCodePosition];
+  
+  if (key.toLowerCase() === expectedKey.toLowerCase()) {
+    konamiCodePosition++;
+    
+    if (konamiCodePosition === konamiCode.length) {
+      konamiCodePosition = 0;
+      
+      konamiCodeActivated = true;
+      
+      console.log('Secret:3');
+      if (!STICKERS.includes("secret.png")) {
+        STICKERS.push("secret.png");
+        initStickerSelector();
+        console.log("Secret sticker added:3");
+      }
+    }
+  } else {
+    konamiCodePosition = 0;
+  }
+});
+
