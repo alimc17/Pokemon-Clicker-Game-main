@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="styles/footer.css"/>
     <link rel="stylesheet" href="styles/upgrade_table.css"/>
     <link rel="stylesheet" href="styles/friends.css"/>
+    <link rel="stylesheet" href="styles/leaderboard.css"/>
     <link rel="stylesheet" href="styles/stickerwall.css"/>
     <link rel="stylesheet" href="styles/gambling.css"/>
     <link rel="stylesheet" href="styles/prestige.css"/>
@@ -39,14 +40,18 @@
 
     <div class="main">
         <div class="left-main">
-            <button class="gambling">let's go gambling!</button>
-            <button id="prestige-button">
-                <div id="prestige-button-progress"></div>
-                <span id="prestige-button-text">Prestige</span>
-            </button>
-            <div id="leaderboard-container" class="leaderboard" style="margin-top:1rem; display:none;">
-                <h3>Friends Leaderboard</h3>
-                <ul id="leaderboard-list"></ul>
+            <div class="left-main-top">
+                <div id="leaderboard-container" class="leaderboard" style="margin-top:1rem; display:none;">
+                    <h3>Friends Leaderboard</h3>
+                    <ul id="leaderboard-list"></ul>
+                </div>
+            </div>
+            <div class="left-main-bot">
+                <button class="gambling">let's go gambling!</button>
+                <button id="prestige-button">
+                    <div id="prestige-button-progress"></div>
+                    <span id="prestige-button-text">Prestige</span>
+                </button>
             </div>
         </div>
 
