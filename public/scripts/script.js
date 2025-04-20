@@ -111,7 +111,13 @@ document.addEventListener("DOMContentLoaded", () => {
 function updateNav(user) {
     const leftNav = document.getElementById('nav-left-id');
     const rightNav = document.getElementById('nav-right-id');
-
+    const leftMain = document.querySelector('.left-main');
+    
+    if (leftMain) {
+      leftMain.style.justifyContent = user
+        ? 'space-evenly'    // logged in
+        : 'center';         // not logged in
+    }
     // Clear old content
     while (leftNav.children.length > 1) leftNav.removeChild(leftNav.lastChild);
     rightNav.innerHTML = "";

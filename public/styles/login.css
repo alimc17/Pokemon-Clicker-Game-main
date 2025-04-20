@@ -70,7 +70,7 @@ i{
     height: 45px;
     outline: none;
     width: 100%;
-    background: rgba(255,255,255,0.7);
+    background: #fff;
     cursor: pointer;
     transition: .3s;
     font-family: 'PokemonText', 'PokemonTextLive', serif;
