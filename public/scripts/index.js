@@ -18,7 +18,7 @@ let pokeball = document.querySelector('.pokeball');
 let pokemon = [];
 let pokemonOfType = [];
 
-const clickSFX = new Audio('assets/audio/click.wav');
+const clickSFX = new Audio('assets/audio/sfx/click.wav');
 clickSFX.volume = 0.2;
 
 let rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
@@ -156,7 +156,7 @@ async function handlePrestigeConfirmation() {
     videoElement.load();
 
     try {
-        const prestigeSFX = new Audio('assets/audio/prestige.wav');
+        const prestigeSFX = new Audio('assets/audio/sfx/prestige.wav');
         prestigeSFX.volume = 0.3;
         prestigeSFX.play();
     } catch (error) {
@@ -601,13 +601,10 @@ function buyBerry(index) {
         ppsText.innerHTML = Math.round(window.pps);
     }
     
-    /* 
-    TODO: maybe sfx idk
-    const berrySFX = new Audio('assets/audio/sfx.wav');
+    const berrySFX = new Audio('assets/audio/sfx/berry.mp3');
     berrySFX.volume = 0.3;
     berrySFX.playbackRate = 1.5;
     berrySFX.play();
-    */
     
     renderVisibleBerries();
     

@@ -1,14 +1,22 @@
 const bgmFiles = [
-    'assets/audio/AccumulaTown.mp3',
-    'assets/audio/CasteliaCity.mp3',
-    'assets/audio/IcirrusCity.mp3',
-    'assets/audio/MistraltonCity.mp3',
-    'assets/audio/NacreneCity.mp3',
-    'assets/audio/NimbasaCity.mp3',
-    'assets/audio/NuvemaTown.mp3',
-    'assets/audio/OpelucidCity.mp3',
-    'assets/audio/StriatonCity.mp3',
-    'assets/audio/WhiteForest.mp3'
+    'assets/audio/music/AccumulaTown.mp3',
+    'assets/audio/music/CasteliaCity.mp3',
+    'assets/audio/music/IcirrusCity.mp3',
+    'assets/audio/music/MistraltonCity.mp3',
+    'assets/audio/music/NacreneCity.mp3',
+    'assets/audio/music/NimbasaCity.mp3',
+    'assets/audio/music/NuvemaTown.mp3',
+    'assets/audio/music/OpelucidCity.mp3',
+    'assets/audio/music/StriatonCity.mp3',
+    'assets/audio/music/WhiteForest.mp3',
+    'assets/audio/music/PalletTown.mp3',
+    'assets/audio/music/PewterCity.mp3',
+    'assets/audio/music/ViridianForest.mp3',
+    'assets/audio/music/CeruleanCity.mp3',
+    'assets/audio/music/VermillionCity.mp3',
+    'assets/audio/music/CeladonCity.mp3',
+    'assets/audio/music/CinnabarIsland.mp3',
+    'assets/audio/music/SeviiIslands.mp3'
 ];
   
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
