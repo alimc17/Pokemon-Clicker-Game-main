@@ -364,3 +364,62 @@ button:active {
     animation: sparkle-move 0.8s ease-out forwards;
     z-index: 100;
 }
+
+#return-region-btn {
+    position: absolute;
+    top: 25%;
+    left: 60%;
+    z-index: 10;
+    height: 2.5em;
+    width: 2.5em;
+    font-size: 1.2em;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    border: 2px solid white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#return-region-btn:hover {
+    background-color: hsl(0, 90%, 45%);
+    box-shadow: rgb(216, 20, 43) 0px 7px 29px 0px;
+}
+
+#return-region-btn::after {
+    content: attr(data-tooltip);         /* pulls in the attribute text */
+    position: absolute;
+    bottom: 110%;                        /* slightly above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.4em 0.6em;
+    border-radius: 0.25em;
+    font-size: 0.85em;
+    opacity: 0;
+    pointer-events: none;                /* so it doesn’t block the hover */
+    transition: opacity 0.2s ease-out;
+}
+
+#return-region-btn:hover::after {
+    opacity: 1;
+}
+  
+
+#return-region-btn:active {
+    background-color: hsl(359, 80%, 48%);
+    box-shadow: rgb(220, 24, 66) 0px 0px 0px 0px;
+    transform: translateY(5px);
+    transition: 100ms;
+}
+
+/* Style for the icon inside the button */
+#return-region-btn i {
+    color: white;
+    font-size: 1.5em;
+}
