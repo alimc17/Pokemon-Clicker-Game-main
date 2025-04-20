@@ -384,7 +384,7 @@ async function loadLeaderboard() {
           ${entry.username}
         </div>
         <div class="leaderboard-score">
-          <img src="assets/images/pokedollar.png" alt="P">
+          <img src="assets/images/pokedollar-aseprite.png" alt="P">
           ${formattedPoints}
         </div>
         <div class="leaderboard-prestige">

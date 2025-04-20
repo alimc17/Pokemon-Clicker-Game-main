@@ -7,6 +7,7 @@
     padding: 20px;
     width: 100%;
     margin-bottom: 20px;
+    font-family: 'PokemonText', 'PokemonTextLive', serif;
   }
   
   /* Leaderboard Heading */
@@ -17,6 +18,8 @@
     padding-bottom: 8px;
     border-bottom: 2px solid #e63946;
     text-align: center;
+    font-family: 'PokemonTitle', 'PokemonTitleLive', serif;
+    letter-spacing: 2px;
   }
   
   /* Leaderboard List */
@@ -100,13 +103,13 @@
     align-items: center;
     gap: 5px;
     font-weight: bold;
-    color: #e63946;
+    color: white;
     justify-content: center;
   }
   
   .leaderboard-score img {
-    width: 7%;
-    height: 7%;
+    width: 10%;
+    filter: invert(1);
   }
   
   /* Empty or Loading State */

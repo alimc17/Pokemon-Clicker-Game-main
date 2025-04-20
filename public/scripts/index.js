@@ -314,7 +314,7 @@ function renderVisibleUpgrades() {
             <div class="mid-upg">
                 <h4>${upgrade.name.charAt(0).toUpperCase() + upgrade.name.slice(1)}</h4>
                 <div class="cost-info">
-                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar-aseprite.png" alt="P" draggable="false"/>
                     <span class="upg-cost">${upgrade.cost}</span>
                 </div>
             </div>
@@ -324,7 +324,7 @@ function renderVisibleUpgrades() {
             <div class="next-upg-info">
                 <p>
                     +
-                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar-aseprite.png" alt="P" draggable="false"/>
                     <span class="upg-increase">${displayedIncome}</span>
                     per ${upgrade.type === 'click' ? 'click' : 'second'}
                 </p>
@@ -575,7 +575,7 @@ function renderVisibleBerries() {
             <div class="mid-upg">
                 <h4>${berry.name.charAt(0).toUpperCase() + berry.name.slice(1)} Berry</h4>
                 <div class="cost-info">
-                    <img class="p-upg-img" src="assets/images/pokedollar.png" alt="P" draggable="false"/>
+                    <img class="p-upg-img" src="assets/images/pokedollar-aseprite.png" alt="P" draggable="false"/>
                     <span class="upg-cost">${berry.purchased ? 'Purchased' : berry.cost}</span>
                 </div>
             </div>
