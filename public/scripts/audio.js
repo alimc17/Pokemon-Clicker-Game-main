@@ -16,7 +16,8 @@ const bgmFiles = [
     'assets/audio/music/VermillionCity.mp3',
     'assets/audio/music/CeladonCity.mp3',
     'assets/audio/music/CinnabarIsland.mp3',
-    'assets/audio/music/SeviiIslands.mp3'
+    'assets/audio/music/SeviiIslands.mp3',
+    'assets/audio/music/LavenderTown.mp3',
 ];
   
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
