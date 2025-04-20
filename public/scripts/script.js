@@ -11,9 +11,9 @@ function updatePrestigeUI() {
    
     if (!regionNameEl || !prestigeLevelEl || !prestigeButton || !window.regionData) return;
     console.log('updatePrestigeUI → level:', window.prestigeLevel,
-        'video src should be:', window.regionData[window.prestigeLevel].bg);
+        'video src should be:', window.regionData[window.prestigeLevel-1].bg);
     // name & level text
-    regionNameEl.textContent    = window.regionData[window.prestigeLevel].name;
+    regionNameEl.textContent    = window.regionData[window.prestigeLevel-1].name;
     prestigeLevelEl.textContent = window.prestigeLevel;
   
     // disable button at max
@@ -23,7 +23,7 @@ function updatePrestigeUI() {
     const videoEl = document.querySelector('.bg-video');
     if (videoEl) {
       const src = videoEl.querySelector('source');
-      src.src = window.regionData[window.prestigeLevel].bg;
+      src.src = window.regionData[window.prestigeLevel-1].bg;
       videoEl.load();
     }
   }
@@ -94,22 +94,17 @@ document.addEventListener("DOMContentLoaded", () => {
           const doc = await db.collection("users").doc(user.uid).get();
           progress = doc.exists ? doc.data().gameData : null;
         } else {
-          const saved = localStorage.getItem('guestProgress');
-          progress = saved ? JSON.parse(saved).gameData : null;
+          return;
         }
     
         // if we have a saved prestigeLevel > 0, show the button
-        if (progress && progress.prestigeLevel > 0) {
+        if (progress && progress.prestigeLevel > 1) {
           const btn = document.getElementById('return-region-btn');
           btn.style.display = 'inline-block';
         }
     
         // now actually load the progress
-        if (user) {
-          loadGameProgress(user.uid);
-        } else {
-          loadGuestProgress();
-        }
+        loadGameProgress(user.uid);
     });
 });
 
@@ -142,9 +137,16 @@ function updateNav(user) {
             await updateGameProgress({});
             await db.collection("users").doc(auth.currentUser.uid)
                      .update({ online: false });
-            auth.signOut().then(() => location.reload());
-          };
-          
+            auth.signOut()
+              .then(() => {
+                if(!localStorage.getItem('guestProgress')){
+                  localStorage.clear();
+                }
+            })
+              .then(() => { 
+                location.reload();
+            });
+        }
         rightNav.appendChild(logoutBtn);
 
     } else {
@@ -224,7 +226,7 @@ async function applyGameState(gameState) {
     window.pTotal = pTotal || 0;
     window.ppc = ppc || 1;
     window.pps = pps || 0;
-    window.prestigeLevel = prestigeLevel || 0;
+    window.prestigeLevel = prestigeLevel || 1;
     window.rewardMultiplier = rewardMultiplier || 1;
     
     updatePrestigeUI();
@@ -285,17 +287,6 @@ async function applyGameState(gameState) {
     window.savedLegendaryIndices = savedLegendaryIndices;
     renderLegendaries();
 
-    /*
-    
-    // Update background video if available
-    if (document.querySelector('.bg-video') && window.regionData) {
-        const videoElement = document.querySelector('.bg-video');
-        const sourceElement = videoElement.querySelector('source');
-        if (sourceElement) {
-            sourceElement.src = window.regionData[window.prestigeLevel].bg;
-            videoElement.load();
-        }
-    }*/
 }
 
 // handler to jump back to the saved region
@@ -311,15 +302,15 @@ async function returnToRegion() {
     const videoEl = document.querySelector('.bg-video');
     if (videoEl) {
       videoEl.querySelector('source').src =
-        regionData[window.prestigeLevel].bg;
+        regionData[window.prestigeLevel-1].bg;
       videoEl.load();
     }
   
     // swap the region name/level
-    document.getElementById('region-name').textContent = regionData[window.prestigeLevel].name;
+    document.getElementById('region-name').textContent = regionData[window.prestigeLevel-1].name;
     document.getElementById('prestige-level').textContent = window.prestigeLevel;
     
-    await getPokemon(regionData[window.prestigeLevel].startId);
+    await getPokemon(regionData[window.prestigeLevel-1].startId);
     generateUpgrades(pokemon);
       
 }
@@ -1016,3 +1007,4 @@ document.addEventListener('keydown', function(e) {
 
 setTimeout(loadLeaderboard, 2000);
 setInterval(loadLeaderboard, 60000);
+

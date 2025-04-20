@@ -1,7 +1,7 @@
 window.pTotal = 0;
 window.ppc = 1;
 window.pps = 0;
-window.prestigeLevel = 0;
+window.prestigeLevel = 1;
 window.upgrades = [];
 window.rewardMultiplier = 1;
 
@@ -64,9 +64,9 @@ function calculateRewardMultiplier(level) {
 }
 
 function updatePrestigeModal() {
-    currentRegionEl.textContent = regionData[window.prestigeLevel].name;
-    nextRegionEl.textContent = window.prestigeLevel < maxPrestige - 1 ? 
-                             regionData[window.prestigeLevel + 1].name : 
+    currentRegionEl.textContent = regionData[window.prestigeLevel -1].name;
+    nextRegionEl.textContent = window.prestigeLevel < maxPrestige ? 
+                             regionData[window.prestigeLevel - 1].name : 
                              'Max Level Reached';
 
     const currentMult = calculateRewardMultiplier(window.prestigeLevel);
@@ -78,9 +78,10 @@ function updatePrestigeModal() {
     requiredPrestigeEl.textContent = PRESTIGE_REQUIREMENT;
 
     const progressPercentage = Math.min(100, (window.pTotal / PRESTIGE_REQUIREMENT) * 100);
-    progressBarEl.style.width = `${progressPercentage}%`;
-    progressButtonEl.style.width = `${progressPercentage}%`; 
-
+    if (window.prestigeLevel < 5) {
+        progressBarEl.style.width = `${progressPercentage}%`;
+        progressButtonEl.style.width = `${progressPercentage}%`; 
+    }
     if (window.pTotal >= PRESTIGE_REQUIREMENT && window.prestigeLevel < maxPrestige) {
         confirmPrestige.disabled = false;
     } else {
@@ -90,7 +91,7 @@ function updatePrestigeModal() {
 
 function updatePrestigeButtonProgress() {
     const progressPercentage = Math.min(100, (window.pTotal / PRESTIGE_REQUIREMENT) * 100);
-    if (progressButtonEl) {
+    if (progressButtonEl && window.prestigeLevel < 5) {
         progressButtonEl.style.width = `${progressPercentage}%`;
     }
 }
@@ -138,7 +139,7 @@ async function handlePrestigeConfirmation() {
     window.rewardMultiplier = calculateRewardMultiplier(window.prestigeLevel);
 
     updatePrestigeModal();
-    regionNameEl.innerText = regionData[window.prestigeLevel].name;
+    regionNameEl.innerText = regionData[window.prestigeLevel-1].name;
     prestigeLevelEl.innerText = window.prestigeLevel;
     
     ppcText.innerHTML = window.ppc;
@@ -152,7 +153,7 @@ async function handlePrestigeConfirmation() {
     }
 
     const videoElement = document.querySelector('.bg-video');
-    videoElement.querySelector('source').src = regionData[window.prestigeLevel].bg;
+    videoElement.querySelector('source').src = regionData[window.prestigeLevel-1].bg;
     videoElement.load();
 
     try {
@@ -163,7 +164,7 @@ async function handlePrestigeConfirmation() {
         console.log("Prestige sound effect not found");
     }
 
-    getPokemon(regionData[window.prestigeLevel].startId);
+    getPokemon(regionData[window.prestigeLevel-1].startId);
     
     closeModal();
     
@@ -197,7 +198,7 @@ function showLoginRequiredModal() {
                     <span class="close-modal">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <p>You need to be logged in to use the special features!</p>
+                    <p>You need to be logged in to use this feature!</p>
                     <br>
                     <p>Login to save your progress and unlock additional features.</p>
                 </div>
@@ -459,6 +460,7 @@ function switchTab(tabName) {
         if (!user) {
             // Show login required message
             showLoginRequiredModal();
+            switchTab('pokemon');
             return;
         }
         pokemonContainer.style.display = 'none';
@@ -742,7 +744,7 @@ setInterval(() => {
 }, 5000);
     
 (async () => {
-    getPokemon(regionData[window.prestigeLevel].startId);
+    getPokemon(regionData[window.prestigeLevel-1].startId);
     generateUpgrades(pokemon);
 })();
 

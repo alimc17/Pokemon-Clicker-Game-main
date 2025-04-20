@@ -151,6 +151,13 @@ function listenIncomingFriendRequests() {
 
 // Toggle the friends modal and load lists/requests.
 friendsToggleBtn.addEventListener("click", () => {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    // Show login required message
+    showLoginRequiredModal();
+    return;
+  }
+
   if (friendsModal.style.display === "flex") {
     friendsModal.style.display = "none";
   } else {
