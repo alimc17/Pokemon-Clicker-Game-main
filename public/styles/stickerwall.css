@@ -23,6 +23,7 @@
     max-height: 80vh;
     overflow-y: auto;
     position: relative;
+    font-family: 'PokemonText', 'PokemonTextLive', serif;
 }
   
 /* Close Button */
@@ -162,6 +163,8 @@
     margin: 0 0 16px 0;
     padding-bottom: 8px;
     border-bottom: 2px solid #e63946;
+    font-family: 'PokemonTitle', 'PokemonTitleLive', serif;
+    letter-spacing: 2px;
 }
 
 /* Sticker Form */
