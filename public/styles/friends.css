@@ -44,10 +44,6 @@
   border: none;
 }
 
-.modal-content button {
-  margin-top: 10px;
-}
-
 /* === Success Message === */
 .modal-message {
   margin-top: 10px;
@@ -187,4 +183,94 @@
     width: 80px;
     height: 80px;
   }
+}
+
+.unfriend-btn,
+.cancel-request-btn,
+.accept-request-btn,
+.decline-request-btn,
+#open-add-friend-modal {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  color: white;
+  font-weight: 500;
+}
+
+.unfriend-btn {
+  background-color: #e74c3c;
+}
+
+.unfriend-btn:hover {
+  background-color: #c0392b;
+}
+
+.cancel-request-btn {
+  background-color: #95a5a6;
+}
+
+.cancel-request-btn:hover {
+  background-color: #7f8c8d;
+}
+
+.accept-request-btn {
+  background-color: #2ecc71;
+  margin-right: 5px;
+}
+
+.accept-request-btn:hover {
+  background-color: #27ae60;
+}
+
+.decline-request-btn {
+  background-color: #e74c3c;
+}
+
+.decline-request-btn:hover {
+  background-color: #c0392b;
+}
+
+#incoming-requests {
+  display: none;
+  margin-top: 15px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.friend-request-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.friend-request-entry:last-child {
+  border-bottom: none;
+}
+
+.friend-request-entry span {
+  flex-grow: 1;
+  text-align: left;
+}
+
+.status-dot.pending {
+  background-color: #f39c12;
+}
+
+.friend-name {
+  flex-grow: 1;
+  text-align: left;
+  margin-left: 10px;
+}
+
+.login-message {
+  color: #bbb;
+  font-style: italic;
+  text-align: center;
+  margin: 20px 0;
 }
