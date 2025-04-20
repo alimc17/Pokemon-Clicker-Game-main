@@ -297,6 +297,7 @@ async function acceptFriendRequest(recipientUid, requesterUid) {
 
     console.log("Friend request accepted successfully.");
     loadFriendsList();
+    loadLeaderboard();
     // The realtime listener will update the incoming requests automatically.
   } catch (e) {
     console.error("Error accepting friend request:", e);

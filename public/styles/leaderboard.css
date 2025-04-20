@@ -81,26 +81,6 @@
     margin-left: 10px;
   }
   
-  /* User Avatar */
-  .leaderboard-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background-color: #1e1e1e;
-    border: 2px solid #e63946;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 12px;
-  }
-  
-  .leaderboard-avatar img {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-  }
-  
   /* Username */
   .leaderboard-username {
     font-weight: bold;
@@ -121,11 +101,12 @@
     gap: 5px;
     font-weight: bold;
     color: #e63946;
+    justify-content: center;
   }
   
   .leaderboard-score img {
-    width: 20px;
-    height: 20px;
+    width: 7%;
+    height: 7%;
   }
   
   /* Empty or Loading State */
