@@ -1,3 +1,150 @@
+.stickerwall-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+
+/* Sticker Wall Modal Content */
+.stickerwall-modal-content {
+    background-color: rgba(30, 30, 30, 0.95);
+    border-radius: 16px;
+    border: 2px solid #e63946; /* Main red */
+    box-shadow: 0 0 15px rgba(230, 57, 70, 0.4);
+    padding: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+  
+/* Close Button */
+#close-stickerwall-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    color: #e63946;
+    cursor: pointer;
+}
+  
+#close-stickerwall-modal:hover {
+    color: #ff5c66;
+}
+  
+/* Sticker Wall Heading */
+.stickerwall-modal-content h3 {
+    color: #ffffff;
+    font-size: 1.6em;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e63946;
+}
+  
+/* Sticker Form */
+#sticker-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 15px;
+    background-color: rgba(50, 50, 50, 0.9);
+    border-radius: 12px;
+    border: 1px solid #e63946;
+}
+  
+/* Labels */
+#sticker-form label {
+    font-weight: bold;
+    color: #ffffff;
+    font-size: 0.95em;
+}
+  
+/* Dropdown and Textarea */
+#sticker-select,
+#sticker-text {
+    padding: 10px;
+    border-radius: 8px;
+    border: 2px solid #e63946;
+    background-color: #1e1e1e;
+    color: #fff;
+    font-size: 1em;
+}
+  
+/* Character Counter */
+.char-count {
+    font-size: 0.85em;
+    color: #ccc;
+    align-self: flex-end;
+}
+  
+.char-count.warning {
+    color: #ff6b6b;
+    font-weight: bold;
+}
+  
+/* Form Submit Button */
+#sticker-form button {
+    align-self: flex-end;
+    padding: 10px 20px;
+    background-color: #e63946;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+  
+#sticker-form button:hover {
+    background-color: #ff5c66;
+}
+  
+#sticker-form button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+  
+/* Preview Container */
+.sticker-preview-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+    padding: 12px;
+    background-color: #2a2a2a;
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+  
+.sticker-preview-img {
+    max-width: 100px;
+    max-height: 100px;
+}
+  
+/* Sticker Feed List */
+#sticker-feed {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 16px;
+}
+  
+/* Footer button styling */
+#stickerwall-toggle {
+    margin-left: 10px;
+}
+
 /* Sticker Wall Container */
 .sticker-wall {
     background-color: rgba(30, 30, 30, 0.95);
@@ -219,4 +366,17 @@
 .error-message {
     color: #ff4c4c;
     font-weight: bold;
+}
+
+#sticker-feed::-webkit-scrollbar, .stickerwall-modal-content::-webkit-scrollbar {
+    width: 12px;
+}
+
+#sticker-feed::-webkit-scrollbar-thumb, .stickerwall-modal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+#sticker-feed::-webkit-scrollbar-thumb:hover, .stickerwall-modal-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
