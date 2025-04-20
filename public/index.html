@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="styles/footer.css"/>
     <link rel="stylesheet" href="styles/upgrade_table.css"/>
     <link rel="stylesheet" href="styles/friends.css"/>
+    <link rel="stylesheet" href="styles/leaderboard.css"/>
+    <link rel="stylesheet" href="styles/stickerwall.css"/>
     <link rel="stylesheet" href="styles/gambling.css"/>
     <link rel="stylesheet" href="styles/prestige.css"/>
 
@@ -38,31 +40,18 @@
 
     <div class="main">
         <div class="left-main">
-            <button class="gambling">let's go gambling!</button>
-            <button id="prestige-button">
-                <div id="prestige-button-progress"></div>
-                <span id="prestige-button-text">Prestige</span>
-            </button>
-            <div id="leaderboard-container" class="leaderboard" style="margin-top:1rem; display:none;">
-                <h3>Friends Leaderboard</h3>
-                <ul id="leaderboard-list"></ul>
+            <div class="left-main-top">
+                <div id="leaderboard-container" class="leaderboard" style="margin-top:1rem; display:none;">
+                    <h3>Friends Leaderboard</h3>
+                    <ul id="leaderboard-list"></ul>
+                </div>
             </div>
-              <!-- Sticker Wall -->
-            <div id="sticker-wall" class="sticker-wall" style="margin-top:1rem; display:none">
-                <h3>Sticker Wall</h3>
-                <form id="sticker-form">
-                <label>
-                    Pick a sticker:
-                    <select id="sticker-select"></select>
-                </label>
-                <label>
-                    Note:
-                    <input type="text" id="sticker-text"
-                        placeholder="140 characters max" maxlength="140"/>
-                </label>
-                <button type="submit" class="btn-custom">Post</button>
-                </form>
-                <ul id="sticker-feed"></ul>
+            <div class="left-main-bot">
+                <button class="gambling">let's go gambling!</button>
+                <button id="prestige-button">
+                    <div id="prestige-button-progress"></div>
+                    <span id="prestige-button-text">Prestige</span>
+                </button>
             </div>
         </div>
 
@@ -109,6 +98,10 @@
         </div>
     </div>
 
+    <div class="footer">
+        <button id="stickerwall-toggle" class="btn-custom">Sticker Wall</button>
+        <button id="friends-toggle" class="btn-custom">Friends</button>
+    </div>
 
     <!-- Friends Modal -->
     <div id="friends-modal" class="modal-overlay" style="display: none;">
@@ -223,9 +216,25 @@
             </div>
         </div>
     </div>
-      
-    <div class="footer">
-        <button id="friends-toggle" class="btn-custom">Friends</button>
+
+    <!-- Sticker Wall Modal -->
+    <div id="stickerwall-modal" class="stickerwall-modal-overlay" style="display: none;">
+        <div class="stickerwall-modal-content">
+        <span id="close-stickerwall-modal">&times;</span>
+        <h3>Sticker Wall</h3>
+        <form id="sticker-form">
+            <label>
+            Pick a sticker:
+            <select id="sticker-select"></select>
+            </label>
+            <label>
+            Note:
+            <input type="text" id="sticker-text" placeholder="140 characters max" maxlength="140"/>
+            </label>
+            <button type="submit" class="btn-custom">Post</button>
+        </form>
+        <ul id="sticker-feed"></ul>
+        </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>

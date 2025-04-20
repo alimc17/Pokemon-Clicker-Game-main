@@ -755,3 +755,35 @@ function loadFromLocalStorage() {
         console.error("Error loading local progress:", error);
     }
 }
+
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the sticker wall modal elements
+    const stickerWallModal = document.getElementById('stickerwall-modal');
+    const stickerWallToggle = document.getElementById('stickerwall-toggle');
+    const closeStickerWallModal = document.getElementById('close-stickerwall-modal');
+    
+    // Open the sticker wall modal when the toggle button is clicked
+    stickerWallToggle.addEventListener('click', function() {
+      stickerWallModal.style.display = 'flex';
+    });
+    
+    // Close the sticker wall modal when the close button is clicked
+    closeStickerWallModal.addEventListener('click', function() {
+      stickerWallModal.style.display = 'none';
+    });
+    
+    // Close the sticker wall modal when clicking outside of it
+    window.addEventListener('click', function(event) {
+      if (event.target === stickerWallModal) {
+        stickerWallModal.style.display = 'none';
+      }
+    });
+  
+    // Don't forget to remove the original sticker wall element from the main page
+    // You can use JavaScript to hide it if needed
+    const originalStickerWall = document.getElementById('sticker-wall');
+    if (originalStickerWall) {
+      originalStickerWall.style.display = 'none';
+    }
+  });

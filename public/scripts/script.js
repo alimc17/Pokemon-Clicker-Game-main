@@ -356,7 +356,7 @@ async function loadLeaderboard() {
       totalP:    data.gameData?.pTotal         || 0
     });
   
-    // 3) fetch each friend’s gameData
+    // 3) fetch each friend's gameData
     await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
       const doc = await db.collection("users").doc(fid).get();
       const gd  = doc.exists ? doc.data().gameData : null;
@@ -374,20 +374,585 @@ async function loadLeaderboard() {
       return b.totalP - a.totalP;
     });
   
-    // 5) render into the UL
+    // 5) render into the UL - THIS IS THE FIX
     const ul = document.getElementById("leaderboard-list");
-    ul.innerHTML = entries.map((e,i) => `
-      <li>
-        <strong>#${i+1}</strong>
-        ${e.username}
-        — Level ${e.prestige}
-        (${Math.round(e.totalP)} P)
-      </li>
-    `).join("");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
   
     // show container
     document.getElementById("leaderboard-container").style.display = "block";
-  }
+}async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend's gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL - THIS IS THE FIX
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+}async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend's gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL - THIS IS THE FIX
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+}async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend's gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL - THIS IS THE FIX
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+}async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend's gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL - THIS IS THE FIX
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+}async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend's gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL - THIS IS THE FIX
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+}async function loadLeaderboard() {
+    const user = auth.currentUser;
+    if (!user) return;
+  
+    // 1) get your friends list
+    const userDoc = await db.collection("users").doc(user.uid).get();
+    const data = userDoc.data() || {};
+    const friends = data.friends || {};        // { friendUid: { username } }
+    const entries = [];
+  
+    // 2) include yourself
+    entries.push({
+      uid: user.uid,
+      username: (await db.collection("usernames")
+                       .where("uid","==",user.uid).get())
+                 .docs[0].id,
+      prestige: data.gameData?.prestigeLevel || 0,
+      totalP:    data.gameData?.pTotal         || 0
+    });
+  
+    // 3) fetch each friend's gameData
+    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+      const doc = await db.collection("users").doc(fid).get();
+      const gd  = doc.exists ? doc.data().gameData : null;
+      entries.push({
+        uid:       fid,
+        username,
+        prestige:  gd?.prestigeLevel || 0,
+        totalP:    gd?.pTotal         || 0
+      });
+    }));
+  
+    // 4) sort by prestige desc, then totalP desc
+    entries.sort((a,b) => {
+      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+      return b.totalP - a.totalP;
+    });
+  
+    // 5) render into the UL - THIS IS THE FIX
+    const ul = document.getElementById("leaderboard-list");
+    ul.innerHTML = ''; // Clear existing content
+    
+    entries.forEach((entry, index) => {
+      // Create a list item for each entry
+      const li = document.createElement('li');
+      li.className = 'leaderboard-entry';
+      
+      // Highlight current user
+      if (entry.uid === user.uid) {
+        li.classList.add('current-user');
+      }
+      
+      // Format the points with commas for thousands
+      const formattedPoints = Math.round(entry.totalP).toLocaleString();
+      
+      li.innerHTML = `
+        <div class="leaderboard-rank">${index + 1}</div>
+        <div class="leaderboard-user-info">
+          <div class="leaderboard-avatar">
+            <img src="assets/images/pokeball-img.png" alt="User Avatar">
+          </div>
+          <div class="leaderboard-username">${entry.username}</div>
+        </div>
+        <div class="leaderboard-score">
+          <img src="assets/images/pokedollar.png" alt="P">
+          ${formattedPoints}
+        </div>
+        <div class="leaderboard-prestige">
+          Prestige: ${entry.prestige}
+        </div>
+      `;
+      
+      ul.appendChild(li);
+    });
+  
+    // show container
+    document.getElementById("leaderboard-container").style.display = "block";
+}async function loadLeaderboard() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  // 1) get your friends list
+  const userDoc = await db.collection("users").doc(user.uid).get();
+  const data = userDoc.data() || {};
+  const friends = data.friends || {};        // { friendUid: { username } }
+  const entries = [];
+
+  // 2) include yourself
+  entries.push({
+    uid: user.uid,
+    username: (await db.collection("usernames")
+                     .where("uid","==",user.uid).get())
+               .docs[0].id,
+    prestige: data.gameData?.prestigeLevel || 0,
+    totalP:    data.gameData?.pTotal         || 0
+  });
+
+  // 3) fetch each friend's gameData
+  await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
+    const doc = await db.collection("users").doc(fid).get();
+    const gd  = doc.exists ? doc.data().gameData : null;
+    entries.push({
+      uid:       fid,
+      username,
+      prestige:  gd?.prestigeLevel || 0,
+      totalP:    gd?.pTotal         || 0
+    });
+  }));
+
+  // 4) sort by prestige desc, then totalP desc
+  entries.sort((a,b) => {
+    if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+    return b.totalP - a.totalP;
+  });
+
+  // 5) render into the UL - THIS IS THE FIX
+  const ul = document.getElementById("leaderboard-list");
+  ul.innerHTML = ''; // Clear existing content
+  
+  entries.forEach((entry, index) => {
+    // Create a list item for each entry
+    const li = document.createElement('li');
+    li.className = 'leaderboard-entry';
+    
+    // Highlight current user
+    if (entry.uid === user.uid) {
+      li.classList.add('current-user');
+    }
+    
+    // Format the points with commas for thousands
+    const formattedPoints = Math.round(entry.totalP).toLocaleString();
+    
+    li.innerHTML = `
+      <div class="leaderboard-rank">${index + 1}</div>
+      <div class="leaderboard-user-info">
+        <div class="leaderboard-avatar">
+          <img src="assets/images/pokeball-img.png" alt="User Avatar">
+        </div>
+        <div class="leaderboard-username">${entry.username}</div>
+      </div>
+      <div class="leaderboard-score">
+        <img src="assets/images/pokedollar.png" alt="P">
+        ${formattedPoints}
+      </div>
+      <div class="leaderboard-prestige">
+        Prestige: ${entry.prestige}
+      </div>
+    `;
+    
+    ul.appendChild(li);
+  });
+
+  // show container
+  document.getElementById("leaderboard-container").style.display = "block";
+}
   
   // Trigger it after login state settles
   auth.onAuthStateChanged(user => {
