@@ -191,20 +191,21 @@ function showLoginRequiredModal() {
         loginModal.className = 'modal';
         
         loginModal.innerHTML = `
-            <div class="modal-content">
+              <div id="required-login" class="modal-content">
                 <div class="modal-header">
-                    <h2>Login Required</h2>
+                    <h2>Login Required!</h2>
                     <span class="close-modal">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <p>You need to be logged in to use the Prestige feature!</p>
+                    <p>You need to be logged in to use the special features!</p>
+                    <br>
                     <p>Login to save your progress and unlock additional features.</p>
                 </div>
                 <div class="modal-footer">
-                    <button id="login-redirect-btn" class="btn-custom">Login</button>
+                    <button id="login-redirect-btn" class="btn-custom">LOGIN</button>
                     <button id="cancel-login-btn" class="btn-custom btn-secondary">Cancel</button>
                 </div>
-            </div>
+              </div>  
         `;
         
         document.body.appendChild(loginModal);
@@ -454,6 +455,12 @@ function switchTab(tabName) {
         pokemonContainer.style.display = 'flex';
         berriesContainer.style.display = 'none';
     } else if (tabName === 'berries') {
+        const user = firebase.auth().currentUser;
+        if (!user) {
+            // Show login required message
+            showLoginRequiredModal();
+            return;
+        }
         pokemonContainer.style.display = 'none';
         berriesContainer.style.display = 'flex';
         

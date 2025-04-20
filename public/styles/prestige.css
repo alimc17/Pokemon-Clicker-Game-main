@@ -220,6 +220,10 @@
     transform: scale(1.2);
 }
 
+#required-login {
+    width: 60%;
+    height: 40%;
+}
 #login-required-modal .modal-content {
     max-width: 400px;
     animation: modalSlideIn 0.3s ease-out;
