@@ -219,3 +219,29 @@
   #close-prestige-modal:hover {
     transform: scale(1.2);
 }
+
+#login-required-modal .modal-content {
+    max-width: 400px;
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+#login-required-modal .modal-body {
+    text-align: center;
+    padding: 20px;
+}
+
+#login-required-modal .modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-bottom: 20px;
+}
+
+#login-required-modal .btn-secondary {
+    background-color: #6c757d;
+}
+
+@keyframes modalSlideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

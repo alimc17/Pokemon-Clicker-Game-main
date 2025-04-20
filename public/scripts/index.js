@@ -105,6 +105,17 @@ function closeModal() {
 }
 
 async function handlePrestigeConfirmation() {
+
+    const user = firebase.auth().currentUser;
+    if (!user) {
+        // Close the prestige modal
+        closeModal();
+        
+        // Show login required message
+        showLoginRequiredModal();
+        return;
+    }
+
     if (window.pTotal < PRESTIGE_REQUIREMENT || window.prestigeLevel >= maxPrestige) return;
     
     window.pTotal = 0;
@@ -168,6 +179,52 @@ async function handlePrestigeConfirmation() {
     
     updateGameProgress({});
     
+}
+
+function showLoginRequiredModal() {
+    // Create modal if it doesn't exist already
+    let loginModal = document.getElementById('login-required-modal');
+    
+    if (!loginModal) {
+        loginModal = document.createElement('div');
+        loginModal.id = 'login-required-modal';
+        loginModal.className = 'modal';
+        
+        loginModal.innerHTML = `
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Login Required</h2>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>You need to be logged in to use the Prestige feature!</p>
+                    <p>Login to save your progress and unlock additional features.</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="login-redirect-btn" class="btn-custom">Login</button>
+                    <button id="cancel-login-btn" class="btn-custom btn-secondary">Cancel</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(loginModal);
+        
+        // Add event listeners
+        loginModal.querySelector('.close-modal').addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+        
+        loginModal.querySelector('#cancel-login-btn').addEventListener('click', () => {
+            loginModal.style.display = 'none';
+        });
+        
+        loginModal.querySelector('#login-redirect-btn').addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+    }
+    
+    // Show the modal
+    loginModal.style.display = 'flex';
 }
 
 function handlePrestige() {
@@ -601,9 +658,9 @@ window.applyGameState = function(gameState) {
         window.berriesLoaded = true;
     }
     
+    window.purchasedBerries = [];
+
     if (gameState.purchasedBerries && Array.isArray(gameState.purchasedBerries)) {
-        window.purchasedBerries = [];
-        
         gameState.purchasedBerries.forEach(berryId => {
             const berry = window.berries.find(b => b.id === berryId);
             if (berry) {
