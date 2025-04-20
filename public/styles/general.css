@@ -131,9 +131,11 @@ p {
 
 .main {
     display: flex;
-    flex-grow: 1;
+    flex: 1;
     align-items: center;
     justify-content: space-evenly;
+    max-height: calc(100vh - 100px);
+    padding-bottom: 10px;
 }
 
 
@@ -168,6 +170,9 @@ p {
     height: 100%;
 }
 
+.left-main, .mid-main, .right-main {
+    max-height: 100%;
+}
 .stats-container {
     display: flex;
     background-color: rgba(0, 0, 0, 0.7);
@@ -231,8 +236,8 @@ p {
 }
 
 .pokeball-img {
-    height: 400px;
-    width: 400px;
+    height: 350px;
+    width: 350px;
     border-radius: 50%;
     box-shadow: none;
     transition: box-shadow 0.2s ease, transform 0.2s ease-out;
@@ -430,4 +435,15 @@ button:active {
 #return-region-btn i {
     color: white;
     font-size: 1.5em;
+}
+
+@media (max-height: 800px) {
+    .pokeball-img {
+        max-height: 250px;
+        max-width: 250px;
+    }
+    
+    .main {
+        max-height: calc(100vh - 80px); /* Adjust for smaller screens */
+    }
 }

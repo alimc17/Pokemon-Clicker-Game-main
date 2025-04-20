@@ -15,6 +15,7 @@ const searchResults = document.getElementById("search-results");
 
 // INCOMING FRIEND REQUESTS CONTAINER
 const incomingRequestsList = document.getElementById("incoming-requests");
+const incomingRequestHeader = document.querySelector("incoming-friend-h3");
 
 /**
  * Load and render the friends list along with outgoing friend requests.
@@ -25,10 +26,6 @@ async function loadFriendsList() {
 
   // Show or hide the add friend "+" button based on authentication.
   openAddFriendModal.style.display = user ? "inline-block" : "none";
-  if (!user) {
-    friendsList.innerHTML = `<p class="login-message">Login to see your friends.</p>`;
-    return;
-  }
 
   try {
     const uid = user.uid;
@@ -112,8 +109,10 @@ function listenIncomingFriendRequests() {
       // If there are no incoming requests, hide the container.
       if (Object.keys(data).length === 0) {
         incomingRequestsList.style.display = "none";
+        incomingRequestHeader.style.display = "none";
       } else {
         incomingRequestsList.style.display = "block";
+        incomingRequestHeader.style.display = "block";
         let html = "";
         for (const requesterUid in data) {
           const { username } = data[requesterUid];
