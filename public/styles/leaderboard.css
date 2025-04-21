@@ -30,8 +30,21 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 300px;
+    max-height: 200px;
     overflow-y: auto;
+  }
+
+  #leaderboard-list::-webkit-scrollbar {
+    width: 12px;
+  }
+  
+  #leaderboard-list::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  #leaderboard-list::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
   
   /* Leaderboard Entry */
