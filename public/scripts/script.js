@@ -100,6 +100,10 @@ document.addEventListener("DOMContentLoaded", () => {
           currentUserIsAdmin = false;
           return;
         }
+
+        if (currentUserIsAdmin) {
+          initAdminControls();
+        }
     
         // if we have a saved prestigeLevel > 0, show the button
         if (progress && progress.prestigeLevel > 1) {
@@ -111,6 +115,160 @@ document.addEventListener("DOMContentLoaded", () => {
         loadGameProgress(user.uid);
     });
 });
+
+
+function initAdminControls() {
+  // Create container
+  const adminPanel = document.createElement('div');
+  adminPanel.id = 'admin-controls';
+  adminPanel.style = 'position: fixed; top: 6rem; right: 3rem; background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 0.5rem; color: white; z-index:1000; cursor: move;';
+  adminPanel.innerHTML = `
+    <h4 style="margin:0 0 .5rem;">Admin Controls</h4>
+    <button id="btn-reset-gameData" class="btn-custom">Reset game data</button>
+    <div style="margin-top:.5rem;">
+      <input type="number" id="input-ptotal" placeholder="Set pokedollar" style="width:6rem;" />
+      <button id="btn-set-ptotal" class="btn-custom">Set pTotal</button>
+    </div>
+  `;
+  document.body.appendChild(adminPanel);
+
+  // Make it draggable
+  makeDraggable(adminPanel);
+
+  // Reset button functionality
+  document.getElementById('btn-reset-gameData').onclick = async () => {
+    if (!confirm('Delete all your gameData?')) return;
+    const uid = firebase.auth().currentUser.uid;
+
+    try {
+      // Remove the beforeunload event listener temporarily
+      window.removeEventListener('beforeunload', updateGameProgress);
+      
+      // Delete the gameData field from Firestore
+      await db.collection('users').doc(uid).update({
+        gameData: firebase.firestore.FieldValue.delete()
+      });
+      
+      // Clear local storage gameData
+      localStorage.removeItem('guestProgress');
+      
+      // Reset in-memory game state
+      window.pTotal = 0;
+      window.ppc = 1;
+      window.pps = 0;
+      window.prestigeLevel = 1;
+      window.rewardMultiplier = 1;
+      window.upgrades = [];
+      window.berries = [];
+      window.purchasedBerries = [];
+      window.unlockedLegendaries = [];
+      window.savedLegendaryIndices = [];
+      
+      // Update UI
+      document.querySelector('.p-total').textContent = '0';
+      if (document.querySelector('.ppc-text')) {
+        document.querySelector('.ppc-text').textContent = '1';
+      }
+      if (document.querySelector('.pps-text')) {
+        document.querySelector('.pps-text').textContent = '0';
+      }
+      
+      // Update background video
+      const videoEl = document.querySelector('.bg-video');
+      if (videoEl) {
+        const src = videoEl.querySelector('source');
+        src.src = regionData[0].bg;
+        videoEl.load();
+      }
+      
+      // Update region display
+      document.getElementById('region-name').textContent = regionData[0].name;
+      document.getElementById('prestige-level').textContent = '1';
+      
+      // Reload game data
+      await getPokemon(regionData[0].startId);
+      generateUpgrades(pokemon);
+      await fetchBerries();
+      renderVisibleBerries();
+      renderLegendaries();
+      
+      // Re-attach the beforeunload handler
+      window.addEventListener('beforeunload', () => {
+        updateGameProgress({});
+      });
+      
+      showNotification('Game data has been reset successfully!', 'success');
+    } catch (e) {
+      console.error('Failed to reset gameData:', e);
+      alert('Error resetting gameData—see console.');
+    }
+  };
+
+  // Set pTotal button functionality
+  document.getElementById('btn-set-ptotal').onclick = async () => {
+    const newP = parseFloat(document.getElementById('input-ptotal').value);
+    if (isNaN(newP)) { alert('Enter a valid number'); return; }
+    const uid = firebase.auth().currentUser.uid;
+    try {
+      // Update Firestore
+      await db.collection('users').doc(uid).update({
+        'gameData.pTotal': newP
+      });
+      // Update UI
+      window.pTotal = newP;
+      document.querySelector('.p-total').textContent = Math.round(newP);
+      updatePrestigeButtonProgress();
+      alert('pTotal updated');
+    } catch (e) {
+      console.error('Failed to set pTotal:', e);
+      alert('Error setting pTotal—see console.');
+    }
+  };
+}
+
+// Make an element draggable
+function makeDraggable(element) {
+  let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  
+  element.onmousedown = dragMouseDown;
+  
+  function dragMouseDown(e) {
+    const tag = e.target.tagName;
+    if (['INPUT','BUTTON','SELECT','TEXTAREA','LABEL'].includes(tag)) {
+      return;
+    }
+
+    e = e || window.event;
+    e.preventDefault();
+    // Get the mouse cursor position at startup
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // Call a function whenever the cursor moves
+    document.onmousemove = elementDrag;
+  }
+  
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    // Calculate the new cursor position
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // Set the element's new position
+    element.style.top = (element.offsetTop - pos2) + "px";
+    element.style.left = (element.offsetLeft - pos1) + "px";
+    element.style.right = "auto"; // Remove right positioning when dragging
+  }
+  
+  function closeDragElement() {
+    // Stop moving when mouse button is released
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
 
 function updateNav(user) {
     const leftNav = document.getElementById('nav-left-id');
@@ -765,7 +923,6 @@ let STICKERS = [
     const isLiked = user && likes[user.uid];
     const postTimestamp = timestamp?.toDate() || new Date();
     const isOwner = user && uid === user.uid;
-    //const canDelete = isOwner || currentUserIsAdmin; 
 
     // Create post container
     const postElement = document.createElement("li");
