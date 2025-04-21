@@ -972,17 +972,17 @@ let STICKERS = [
       // First, check if current user is an admin - they can delete any post
       db.collection('users').doc(user.uid).get().then(doc => {
           const isCurrentUserAdmin = doc.exists && doc.data().admin === true;
-          const deleteContainer = postElement.querySelector(`#delete-container-${postId}`);
-          
-          // Show delete button if user is owner OR current user is admin
-          if ((isOwner || isCurrentUserAdmin) && deleteContainer) {
-              if (!deleteContainer.querySelector('.delete-btn')) {
-                  const deleteBtn = document.createElement('button');
-                  deleteBtn.className = 'delete-btn';
-                  deleteBtn.textContent = '🗑️';
-                  deleteBtn.onclick = handleDeleteClick;
-                  deleteContainer.appendChild(deleteBtn);
-              }
+          const footer = postElement.querySelector('.sticker-post-footer');
+
+          if ((isOwner || isCurrentUserAdmin) && footer) {
+            // only add one delete button
+            if (!footer.querySelector('.delete-btn')) {
+              const deleteBtn = document.createElement('button');
+              deleteBtn.className = 'delete-btn';
+              deleteBtn.textContent = '🗑️';
+              deleteBtn.onclick = handleDeleteClick;
+              footer.appendChild(deleteBtn);
+            }
           }
       }).catch(error => {
           console.error("Error checking admin status:", error);
