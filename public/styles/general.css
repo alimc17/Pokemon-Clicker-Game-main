@@ -459,4 +459,5 @@ button:active {
 
 #admin-controls {
     font-family: 'PokemonText', 'PokemonTextLive', serif;
+    border: 2px solid white;
 }
