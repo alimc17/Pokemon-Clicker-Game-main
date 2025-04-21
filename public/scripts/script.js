@@ -942,14 +942,14 @@ let STICKERS = [
 
 // Separate function to fetch admin status
 async function fetchAdminStatus(uid) {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      // not signed in yet → skip
+      return false;
+    }
     try {
-        const userDocRef = firebase.firestore().collection('users').doc(uid);
-        const userDoc = await userDocRef.get();
-        
-        if (userDoc.exists) {
-            return userDoc.data().admin === true;
-        }
-        return false;
+      const userDoc = await db.collection('users').doc(uid).get();
+      return userDoc.exists && userDoc.data().admin === true;
     } catch (error) {
         console.error("Error fetching admin status:", error);
         return false;
