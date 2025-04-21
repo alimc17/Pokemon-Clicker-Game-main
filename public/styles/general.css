@@ -138,7 +138,6 @@ p {
     padding-bottom: 10px;
 }
 
-
 .left-main {
     display: flex;
     flex-direction: column;
@@ -377,6 +376,10 @@ button:active {
     opacity: 1;
     animation: sparkle-move 0.8s ease-out forwards;
     z-index: 100;
+}
+
+.modal-content h2 {
+    font-family: 'PokemonText', 'PokemonTextLive' serif;
 }
 
 #return-region-btn {
