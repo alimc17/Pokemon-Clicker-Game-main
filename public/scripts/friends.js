@@ -109,10 +109,10 @@ function listenIncomingFriendRequests() {
       // If there are no incoming requests, hide the container.
       if (Object.keys(data).length === 0) {
         incomingRequestsList.style.display = "none";
-        incomingRequestHeader.style.display = "none";
+        //incomingRequestHeader.style.display = "none";
       } else {
         incomingRequestsList.style.display = "block";
-        incomingRequestHeader.style.display = "block";
+        //incomingRequestHeader.style.display = "block";
         let html = "";
         for (const requesterUid in data) {
           const { username } = data[requesterUid];

@@ -383,3 +383,29 @@
 #sticker-feed::-webkit-scrollbar-thumb:hover, .stickerwall-modal-content::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/*HEHEHEHEHEHEH*/
+
+.shiny-3d {
+    display: inline-block;
+    font-weight: bold;
+    /* deeper gold edges + narrower white highlight */
+    background: linear-gradient(
+      to right,
+      /* dark‑gold edge */   #ECC440 0%,
+      /* bright gold */      #FFFA8A 20%,
+      /* narrow flash */     #DDAC17 45%,
+      /* bright gold */      #FFFF95 60%,
+      /* dark‑gold edge */   #FFC30B 100%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 2s linear infinite;
+  
+}
+
+@keyframes shine {
+    from { background-position: 0% 0; }
+    to   { background-position: 200% 0; }
+}

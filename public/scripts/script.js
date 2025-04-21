@@ -322,7 +322,8 @@ document
     this.style.display = 'none';
     returnToRegion();    
 });
-  
+ 
+/*
 async function loadLeaderboard() {
     const user = auth.currentUser;
     if (!user) return;
@@ -398,20 +399,8 @@ async function loadLeaderboard() {
     // show container
     document.getElementById("leaderboard-container").style.display = "block";
 }
-  
-  // Trigger it after login state settles
-  auth.onAuthStateChanged(user => {
-    // … your existing code …
-    if (user) {
-      loadLeaderboard();
-      document.getElementById("sticker-wall").style.display = "block";
-    } else {
-      // could also show guests if you store friends for guests
-      document.getElementById("leaderboard-container").style.display = "none";
-    }
-  });
 
-  async function initLeaderboardRealtime() {
+async function initLeaderboardRealtime() {
     const user = auth.currentUser;
     if (!user) return;
   
@@ -474,8 +463,116 @@ async function loadLeaderboard() {
         document.getElementById("leaderboard-container")
                 .style.display = entries.length ? "block" : "none";
       });
-  }
+}
+*/
+
+async function initLeaderboardRealtime() {
+    const user = auth.currentUser;
+    if (!user) return;
   
+    // 1) clean up any previous listener
+    if (leaderboardUnsub) {
+      leaderboardUnsub();
+      leaderboardUnsub = null;
+    }
+  
+    // 2) fetch your friends map & build UID list
+    const youDoc = await db.collection("users").doc(user.uid).get();
+    const friendsMap = youDoc.data()?.friends || {};
+    const uids = [user.uid, ...Object.keys(friendsMap)];
+  
+    // 3) build a UID → username map
+    const nameMap = {};
+    // friend usernames come from your friendsMap
+    for (const fid in friendsMap) {
+      nameMap[fid] = friendsMap[fid].username;
+    }
+    // your username from the `usernames` collection
+    const youNameSnap = await db.collection("usernames")
+      .where("uid", "==", user.uid)
+      .limit(1)
+      .get();
+    nameMap[user.uid] = youNameSnap.empty
+      ? "You"
+      : youNameSnap.docs[0].id;
+  
+    // 4) subscribe to all those user docs
+    leaderboardUnsub = db.collection("users")
+      .where(firebase.firestore.FieldPath.documentId(), "in", uids)
+      .onSnapshot(snapshot => {
+        const entries = snapshot.docs.map(doc => {
+          const gd = doc.data().gameData || {};
+          return {
+            uid:       doc.id,
+            username:  nameMap[doc.id] || doc.id,
+            prestige:  gd.prestigeLevel || 0,
+            totalP:    gd.pTotal        || 0
+          };
+        });
+  
+        // 5) sort entries
+        entries.sort((a, b) => {
+          if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+          return b.totalP - a.totalP;
+        });
+  
+        // 6) render with the styled layout from loadLeaderboard
+        const ul = document.getElementById("leaderboard-list");
+        ul.innerHTML = ''; // Clear existing content
+        
+        entries.forEach((entry, index) => {
+          // Create a list item for each entry
+          const li = document.createElement('li');
+          li.className = 'leaderboard-entry';
+          
+          // Highlight current user
+          if (entry.uid === user.uid) {
+            li.classList.add('current-user');
+          }
+          
+          // Format the points with commas for thousands
+          const formattedPoints = Math.round(entry.totalP).toLocaleString();
+          
+          li.innerHTML = `
+            <div class="leaderboard-rank">${index + 1}</div>
+            <div class="leaderboard-user-info">
+              ${entry.username}
+            </div>
+            <div class="leaderboard-score">
+              <img src="assets/images/pokedollar-aseprite.png" alt="P">
+              ${formattedPoints}
+            </div>
+            <div class="leaderboard-prestige">
+              Prestige: ${entry.prestige}
+            </div>
+          `;
+          
+          ul.appendChild(li);
+        });
+  
+        // 7) show container
+        document.getElementById("leaderboard-container")
+                .style.display = entries.length ? "block" : "none";
+      });
+}
+
+// You can now use this single function to initialize the leaderboard with realtime updates
+
+
+
+  // Trigger it after login state settles
+auth.onAuthStateChanged(user => {
+  // … your existing code …
+  if (user) {
+    loadLeaderboard();
+    document.getElementById("sticker-wall").style.display = "block";
+  } else {
+    // could also show guests if you store friends for guests
+    document.getElementById("leaderboard-container").style.display = "none";
+  }
+});
+
+
   // 6) kick off (and tear down) your live listener inside auth.onAuthStateChanged
   auth.onAuthStateChanged(async user => {
     updateNav(user);
@@ -792,10 +889,13 @@ let STICKERS = [
     // Format time string
     const timeString = formatPostTime(postTimestamp);
     
-    // Build post HTML
+    // Default class without waiting for Firestore
+    let usernameClass = "sticker-username";
+    
+    // Build post HTML with basic styling first
     postElement.innerHTML = `
       <div class="sticker-post-header">
-        <span class="sticker-username">${username}</span>
+        <span class="${usernameClass}" id="username-${postId}">${username}</span>
         <span class="sticker-time">${timeString}</span>
       </div>
       <div class="sticker-post-content">
@@ -813,9 +913,37 @@ let STICKERS = [
       </div>
     `;
     
+    // Fetch admin status asynchronously after returning the element
+    if (uid) {
+        fetchAdminStatus(uid).then(isAdmin => {
+            const usernameElement = postElement.querySelector(`#username-${postId}`);
+            if (usernameElement && isAdmin) {
+                usernameElement.className = "shiny-3d";
+            }
+        }).catch(error => {
+            console.error("Error updating admin status:", error);
+        });
+    }
+    
     return postElement;
-  }
-  
+}
+
+// Separate function to fetch admin status
+async function fetchAdminStatus(uid) {
+    try {
+        const userDocRef = firebase.firestore().collection('users').doc(uid);
+        const userDoc = await userDocRef.get();
+        
+        if (userDoc.exists) {
+            return userDoc.data().admin === true;
+        }
+        return false;
+    } catch (error) {
+        console.error("Error fetching admin status:", error);
+        return false;
+    }
+}
+
   // Attach event handlers to like buttons
   function attachLikeButtonHandlers() {
     // Like button handlers

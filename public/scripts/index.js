@@ -4,6 +4,7 @@ window.pps = 0;
 window.prestigeLevel = 1;
 window.upgrades = [];
 window.rewardMultiplier = 1;
+const maxUpgradeLevel = 99;
 
 let pTotalElement = document.querySelector('.p-total');
 window.pTotal = parseFloat(pTotalElement.innerHTML) || 0;
@@ -337,11 +338,16 @@ function renderVisibleUpgrades() {
 
 function buyGeneratedUpgrade(index) {
     const upgrade = window.upgrades[index];
+    if(upgrade.level >= maxUpgradeLevel){
+        return;
+    }
+
     if (window.pTotal >= upgrade.cost) {
         window.pTotal -= upgrade.cost;
         pTotalElement.innerHTML = Math.round(window.pTotal);
 
         upgrade.level++;
+    
         upgrade.cost = Math.round(upgrade.cost * upgrade.costMult);
 
         if (upgrade.level === 1 && index + 1 < window.upgrades.length) {
