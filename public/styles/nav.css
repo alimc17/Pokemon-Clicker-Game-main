@@ -59,7 +59,7 @@ li a {
     border: 2px solid white;
     border-radius: 10px;
     cursor: pointer;
-    font-family: 'PokemonTitle', serif;
+    font-family: 'PokemonText', 'PokemonTextLive', serif;
     margin: 0 5px;
     transition: all 0.3s ease;
     letter-spacing: 1px;
