@@ -333,237 +333,112 @@ document
     returnToRegion();    
 });
  
-/*
-async function loadLeaderboard() {
-    const user = auth.currentUser;
-    if (!user) return;
-  
-    // 1) get your friends list
-    const userDoc = await db.collection("users").doc(user.uid).get();
-    const data = userDoc.data() || {};
-    const friends = data.friends || {};        // { friendUid: { username } }
-    const entries = [];
-  
-    // 2) include yourself
-    entries.push({
-      uid: user.uid,
-      username: (await db.collection("usernames")
-                       .where("uid","==",user.uid).get())
-                 .docs[0].id,
-      prestige: data.gameData?.prestigeLevel || 0,
-      totalP:    data.gameData?.pTotal         || 0
-    });
-  
-    // 3) fetch each friend's gameData
-    await Promise.all(Object.entries(friends).map(async ([fid, {username}]) => {
-      const doc = await db.collection("users").doc(fid).get();
-      const gd  = doc.exists ? doc.data().gameData : null;
-      entries.push({
-        uid:       fid,
-        username,
-        prestige:  gd?.prestigeLevel || 0,
-        totalP:    gd?.pTotal         || 0
-      });
-    }));
-  
-    // 4) sort by prestige desc, then totalP desc
-    entries.sort((a,b) => {
-      if (b.prestige !== a.prestige) return b.prestige - a.prestige;
-      return b.totalP - a.totalP;
-    });
-  
-    // 5) render into the UL - THIS IS THE FIX
-    const ul = document.getElementById("leaderboard-list");
-    ul.innerHTML = ''; // Clear existing content
+
+
+async function initLeaderboardRealtime() {
+  const user = auth.currentUser;
+  if (!user) return;
+
+  // 1) clean up any previous listener
+  if (leaderboardUnsub) {
+    leaderboardUnsub();
+    leaderboardUnsub = null;
+  }
+
+  // 2) fetch your friends map & build UID list
+  const youDoc = await db.collection("users").doc(user.uid).get();
+  const friendsMap = youDoc.data()?.friends || {};
+  const uids = [user.uid, ...Object.keys(friendsMap)];
+
+  // 3) build a UID → username map
+  const nameMap = {};
+  // friend usernames come from your friendsMap
+  for (const fid in friendsMap) {
+    nameMap[fid] = friendsMap[fid].username;
+  }
+  // your username from the `usernames` collection
+  const youNameSnap = await db.collection("usernames")
+    .where("uid", "==", user.uid)
+    .limit(1)
+    .get();
+  nameMap[user.uid] = youNameSnap.empty
+    ? "You"
+    : youNameSnap.docs[0].id;
     
-    entries.forEach((entry, index) => {
-      // Create a list item for each entry
-      const li = document.createElement('li');
-      li.className = 'leaderboard-entry';
-      
-      // Highlight current user
-      if (entry.uid === user.uid) {
-        li.classList.add('current-user');
-      }
-      
-      // Format the points with commas for thousands
-      const formattedPoints = Math.round(entry.totalP).toLocaleString();
-      
-      li.innerHTML = `
-        <div class="leaderboard-rank">${index + 1}</div>
-        <div class="leaderboard-user-info">
-          ${entry.username}
-        </div>
-        <div class="leaderboard-score">
-          <img src="assets/images/pokedollar-aseprite.png" alt="P">
-          ${formattedPoints}
-        </div>
-        <div class="leaderboard-prestige">
-          Prestige: ${entry.prestige}
-        </div>
-      `;
-      
-      ul.appendChild(li);
-    });
-  
-    // show container
-    document.getElementById("leaderboard-container").style.display = "block";
-}
+  // NEW: Build a map of admin statuses
+  const adminMap = {};
+  for (const uid of uids) {
+    try {
+      const userDoc = await db.collection('users').doc(uid).get();
+      adminMap[uid] = userDoc.exists && userDoc.data().admin === true;
+    } catch (error) {
+      console.error(`Error checking admin status for ${uid}:`, error);
+      adminMap[uid] = false;
+    }
+  }
 
-async function initLeaderboardRealtime() {
-    const user = auth.currentUser;
-    if (!user) return;
-  
-    // 1) clean up any previous listener
-    if (leaderboardUnsub) {
-      leaderboardUnsub();
-      leaderboardUnsub = null;
-    }
-  
-    // 2) fetch your friends map & build UID list
-    const youDoc = await db.collection("users").doc(user.uid).get();
-    const friendsMap = youDoc.data()?.friends || {};
-    const uids = [user.uid, ...Object.keys(friendsMap)];
-  
-    // 3) build a UID → username map
-    const nameMap = {};
-    // friend usernames come from your friendsMap
-    for (const fid in friendsMap) {
-      nameMap[fid] = friendsMap[fid].username;
-    }
-    // your username from the `usernames` collection
-    const youNameSnap = await db.collection("usernames")
-      .where("uid", "==", user.uid)
-      .limit(1)
-      .get();
-    nameMap[user.uid] = youNameSnap.empty
-      ? "You"
-      : youNameSnap.docs[0].id;
-  
-    // 4) subscribe to all those user docs
-    leaderboardUnsub = db.collection("users")
-      .where(firebase.firestore.FieldPath.documentId(), "in", uids)
-      .onSnapshot(snapshot => {
-        const entries = snapshot.docs.map(doc => {
-          const gd = doc.data().gameData || {};
-          return {
-            uid:       doc.id,
-            username:  nameMap[doc.id] || doc.id,
-            prestige:  gd.prestigeLevel || 0,
-            totalP:    gd.pTotal        || 0
-          };
-        });
-  
-        // 5) sort & render
-        entries.sort((a, b) => {
-          if (b.prestige !== a.prestige) return b.prestige - a.prestige;
-          return b.totalP   - a.totalP;
-        });
-  
-        const ul = document.getElementById("leaderboard-list");
-        ul.innerHTML = entries.map((e, i) => `
-          <li>
-            <strong>#${i+1}</strong>
-            ${e.username}
-            — Level ${e.prestige}
-            (${Math.round(e.totalP)} P)
-          </li>
-        `).join("");
-  
-        document.getElementById("leaderboard-container")
-                .style.display = entries.length ? "block" : "none";
+  // 4) subscribe to all those user docs
+  leaderboardUnsub = db.collection("users")
+    .where(firebase.firestore.FieldPath.documentId(), "in", uids)
+    .onSnapshot(snapshot => {
+      const entries = snapshot.docs.map(doc => {
+        const gd = doc.data().gameData || {};
+        return {
+          uid:       doc.id,
+          username:  nameMap[doc.id] || doc.id,
+          prestige:  gd.prestigeLevel || 0,
+          totalP:    gd.pTotal        || 0,
+          isAdmin:   adminMap[doc.id] || false // NEW: Include admin status
+        };
       });
-}
-*/
 
-async function initLeaderboardRealtime() {
-    const user = auth.currentUser;
-    if (!user) return;
-  
-    // 1) clean up any previous listener
-    if (leaderboardUnsub) {
-      leaderboardUnsub();
-      leaderboardUnsub = null;
-    }
-  
-    // 2) fetch your friends map & build UID list
-    const youDoc = await db.collection("users").doc(user.uid).get();
-    const friendsMap = youDoc.data()?.friends || {};
-    const uids = [user.uid, ...Object.keys(friendsMap)];
-  
-    // 3) build a UID → username map
-    const nameMap = {};
-    // friend usernames come from your friendsMap
-    for (const fid in friendsMap) {
-      nameMap[fid] = friendsMap[fid].username;
-    }
-    // your username from the `usernames` collection
-    const youNameSnap = await db.collection("usernames")
-      .where("uid", "==", user.uid)
-      .limit(1)
-      .get();
-    nameMap[user.uid] = youNameSnap.empty
-      ? "You"
-      : youNameSnap.docs[0].id;
-  
-    // 4) subscribe to all those user docs
-    leaderboardUnsub = db.collection("users")
-      .where(firebase.firestore.FieldPath.documentId(), "in", uids)
-      .onSnapshot(snapshot => {
-        const entries = snapshot.docs.map(doc => {
-          const gd = doc.data().gameData || {};
-          return {
-            uid:       doc.id,
-            username:  nameMap[doc.id] || doc.id,
-            prestige:  gd.prestigeLevel || 0,
-            totalP:    gd.pTotal        || 0
-          };
-        });
-  
-        // 5) sort entries
-        entries.sort((a, b) => {
-          if (b.prestige !== a.prestige) return b.prestige - a.prestige;
-          return b.totalP - a.totalP;
-        });
-  
-        // 6) render with the styled layout from loadLeaderboard
-        const ul = document.getElementById("leaderboard-list");
-        ul.innerHTML = ''; // Clear existing content
+      // 5) sort entries
+      entries.sort((a, b) => {
+        if (b.prestige !== a.prestige) return b.prestige - a.prestige;
+        return b.totalP - a.totalP;
+      });
+
+      // 6) render with the styled layout from loadLeaderboard
+      const ul = document.getElementById("leaderboard-list");
+      ul.innerHTML = ''; // Clear existing content
+      
+      entries.forEach((entry, index) => {
+        // Create a list item for each entry
+        const li = document.createElement('li');
+        li.className = 'leaderboard-entry';
         
-        entries.forEach((entry, index) => {
-          // Create a list item for each entry
-          const li = document.createElement('li');
-          li.className = 'leaderboard-entry';
-          
-          // Highlight current user
-          if (entry.uid === user.uid) {
-            li.classList.add('current-user');
-          }
-          
-          // Format the points with commas for thousands
-          const formattedPoints = Math.round(entry.totalP).toLocaleString();
-          
-          li.innerHTML = `
-            <div class="leaderboard-rank">${index + 1}</div>
-            <div class="leaderboard-user-info">
-              ${entry.username}
-            </div>
-            <div class="leaderboard-score">
-              <img src="assets/images/pokedollar-aseprite.png" alt="P">
-              ${formattedPoints}
-            </div>
-            <div class="leaderboard-prestige">
-              Prestige: ${entry.prestige}
-            </div>
-          `;
-          
-          ul.appendChild(li);
-        });
-  
-        // 7) show container
-        document.getElementById("leaderboard-container")
-                .style.display = entries.length ? "block" : "none";
+        // Highlight current user
+        if (entry.uid === user.uid) {
+          li.classList.add('current-user');
+        }
+        
+        // Format the points with commas for thousands
+        const formattedPoints = Math.round(entry.totalP).toLocaleString();
+        
+        // NEW: Apply shiny-3d class for admin users
+        const usernameClass = entry.isAdmin ? 'shiny-3d' : '';
+        
+        li.innerHTML = `
+          <div class="leaderboard-rank">${index + 1}</div>
+          <div class="leaderboard-user-info">
+            <span class="${usernameClass}">${entry.username}</span>
+          </div>
+          <div class="leaderboard-score">
+            <img src="assets/images/pokedollar-aseprite.png" alt="P">
+            ${formattedPoints}
+          </div>
+          <div class="leaderboard-prestige">
+            Prestige: ${entry.prestige}
+          </div>
+        `;
+        
+        ul.appendChild(li);
       });
+
+      // 7) show container
+      document.getElementById("leaderboard-container")
+              .style.display = entries.length ? "block" : "none";
+    });
 }
 
 // You can now use this single function to initialize the leaderboard with realtime updates
@@ -890,7 +765,7 @@ let STICKERS = [
     const isLiked = user && likes[user.uid];
     const postTimestamp = timestamp?.toDate() || new Date();
     const isOwner = user && uid === user.uid;
-    const canDelete = isOwner || currentUserIsAdmin; 
+    //const canDelete = isOwner || currentUserIsAdmin; 
 
     // Create post container
     const postElement = document.createElement("li");
@@ -911,7 +786,7 @@ let STICKERS = [
         <span class="sticker-time">${timeString}</span>
       </div>
       <div class="sticker-post-content">
-        <img src="assets/images/stickers/${sticker}" alt="${sticker}" class="sticker-image" />
+        <img src="assets/images/Stickers/${sticker}" alt="${sticker}" class="sticker-image" />
         <div class="sticker-text">${escapeHTML(text)}</div>
       </div>
       <div class="sticker-post-footer">
@@ -919,25 +794,45 @@ let STICKERS = [
           <span class="like-icon">❤️</span>
           <span class="like-count">${likeCount}</span>
         </button>
-        ${canDelete ? `
+        ${isOwner ? `
           <button class="delete-btn">🗑️</button>
         ` : ''}
       </div>
     `;
     
     // Fetch admin status asynchronously after returning the element
-    if (uid) {
-        fetchAdminStatus(uid).then(isAdmin => {
-            const usernameElement = postElement.querySelector(`#username-${postId}`);
-            if (usernameElement && isAdmin) {
-                usernameElement.className = "shiny-3d";
-            }
-        }).catch(error => {
-            console.error("Error updating admin status:", error);
-        });
-    }
-    
-    return postElement;
+    if (user) {
+      // First, check if current user is an admin - they can delete any post
+      db.collection('users').doc(user.uid).get().then(doc => {
+          const isCurrentUserAdmin = doc.exists && doc.data().admin === true;
+          const deleteContainer = postElement.querySelector(`#delete-container-${postId}`);
+          
+          // Show delete button if user is owner OR current user is admin
+          if ((isOwner || isCurrentUserAdmin) && deleteContainer) {
+              if (!deleteContainer.querySelector('.delete-btn')) {
+                  const deleteBtn = document.createElement('button');
+                  deleteBtn.className = 'delete-btn';
+                  deleteBtn.textContent = '🗑️';
+                  deleteBtn.onclick = handleDeleteClick;
+                  deleteContainer.appendChild(deleteBtn);
+              }
+          }
+      }).catch(error => {
+          console.error("Error checking admin status:", error);
+      });
+      
+      // Also check if post owner is an admin to style their username
+      fetchAdminStatus(uid).then(isAdmin => {
+          const usernameElement = postElement.querySelector(`#username-${postId}`);
+          if (usernameElement && isAdmin) {
+              usernameElement.className = "shiny-3d";
+          }
+      }).catch(error => {
+          console.error("Error updating admin status:", error);
+      });
+  }
+  
+  return postElement;
 }
 
 // Separate function to fetch admin status
