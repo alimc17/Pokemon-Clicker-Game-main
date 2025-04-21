@@ -95,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (user) {
           const doc = await db.collection("users").doc(user.uid).get();
           progress = doc.exists ? doc.data().gameData : null;
-          currentUserIsAdmin = doc.exists && userDoc.data().admin === true;
+          currentUserIsAdmin = doc.exists && doc.data().admin === true;
         } else {
           currentUserIsAdmin = false;
           return;
