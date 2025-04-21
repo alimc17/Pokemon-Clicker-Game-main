@@ -63,7 +63,8 @@
 }
   
 .prestige-modal-title {
-    font-family: 'PokemonTitle', 'PokemonTitleLive', sans-serif;
+    font-family: 'PokemonTitle', 'PokemonTitleLive', serif;
+    letter-spacing: 2px;
     text-align: center;
     margin-bottom: 20px;
     color: white;
@@ -114,6 +115,7 @@
     align-items: center;
     font-size: 22px;
     margin-bottom: 10px;
+    font-family: 'PokemonText', 'PokemonTextLive', serif;
 }
   
 .prestige-currency img {
