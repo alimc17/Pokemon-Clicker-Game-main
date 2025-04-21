@@ -599,7 +599,7 @@ async function initLeaderboardRealtime() {
 auth.onAuthStateChanged(user => {
   // … your existing code …
   if (user) {
-    loadLeaderboard();
+    initLeaderboardRealtime();
     document.getElementById("sticker-wall").style.display = "block";
   } else {
     // could also show guests if you store friends for guests
@@ -1203,7 +1203,3 @@ document.addEventListener('keydown', function(e) {
     konamiCodePosition = 0;
   }
 });
-
-setTimeout(loadLeaderboard, 2000);
-setInterval(loadLeaderboard, 60000);
-
