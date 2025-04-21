@@ -119,9 +119,10 @@ window.savedLegendaryIndices    = window.savedLegendaryIndices    || [];   // li
 
 const legendaryButton = document.querySelector('.buy-button');
 legendaryButton.addEventListener('click', buyLegendary);
+const LEGENDARY_COST = 99999;
 
 function buyLegendary() {
-    if (window.pTotal < 5) return;
+    if (window.pTotal < LEGENDARY_COST) return;
 
     const lockedIndexes = window.unlockedLegendaries
         .map((unlocked, index) => !unlocked ? index : null)
@@ -151,7 +152,7 @@ function buyLegendary() {
     cryAudio.play();
 
     // Deduct pokédollars
-    window.pTotal -= 5;
+    window.pTotal -= LEGENDARY_COST;
     pTotal.innerHTML = Math.round(window.pTotal);
     updateGameProgress({});
 }

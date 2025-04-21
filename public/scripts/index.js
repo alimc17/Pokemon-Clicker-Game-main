@@ -51,7 +51,7 @@ const currentPrestigeEl = document.getElementById('prestige-current');
 const progressBarEl = document.getElementById('prestige-progress-bar'); 
 const progressButtonEl = document.getElementById('prestige-button-progress'); 
 
-const PRESTIGE_REQUIREMENT = 100;
+const PRESTIGE_REQUIREMENT = 100000;
 
 document.getElementById('prestige-button').addEventListener('click', openPrestigeModal);
 
