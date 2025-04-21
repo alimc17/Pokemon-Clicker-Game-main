@@ -67,7 +67,7 @@ function calculateRewardMultiplier(level) {
 function updatePrestigeModal() {
     currentRegionEl.textContent = regionData[window.prestigeLevel -1].name;
     nextRegionEl.textContent = window.prestigeLevel < maxPrestige ? 
-                             regionData[window.prestigeLevel - 1].name : 
+                             regionData[window.prestigeLevel].name : 
                              'Max Level Reached';
 
     const currentMult = calculateRewardMultiplier(window.prestigeLevel);
