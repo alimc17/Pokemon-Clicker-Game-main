@@ -678,7 +678,7 @@ let STICKERS = [
     
     if (stickerSelect.value) {
       previewContainer.innerHTML = `
-        <img src="assets/images/stickers/${stickerSelect.value}" 
+        <img src="assets/images/Stickers/${stickerSelect.value}" 
              alt="${stickerSelect.value}" 
              class="sticker-preview-img" />
       `;
