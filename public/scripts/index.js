@@ -51,7 +51,7 @@ const currentPrestigeEl = document.getElementById('prestige-current');
 const progressBarEl = document.getElementById('prestige-progress-bar'); 
 const progressButtonEl = document.getElementById('prestige-button-progress'); 
 
-const PRESTIGE_REQUIREMENT = 100;
+const PRESTIGE_REQUIREMENT = 1000000;
 
 document.getElementById('prestige-button').addEventListener('click', openPrestigeModal);
 
@@ -255,10 +255,10 @@ function generateUpgrades(pokemonList) {
     const upgradeContainer = document.querySelector('.upgrades-container');
     upgradeContainer.innerHTML = '';
 
-    const baseCost = window.prestigeLevel === 0 ? 25 : 25 * rewardMultiplier;
+    const baseCost = window.prestigeLevel === 0 ? 50 : 50 * rewardMultiplier;
     const baseIncrease = 1;
-    const costMultiplier = 1.55;
-    const powerMultiplier = 1.25;
+    const costMultiplier = 1.6;
+    const powerMultiplier = 1.3;
 
     window.upgrades.length = 0;
 
