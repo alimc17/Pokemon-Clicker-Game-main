@@ -3,6 +3,7 @@ const app = firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 let leaderboardUnsub = null;
+let currentUserIsAdmin = false;
 // at top of the file, alongside your other globals:
 function updatePrestigeUI() {
     const regionNameEl    = document.getElementById('region-name');
@@ -87,13 +88,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     auth.onAuthStateChanged(async user => {
+
         updateNav(user);
 
         let progress;
         if (user) {
           const doc = await db.collection("users").doc(user.uid).get();
           progress = doc.exists ? doc.data().gameData : null;
+          currentUserIsAdmin = userDoc.exists && userDoc.data().admin === true;
         } else {
+          currentUserIsAdmin = false;
           return;
         }
     
@@ -885,7 +889,9 @@ let STICKERS = [
     const user = firebase.auth().currentUser;
     const isLiked = user && likes[user.uid];
     const postTimestamp = timestamp?.toDate() || new Date();
-    
+    const isOwner = user && uid === user.uid;
+    const canDelete = isOwner || currentUserIsAdmin; 
+
     // Create post container
     const postElement = document.createElement("li");
     postElement.className = "sticker-entry";
@@ -913,7 +919,7 @@ let STICKERS = [
           <span class="like-icon">❤️</span>
           <span class="like-count">${likeCount}</span>
         </button>
-        ${user && uid === user.uid ? `
+        ${canDelete ? `
           <button class="delete-btn">🗑️</button>
         ` : ''}
       </div>
