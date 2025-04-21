@@ -476,16 +476,13 @@ async function returnToRegion() {
     generateUpgrades(pokemon);
       
 }
-  
-  // attach the click listener
-document
-.getElementById('return-region-btn')
-.addEventListener('click', function() {
-    this.style.display = 'none';
-    returnToRegion();    
-});
  
-
+// checks if user has prestiged and returns to region
+setTimeout(() => {
+  if (window.prestigeLevel > 1) {
+    returnToRegion();
+  }
+},4000);
 
 async function initLeaderboardRealtime() {
   const user = auth.currentUser;
