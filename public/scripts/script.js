@@ -115,13 +115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function updateNav(user) {
     const leftNav = document.getElementById('nav-left-id');
     const rightNav = document.getElementById('nav-right-id');
-    const leftMain = document.querySelector('.left-main');
-    
-    if (leftMain) {
-      leftMain.style.justifyContent = user
-        ? 'space-evenly'    // logged in
-        : 'center';         // not logged in
-    }
+
     // Clear old content
     while (leftNav.children.length > 1) leftNav.removeChild(leftNav.lastChild);
     rightNav.innerHTML = "";
@@ -348,6 +342,7 @@ async function initLeaderboardRealtime() {
   // 2) fetch your friends map & build UID list
   const youDoc = await db.collection("users").doc(user.uid).get();
   const friendsMap = youDoc.data()?.friends || {};
+  const hasFriends = Object.keys(friendsMap).length > 0;
   const uids = [user.uid, ...Object.keys(friendsMap)];
 
   // 3) build a UID → username map
@@ -468,7 +463,22 @@ auth.onAuthStateChanged(user => {
       });
 
       loadGameProgress(user.uid);
-      initLeaderboardRealtime();
+
+      const doc = await db.collection("users").doc(user.uid).get();
+      const friendsMap = doc.data()?.friends || {};
+      const hasFriends = Object.keys(friendsMap).length > 0;
+
+      if (hasFriends) {
+        initLeaderboardRealtime();
+      }
+
+      setTimeout(() => {
+        const leftMain = document.querySelector('.left-main');
+        if (leftMain) {
+          leftMain.style.justifyContent = 'space-evenly';
+        } else {
+        }
+      }, 2000);
       
     } else {
       loadGuestProgress();
