@@ -216,12 +216,12 @@ p {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-bottom: 5px;
-    font-size: 24px;
+    margin-bottom: 10px;
+    font-size: 32px;
 }
 
 .p-total-img {
-    width: 9%;
+    width: 11%;
     object-fit: cover;
     filter: invert(1);
 }
