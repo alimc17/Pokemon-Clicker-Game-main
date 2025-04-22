@@ -88,7 +88,7 @@
 .prestige-info-item h3 {
     font-size: 16px;
     margin-bottom: 8px;
-    color: rgb(204, 0, 0);
+    color: rgba(255, 0, 0, 1);
 }
   
 .prestige-info-item p {
@@ -106,7 +106,7 @@
 .prestige-requirements h3 {
     text-align: center;
     margin-bottom: 10px;
-    color: rgb(204, 0, 0);
+    color: rgba(255, 0, 0, 1);
 }
   
 .prestige-currency {
@@ -132,14 +132,14 @@
   
 .prestige-progress-bar {
     height: 100%;
-    background: linear-gradient(90deg, #400, #f00);
+    background: linear-gradient(90deg, rgba(68, 0, 0, 1), rgba(255, 0, 0, 1));
     width: 0%;
     transition: width 0.5s ease;
 }
   
 .prestige-warning {
     background: rgba(255, 0, 0, 0.2);
-    border-left: 4px solid #ff0000;
+    border-left: 4px solid rgba(255, 0, 0, 1);
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -169,7 +169,7 @@
     top: 0;
     left: 0;
     height: 100%;
-    background: linear-gradient(90deg, #400, #f00);
+    background: linear-gradient(90deg, rgba(68, 0, 0, 1), rgba(255, 0, 0, 1));
     width: 0%;
     transition: width 0.5s ease;
     z-index: 1; /* Place behind the text */
@@ -192,12 +192,12 @@
 }
   
 .confirm-button {
-    background-color: rgb(204, 0, 0);;
+    background-color: rgba(255, 0, 0, 1);
     color: #fff;
 }
   
 .confirm-button:hover:not([disabled]) {
-    background-color: #f00;
+    background-color: rgba(255, 0, 0, 1);
     box-shadow: 0 0 15px rgba(204, 0, 0, 0.7);
     letter-spacing: 2px;
 }
