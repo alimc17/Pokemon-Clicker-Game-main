@@ -68,14 +68,6 @@
     font-style: normal;
 }
 
-@font-face {
-    font-family: 'PokemonSolid';
-    src: url(/assets/fonts/PokemonSolid.woff2);
-    font-weight: normal;
-    font-style: normal;
-}
-
-
 * {
     box-sizing: border-box;
     text-decoration: none;
